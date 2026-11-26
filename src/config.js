@@ -484,7 +484,7 @@ const phrase = {
 };
 // Parrainage (25 novembre 2026, Alex) : 6 mois de forfait Mini offerts au filleul ET au parrain, à chaque filleul, sans limite
 // (extension : includes/parrainage.php ; conditions générales : article « Parrainage »).
-const fidelite = { parrainageMois: 6, remiseSecondSite: 10 };
+const fidelite = { parrainageMois: 3, remiseSecondSite: 10 }; // parrainage : 3 mois chacun (Alex, 26 novembre 2026 ; 6 mois avant)
 // 20 novembre 2026 : la création du site se paie en entier à la commande (acompte: 100, le nom de la clé est gardé : le PHP la lit).
 // Sur la page de paiement Stripe, le client choisit : en une fois, ou en 3 ou 4 fois avec Alma ou Klarna (l'organisme nous
 // verse tout de suite la somme entière). Plus de « reste à la réception ». Le forfait démarre à la mise en ligne du site.

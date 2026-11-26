@@ -34,7 +34,7 @@ function aled08e_bsite_faits() {
     $f[] = 'Phrase clé : avoir une activité sans site internet, c’est comme posséder une magnifique vitrine dans une rue où personne ne passe.';
     foreach ((array) ($D['types'] ?? []) as $t) if (empty($t['retire'])) $f[] = $t['name'] . ' : ' . aled08e_euro_txt($t['price']) . ' la création, sans abonnement' . (!empty($t['but']) ? ' (pour ' . mb_strtolower($t['but']) . ')' : '') . '. Il comprend : ' . implode(', ', (array) ($t['inclus'] ?? [])) . '.';
     // Le parrainage (25 novembre 2026)
-    $pm = (int) ($D['parrainageMois'] ?? 6);
+    $pm = (int) ($D['parrainageMois'] ?? 3);
     $f[] = 'Parrainage : chaque client a un code dans son espace client. Un nouveau client qui le tape dans « Code promo ou parrainage » en commandant son site reçoit ' . $pm . ' mois de forfait Mini offerts un mois après la mise en ligne de son site, et son parrain aussi ' . $pm . ' mois, pour chaque filleul, sans limite. Tout est expliqué sur la page /parrainage/.';
     // L'offre de lancement (25 novembre 2026) : le prix ci-dessus est celui de l'offre, jusqu'à sa date de fin.
     $L = (array) ($D['lancement'] ?? []);

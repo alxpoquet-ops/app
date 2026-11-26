@@ -5,19 +5,19 @@
  * Chaque compte a un code (aled08e_code, par exemple CAMILL-7KQ) et un lien /creer-mon-site/?code=CODE. Un nouveau client tape
  * ce code dans « Code promo ou parrainage » en commandant son site. UN MOIS après la mise en ligne de son site (décision d'Alex,
  * 25 novembre 2026 : le délai de rétractation passé, et le filleul toujours client) :
- *  - le filleul reçoit 6 mois de forfait Mini offerts (s'il a pris le forfait Mini) ;
- *  - le parrain reçoit 6 mois de forfait Mini offerts, pour CHAQUE filleul, sans limite.
+ *  - le filleul reçoit 3 mois de forfait Mini offerts (s'il a pris le forfait Mini ; 6 mois avant le 26 novembre 2026, Alex : « 6 mois c'est trop ») ;
+ *  - le parrain reçoit 3 mois de forfait Mini offerts, pour CHAQUE filleul, sans limite.
  * Les mois offerts (aled08e_mois_offerts_ajouter) :
  *  - abonnement Stripe en cours : ses factures sont suspendues (pause_collection, factures annulées) jusqu'à la nouvelle date,
- *    rallongée de 6 mois à chaque filleul ;
- *  - forfait déjà offert (lot du jeu-concours) : la date de fin recule de 6 mois ;
+ *    rallongée de 3 mois à chaque filleul ;
+ *  - forfait déjà offert (lot du jeu-concours) : la date de fin recule de 3 mois ;
  *  - forfait pas encore démarré : les mois sont gardés (méta aled08_mois_offerts) et deviennent une période d'essai au démarrage
  *    du forfait (includes/stripe.php, trial_end).
  * La durée vient de config.fidelite.parrainageMois (data.json : parrainageMois).
  */
 defined('ABSPATH') || exit;
 
-function aled08e_parrainage_mois() { return max(1, (int) (aled08e_data()['parrainageMois'] ?? 6)); }
+function aled08e_parrainage_mois() { return max(1, (int) (aled08e_data()['parrainageMois'] ?? 3)); }
 
 /* Ajoute des mois de forfait Mini offerts à un compte. Renvoie une phrase pour le journal. */
 function aled08e_mois_offerts_ajouter($uid, $mois, $raison = '') {
@@ -90,7 +90,7 @@ add_action('aled08_quotidien', function () {
     foreach ($ids as $cid) aled08e_parrainage_du($cid);
 }, 40);
 
-/* Un mois après la mise en ligne : 6 mois pour le filleul (s'il a le forfait Mini) et 6 mois pour son parrain, une seule fois par commande */
+/* Un mois après la mise en ligne : 3 mois pour le filleul (s'il a le forfait Mini) et 3 mois pour son parrain, une seule fois par commande */
 function aled08e_parrainage_recompenser($cmd) {
     if (empty($cmd['parrain']) || empty($cmd['user']) || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true)) return;
     $p = aled08e_user_by_code($cmd['parrain']);

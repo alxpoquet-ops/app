@@ -789,7 +789,7 @@ function confirmationPage() {
 }
 
 // ====================================================================== FIDÉLITÉ
-// Le parrainage (25 novembre 2026, Alex : « montrer la puissance du parrainage ») : 6 mois de forfait Mini offerts au filleul
+// Le parrainage (25 novembre 2026, Alex : « montrer la puissance du parrainage ») : 3 mois de forfait Mini offerts au filleul (6 avant le 26 novembre 2026)
 // ET au parrain, à chaque filleul, sans limite. Le code est dans l'espace client ; l'extension fait le reste (includes/parrainage.php).
 function fidelitePage() {
   const crumbs = crumb('fidelite');
@@ -815,7 +815,7 @@ function fidelitePage() {
 </div></section>
 <section class="section section-soft" id="puissance"><div class="container container-narrow">
   <h2 class="section-title">La puissance du parrainage</h2>
-  <p class="section-sub">Chaque filleul compte. Avec ${M} mois par filleul, deux proches suffisent pour une année entière de forfait ${esc(mini.name)} offerte.</p>
+  <p class="section-sub">Chaque filleul compte. Avec ${M} mois par filleul, ${['un proche suffit', 'deux proches suffisent', 'trois proches suffisent', 'quatre proches suffisent', 'cinq proches suffisent', 'six proches suffisent'][Math.ceil(12 / M) - 1] || Math.ceil(12 / M) + ' proches suffisent'} pour une année entière de forfait ${esc(mini.name)} offerte.</p>
   <div class="pr-tableau reveal"><table><thead><tr><th>Vos filleuls</th><th>Vos mois offerts</th><th>Vous économisez</th></tr></thead><tbody>${paliers.map(ligne).join('')}</tbody></table></div>
   <p class="center small muted">Sur la base du forfait ${esc(mini.name)} à ${euro(mini.month)} par mois. Et chacun de vos filleuls reçoit aussi ${M} mois offerts, soit ${euro(val)}.</p>
 </div></section>

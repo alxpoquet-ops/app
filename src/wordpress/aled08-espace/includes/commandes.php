@@ -140,7 +140,7 @@ function aled08e_code_evenement_ajax() {
     $pp = aled08e_user_by_code(aled08e_clean_code($code));
     if ($pp) {
         if (is_user_logged_in() && (int) $pp->ID === get_current_user_id()) wp_send_json_error(['message' => 'C’est votre propre code de parrainage : donnez-le à vos proches !']);
-        wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 6)]);
+        wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 3)]);
     }
     wp_send_json_error(['message' => 'Code inconnu.']);
 }

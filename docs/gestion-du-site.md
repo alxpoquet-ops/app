@@ -208,7 +208,7 @@ Offre du 19 novembre 2026 : les modifications sont incluses dans le forfait Mini
 
 ## 10. Le parrainage (retiré du site public)
 
-Le parrainage est revenu le 25 novembre 2026 : voir la partie « Le parrainage : 6 mois offerts pour le parrain et pour le filleul », plus bas.
+Le parrainage est revenu le 25 novembre 2026 : voir la partie « Le parrainage : 3 mois offerts pour le parrain et pour le filleul », plus bas.
 
 ## 11. Hébergement : OVH ou o2switch, et la migration
 
@@ -511,20 +511,22 @@ Chaque zip contient un `LISEZ-MOI.txt` qui explique quoi en faire.
 
 **Si le connecteur d'un site est plus ancien que 2.15.0**, Alex reçoit un e-mail et le client voit « nous vous l'envoyons par e-mail ». Il faut alors mettre le connecteur à jour sur ce site. Flore et Chenilles est passé en 2.15.0 le 25 novembre 2026.
 
-## Le parrainage : 6 mois offerts pour le parrain et pour le filleul
+## Le parrainage : 3 mois offerts pour le parrain et pour le filleul
+
+Alex, 26 novembre 2026 : « 6 mois c'est trop, on baisse à 3 mois chacun » (`fidelite.parrainageMois`).
 
 Décision d'Alex (25 novembre 2026) : on insiste sur le parrainage. Le code est dans `includes/parrainage.php`, la page publique est `/parrainage/` (l'ancienne `/fidelite/` y redirige), et le règlement est l'article 17 des conditions générales.
 
 **Le principe**
 - Chaque compte a un code (par exemple `LUCIE-B54`). Il est affiché sur l'accueil de l'espace client et dans Mon compte, rubrique « Parrainage », avec le lien et des boutons de partage : copier, WhatsApp, SMS, e-mail.
-- Un nouveau client tape ce code dans « Code promo ou parrainage ». Le formulaire annonce : « 6 mois de forfait Mini offerts, pour vous et pour votre parrain ».
+- Un nouveau client tape ce code dans « Code promo ou parrainage ». Le formulaire annonce : « 3 mois de forfait Mini offerts, pour vous et pour votre parrain ».
 - Interdit : son propre code, être parrainé deux fois, cumuler avec un autre code.
 - À la mise en ligne du site du filleul, l'avantage est programmé **un mois plus tard** (décision d'Alex : le délai de rétractation passé). Le parrain reçoit un e-mail tout de suite, avec la date.
-- Un mois après, si la commande est toujours en ligne (ni annulée ni remboursée), le filleul reçoit 6 mois de forfait Mini offerts (s'il a ce forfait). Le parrain reçoit aussi 6 mois, pour chaque filleul, sans limite. Une tâche WordPress s'en charge, avec un filet de sécurité chaque jour.
+- Un mois après, si la commande est toujours en ligne (ni annulée ni remboursée), le filleul reçoit 3 mois de forfait Mini offerts (s'il a ce forfait). Le parrain reçoit aussi 3 mois, pour chaque filleul, sans limite. Une tâche WordPress s'en charge, avec un filet de sécurité chaque jour.
 - Trois e-mails partent : au parrain, au filleul et à Alex.
 
 **Comment les mois sont offerts** (`aled08e_mois_offerts_ajouter`)
-- **Abonnement Stripe en cours** : ses factures sont suspendues (`pause_collection`, factures annulées) jusqu'à une date reculée de 6 mois à chaque filleul.
+- **Abonnement Stripe en cours** : ses factures sont suspendues (`pause_collection`, factures annulées) jusqu'à une date reculée de 3 mois à chaque filleul.
 - **Forfait déjà offert** (lot du jeu-concours) : la date de fin recule de 6 mois.
 - **Forfait pas encore démarré** : les mois sont gardés (méta `aled08_mois_offerts`). Au démarrage du forfait, ils deviennent une période d'essai Stripe (`trial_end`) : la carte est enregistrée, rien n'est prélevé.
 
