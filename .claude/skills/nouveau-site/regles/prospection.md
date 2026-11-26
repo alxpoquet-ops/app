@@ -26,10 +26,24 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 
 ## Ce que le mail dit toujours
 
+**La forme du premier mail** (Alex, 26 novembre 2026 : « trop de texte », « plus familial et vendeur ») : court, chaleureux, en petites parties à titre coloré, dans cet ordre :
+
+1. « Bonjour ! » et la phrase vraie (et l'encadré « Nous avons fait le test » s'il y a une mesure) ;
+2. « On a imaginé votre site » : la maquette (quand elle sera branchée) ;
+3. « Un site, c'est quoi ? » : une vitrine ouverte jour et nuit, et une adresse à soi ; puis les trois points du métier ;
+4. « Et pour vous, ça demande quoi ? » : un questionnaire d'une dizaine de minutes ; on écrit les textes, on s'occupe de tout ; en ligne en 24 à 48 heures ;
+5. « Tout compris dans le prix » : le prix de lancement et ce qui est compris (`aled08e_px_inclus()`) ;
+6. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ;
+7. une ligne pour les trois arguments (moins cher qu'une agence, un vrai suivi, tout vous appartient), les deux boutons, puis **le téléphone d'Alex** pour en parler (`prospection.telephone` dans la configuration ; tant qu'il est vide, « répondez simplement à ce mail ») ;
+8. « À très vite, la bande des Minis Monstres ».
+
+L'étude France Num reste dans la configuration mais ne figure plus dans le premier mail. Ce qui suit décrit le fond de ces parties.
+
+
 Décision d'Alex (25 novembre 2026) : le mail lui-même doit convaincre. La route y écrit trois arguments, avec les chiffres de la configuration :
 
 1. **C'est moins cher** : « 4 à 5 fois moins cher qu'une agence » (calculé), parce que nos charges sont réduites au maximum.
-2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, une bande qui reste aux côtés du client. **Le mail ne parle pas du forfait Mini** (Alex, 25 novembre 2026).
+2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, une bande qui reste aux côtés du client. Le mail ne nomme pas le forfait Mini ; depuis le 26 novembre 2026, il propose l'hébergement avec son prix (partie 6 ci-dessus).
 3. **Tout appartient au client** : le site et le nom de domaine sont à lui, il récupère son site quand il veut.
 
 **La preuve, chiffrée.** Quand le Facteur retient un prospect, le site mesure lui-même sa position sur Google pour la recherche notée par le Repéreur (`recherche`, par exemple « coiffeur Signy-l'Abbaye »), avec le service Serper (réglage « Clé de mesure Google »). Le mail le dit dans un encadré « Nous avons fait le test » : « Votre page Facebook arrive en 36e position, sur la 4e page des résultats. Or la plupart des gens ne regardent que la première page. Envie de vous rapprocher de la première page, avec votre propre site ? C'est notre métier. » Sur la première page, il dit « bravo », puis que les clients y voient une page Facebook et non leur vitrine ; absent des 50 premiers, « c'est comme si vous n'existiez pas encore ». **Aucun agent ne donne ni n'écrit de position** : Google refuse les recherches faites par un programme, seul le service de mesure la connaît. Sans clé, le mail n'en parle pas. On ne promet jamais la première place : « vous rapprocher », « c'est notre métier ».

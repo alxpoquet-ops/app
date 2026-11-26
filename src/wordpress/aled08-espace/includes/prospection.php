@@ -103,6 +103,30 @@ function aled08e_px_atouts() {
         ['Tout vous appartient.', 'Le site et le nom de domaine sont à vous : vous récupérez votre site quand vous voulez.'],
     ];
 }
+/* Ce qui est compris dans la création, dit simplement pour le mail (Alex, 26 novembre 2026) */
+function aled08e_px_inclus() {
+    return [
+        'Un site à votre image, adapté au téléphone et à l’ordinateur',
+        'Les textes écrits pour vous, à partir de vos réponses',
+        'Vos services, vos photos, votre numéro en grand et un formulaire de contact',
+        'Les bases pour être bien trouvé sur Google',
+        'La mise en ligne complète, en 24 à 48 heures',
+        'Un site qui vous appartient : vous le récupérez quand vous voulez',
+    ];
+}
+/* L'hébergement proposé (le forfait Mini, sans le nommer) : prix tirés de la configuration */
+function aled08e_px_hebergement() {
+    $f = function_exists('aled08e_forfait') ? (array) aled08e_forfait('base') : [];
+    $mois = (float) ($f['month'] ?? 10);
+    $dom = (float) (aled08e_data()['domainePrix'] ?? 0);
+    return 'On peut aussi garder votre site en ligne pour vous : hébergement, sécurité, sauvegardes, mises à jour et vos modifications comprises, pour '
+        . aled08e_euro_txt($mois) . ' par mois' . ($dom > 0 ? ' (' . aled08e_euro_txt($mois + $dom) . ' si on vous fournit le nom de domaine)' : '') . '. Sans engagement.';
+}
+/* Le téléphone pour en parler (data.json « prospection.telephone », donné par Alex) : vide tant qu'il n'est pas réglé */
+function aled08e_px_telephone() {
+    $t = (string) ((aled08e_data()['prospection'] ?? [])['telephone'] ?? '');
+    return preg_match('/^[0-9 +.]{10,20}$/', $t) ? trim($t) : '';
+}
 /* D'où partent les mails, et où arrivent les réponses. Une adresse d'envoi à part protège les mails des clients :
  * si des prospects signalent nos messages, ce n'est pas l'adresse des clients qui en souffre. */
 function aled08e_px_expediteur() { $e = sanitize_email((string) get_option('aled08_prospection_expediteur', '')); return is_email($e) ? $e : aled08e_mail_from(); }
@@ -624,8 +648,8 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde (Alex, 25 novembre 2026)
         $codeH = $cadre . ($relance ? 'Le prix de lancement est toujours là :' : 'En ce moment, c’est le prix de lancement :') . '<br>' . $gros(aled08e_euro($prix['prix']) . ' la création de votre site')
-            . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '. Ensuite, la création passe à ' . aled08e_euro($lanc['normal']) . '. L’hébergement et la suite se choisissent après : tout est expliqué sur notre site.</span></td></tr></table>';
-        $codeT = ($relance ? 'Le prix de lancement est toujours là : ' : 'En ce moment, c’est le prix de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, pour toute commande jusqu’au ' . $lanc['jusquau'] . '. Ensuite, la création passe à ' . aled08e_euro_txt($lanc['normal']) . '. L’hébergement et la suite se choisissent après : tout est expliqué sur notre site.';
+            . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '. Ensuite, la création passe à ' . aled08e_euro($lanc['normal']) . '.</span></td></tr></table>';
+        $codeT = ($relance ? 'Le prix de lancement est toujours là : ' : 'En ce moment, c’est le prix de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, pour toute commande jusqu’au ' . $lanc['jusquau'] . '. Ensuite, la création passe à ' . aled08e_euro_txt($lanc['normal']) . '.';
     } else {
         $codeH = $cadre . 'La création de votre site :<br>' . $gros(aled08e_euro($prix['prix'])) . '</td></tr></table>';
         $codeT = 'La création de votre site : ' . aled08e_euro_txt($prix['prix']) . '.';
@@ -653,21 +677,38 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $P('Une question ? Répondez simplement à ce message : nous vous répondons. Et si ce n’est pas le moment, aucun souci : nous ne vous écrirons plus.', '8px 0 6px');
         $apercu = 'Une petite relance au sujet de votre site internet.';
     } else {
-        $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
+        // Le premier mail, court et chaleureux (Alex, 26 novembre 2026) : ce qu'est un site, ce que ça demande, ce qui est compris
+        // dans le prix, l'hébergement proposé, le téléphone pour en parler. Chaque partie tient en quelques lignes.
+        $titre = function ($t, $coul = '#5b3fc4') { return '<p style="margin:20px 0 8px;font-size:17px;line-height:1.3;font-weight:bold;color:' . $coul . ';">' . $t . '</p>'; };
+        $liste = function ($lignes, $fond = '#f6f3ff', $puce = '&#10003;') {
+            $h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;background:' . $fond . ';border-radius:14px;"><tr><td style="padding:10px 14px;">';
+            foreach ($lignes as $x) $h .= '<p style="margin:5px 0;font-size:15px;line-height:1.45;color:#2e2a47;">' . ($puce !== '' ? '<span style="display:inline-block;width:20px;color:#5b3fc4;font-weight:bold;">' . $puce . '</span>' : '') . $x . '</p>';
+            return $h . '</td></tr></table>';
+        };
+        $ptsH = [];
+        foreach ((array) ($m['points'] ?? []) as $pt) $ptsH[] = esc_html($pt['icone']) . ' <b>' . esc_html($pt['titre']) . '</b> : ' . esc_html(rtrim($pt['texte'], '.')) . '.';
+        $inclus = aled08e_px_inclus();
+        $heb = aled08e_px_hebergement();
+        $tel = aled08e_px_telephone();
+        $corps = '<h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#2e2a47;">Bonjour&nbsp;! &#128075;</h1>'
             . $P($phraseH)
             . $constatH
-            . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
-            . $pointsH
-            . $P($adresseH, '10px 0 14px')
-            . $etudeH
-            . $P('Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
-            . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
-            . $domH
+            . ($avecApercu ? $titre('On a imaginé votre site') . $P('Pour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site ' . esc_html($deX) . ', en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
+            . $titre('Un site, c’est quoi&nbsp;?')
+            . $P('Votre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous' . ($dom !== '' ? ' (comme <b>' . esc_html($dom) . '</b>)' : '') . ' à mettre sur vos cartes, votre véhicule et vos factures.', '0 0 8px')
+            . ($ptsH ? $liste($ptsH, '#f6f3ff', '') : '')
+            . $titre('Et pour vous, ça demande quoi&nbsp;?')
+            . $P('Presque rien&nbsp;! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. <b>On écrit les textes, on s’occupe de tout</b>, et votre site est en ligne en 24 à 48 heures.')
+            . $titre('Tout compris dans le prix', '#a3305f')
             . $codeH
-            . ($avecApercu ? $P('Pour vous aider à vous projeter, nous avons préparé une maquette de ce que pourrait donner le site ' . esc_html($deX) . '. Voici la vue sur ordinateur ; votre site s’adapte aussi parfaitement au téléphone. Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts (textes, photos, couleurs).', '0 0 10px') . $boutonApercu : '')
-            . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
+            . $liste(array_map('esc_html', $inclus), '#fff0f6')
+            . $titre('L’hébergement aussi, si vous voulez', '#176a4c')
+            . $P(esc_html($heb))
+            . $domH
+            . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html(rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
             . $boutons
-            . $P('Une question ? Répondez simplement à ce message : nous vous répondons.', '8px 0 6px');
+            . ($tel !== '' ? $P('Envie d’en parler de vive voix&nbsp;? Appelez-nous au <a href="tel:' . esc_attr(preg_replace('/[^0-9+]/', '', $tel)) . '" style="color:#5b3fc4;font-weight:bold;text-decoration:none;white-space:nowrap;">' . esc_html($tel) . '</a>, ou répondez simplement à ce mail&nbsp;: c’est nous qui vous lisons.', '8px 0 6px')
+                : $P('Une question&nbsp;? Répondez simplement à ce mail&nbsp;: c’est nous qui vous lisons.', '8px 0 6px'));
         $apercu = mb_substr($m['phrase'], 0, 110);
     }
     $html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>' . esc_html($sujet) . '</title></head>'
@@ -680,7 +721,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right:12px;vertical-align:middle;"><a href="' . esc_url($l['site']) . '"><img src="' . esc_url($logo) . '" width="46" height="46" alt="" style="display:block;border:0;border-radius:12px;"></a></td>'
         . '<td style="vertical-align:middle;"><span style="display:block;font-size:17px;font-weight:bold;letter-spacing:.02em;color:#2e2a47;">Les Minis Monstres</span><span style="display:block;font-size:12px;color:#5d5a78;">Des sites internet pour être visible, près de chez vous</span></td></tr></table></td></tr>'
         . '<tr><td style="padding:22px 24px 8px;">' . $corps . '</td></tr>'
-        . '<tr><td style="padding:4px 24px 20px;font-size:15px;line-height:1.5;color:#2e2a47;">Bonne journée,<br><b>La bande des Minis Monstres</b><br><a href="' . esc_url($l['site']) . '" style="color:#2e2a47;text-decoration:none;">' . esc_html($hote) . '</a></td></tr>'
+        . '<tr><td style="padding:4px 24px 20px;font-size:15px;line-height:1.5;color:#2e2a47;">' . ($relance ? 'Bonne journée,' : 'À très vite,') . '<br><b>La bande des Minis Monstres</b><br><a href="' . esc_url($l['site']) . '" style="color:#2e2a47;text-decoration:none;">' . esc_html($hote) . '</a></td></tr>'
         . '<tr><td style="padding:14px 24px 20px;font-size:11.5px;line-height:1.5;color:#7a7795;border-top:1px solid #eee9f8;">' . $pied . '</td></tr>'
         . '</table></td></tr></table></body></html>';
 
@@ -695,14 +736,19 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . "Une question ? Répondez simplement à ce message : nous vous répondons. Et si ce n’est pas le moment, aucun souci : nous ne vous écrirons plus.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     } else {
         $pt = '';
-        foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
-        $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '') . "Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt
-            . $adresseT . "\n\n" . ($etudeT !== '' ? $etudeT . "\n\n" : '')
-            . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
-            . ($domT !== '' ? $domT . "\n\n" : '') . $codeT . "\n\n"
-            . ($avecApercu ? 'Pour vous aider à vous projeter, nous avons préparé une maquette de ce que pourrait donner le site ' . $deX . '. Voici la vue sur ordinateur ; votre site s’adapte aussi parfaitement au téléphone. Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts (textes, photos, couleurs).' . "\n" . $l['apercu'] . "\n\n" : '')
-            . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n"
-            . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nUne question ? Répondez simplement à ce message : nous vous répondons.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
+        foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' : ' . rtrim($x['texte'], '.') . ".\n";
+        $tel = aled08e_px_telephone();
+        $texte = "Bonjour !\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '')
+            . ($avecApercu ? "ON A IMAGINÉ VOTRE SITE\nPour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site " . $deX . ", en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.\n" . $l['apercu'] . "\n\n" : '')
+            . "UN SITE, C’EST QUOI ?\nVotre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous" . ($dom !== '' ? ' (comme ' . $dom . ')' : '') . " à mettre sur vos cartes, votre véhicule et vos factures.\n" . $pt . "\n"
+            . "ET POUR VOUS, ÇA DEMANDE QUOI ?\nPresque rien ! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. On écrit les textes, on s’occupe de tout, et votre site est en ligne en 24 à 48 heures.\n\n"
+            . "TOUT COMPRIS DANS LE PRIX\n" . $codeT . "\n- " . implode("\n- ", aled08e_px_inclus()) . "\n\n"
+            . "L’HÉBERGEMENT AUSSI, SI VOUS VOULEZ\n" . aled08e_px_hebergement() . "\n\n"
+            . ($domT !== '' ? $domT . "\n\n" : '')
+            . 'Une petite famille, de vrais prix : ' . rtrim(aled08e_px_atouts()[0][0], '.') . ", un vrai suivi, et tout vous appartient.\n\n"
+            . 'Voir les sites déjà en ligne : ' . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
+            . ($tel !== '' ? 'Envie d’en parler de vive voix ? Appelez-nous au ' . $tel . ', ou répondez simplement à ce mail : c’est nous qui vous lisons.' : 'Une question ? Répondez simplement à ce mail : c’est nous qui vous lisons.')
+            . "\n\nÀ très vite,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     }
     return ['sujet' => $sujet, 'html' => $html, 'texte' => $texte];
 }
