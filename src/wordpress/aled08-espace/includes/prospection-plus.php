@@ -95,6 +95,21 @@ function aled08e_mq_livrees() {
         'plombier-chauffagiste' => ['nom' => 'Plombiers, chauffagistes', 'mots' => ['plomb', 'chauffag', 'sanitaire', 'chaudi', 'pompe a chaleur', 'pac '], 'fichier' => 'plombier-chauffagiste.html'],
     ];
 }
+/* Les maquettes préparées d'avance (Alex, 27 novembre 2026 : « des modèles types pour déjà les préparer ») : dossier
+ * maquettes/metiers/, un <groupe>.html et un <groupe>.json (nom, mots, photos), les photos dans maquettes/img/<groupe>-<repère>.jpg.
+ * Elles passent APRÈS celles du Facteur : un métier déjà couvert garde sa maquette. */
+function aled08e_mq_preparees() {
+    static $l = null;
+    if ($l !== null) return $l;
+    $l = [];
+    foreach ((array) glob(aled08e_mq_dossier() . 'metiers/*.json') as $f) {
+        $j = json_decode((string) @file_get_contents($f), true);
+        $g = sanitize_title((string) ($j['groupe'] ?? ''));
+        if ($g === '' || empty($j['mots']) || !is_file(aled08e_mq_dossier() . 'metiers/' . $g . '.html')) continue;
+        $l[$g] = ['nom' => (string) ($j['nom'] ?? $g), 'mots' => array_values((array) $j['mots']), 'photos' => array_keys((array) ($j['photos'] ?? []))];
+    }
+    return $l;
+}
 function aled08e_mq_dossier() { return dirname(__DIR__) . '/maquettes/'; }
 function aled08e_mq_url() { return plugins_url('maquettes/', dirname(__DIR__) . '/aled08-espace.php'); }
 function aled08e_mq_enregistrees() { $m = get_option('aled08_px_maquettes', []); return is_array($m) ? $m : []; }
@@ -102,6 +117,7 @@ function aled08e_mq_toutes() {
     $out = [];
     foreach (aled08e_mq_livrees() as $g => $m) if (is_file(aled08e_mq_dossier() . $m['fichier'])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => ''];
     foreach (aled08e_mq_enregistrees() as $g => $m) $out[$g] = ['groupe' => $g, 'nom' => (string) $m['nom'], 'mots' => (array) $m['mots'], 'livree' => false, 'le' => (string) ($m['le'] ?? '')];
+    foreach (aled08e_mq_preparees() as $g => $m) if (!isset($out[$g])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => '', 'preparee' => true];
     return $out;
 }
 function aled08e_mq_norm($t) { return ' ' . trim(preg_replace('/[^a-z0-9]+/', ' ', strtolower(remove_accents((string) $t)))) . ' '; }
@@ -118,6 +134,11 @@ function aled08e_mq_pour($metier) {
 function aled08e_mq_html_brut($g) {
     $e = aled08e_mq_enregistrees();
     if (isset($e[$g]['html'])) return (string) $e[$g]['html'];
+    $p = aled08e_mq_preparees();
+    if (isset($p[$g])) {
+        $h = (string) file_get_contents(aled08e_mq_dossier() . 'metiers/' . $g . '.html');
+        return preg_replace_callback('/\{\{PHOTO:([a-z0-9_-]+)\}\}/', function ($m) use ($g) { return esc_url(aled08e_mq_url() . 'img/' . $g . '-' . $m[1] . '.jpg'); }, $h);
+    }
     $l = aled08e_mq_livrees();
     if (isset($l[$g]) && is_file(aled08e_mq_dossier() . $l[$g]['fichier'])) {
         $h = (string) file_get_contents(aled08e_mq_dossier() . $l[$g]['fichier']);
@@ -155,7 +176,7 @@ function aled08e_mq_enregistrer($d) {
     $mots = array_values(array_filter(array_map(function ($m) { return sanitize_text_field((string) $m); }, (array) ($d['mots'] ?? []))));
     $h = (string) ($d['html'] ?? '');
     if ($g === '' || $nom === '' || !$mots) return new WP_Error('aled08_mq', 'Il faut : groupe (ex. « electricien »), nom (ex. « Électriciens »), mots (ex. ["electric"]) et html.', ['status' => 400]);
-    if (isset(aled08e_mq_livrees()[$g])) return new WP_Error('aled08_mq', 'Ce groupe a déjà sa maquette, validée par Alex.', ['status' => 409]);
+    if (isset(aled08e_mq_livrees()[$g]) || isset(aled08e_mq_preparees()[$g])) return new WP_Error('aled08_mq', 'Ce groupe a déjà sa maquette (préparée d’avance) : pas besoin d’en refaire une.', ['status' => 409]);
     if (strlen($h) < 2000 || strlen($h) > 400000) return new WP_Error('aled08_mq', 'HTML trop court ou trop long (2 à 400 Ko).', ['status' => 400]);
     foreach (['{{ENTREPRISE}}', '{{VILLE}}', 'filigrane', 'Maquette'] as $x) if (strpos($h, $x) === false) return new WP_Error('aled08_mq', 'Il manque « ' . $x . ' » : la maquette suit le modèle du plombier (nom et ville remplis, filigrane, bandeau « Maquette pour vous projeter »).', ['status' => 400]);
     // les photos : seulement Pexels, gardées ici (rien n'est chargé ailleurs au moment de l'ouverture)
