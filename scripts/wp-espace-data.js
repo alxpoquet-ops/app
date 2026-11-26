@@ -84,8 +84,8 @@ process.stdout.write(
     // 80 ou plus. Pour changer : config.prospection.
     // apercuNote 101 : l'aperçu personnalisé du site est éteint (Alex, 25 novembre 2026 : il ne donne pas envie ; le mail se
     // concentre sur trois arguments : moins cher, un suivi, tout vous appartient). 80 le rallumerait pour les meilleurs prospects.
-    // telephone : le numéro d'Alex, pour « Envie d'en parler de vive voix ? » dans le mail (vide : la phrase dit de répondre au mail).
-    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 101, telephone: '',
+    // telephone : le numéro d'Alex (donné le 26 novembre 2026), pour « Appelez-nous ou laissez-nous un SMS au … » dans le mail de prospection.
+    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 101, telephone: '06 02 46 12 58',
       // l'étude citée dans le mail, chiffres recopiés du rapport officiel (vérifiés le 25 novembre 2026, pages 25 et 26).
       // À mettre à jour à chaque nouveau baromètre (chaque automne), jamais un chiffre arrondi ou « amélioré ».
       etude: {
