@@ -652,12 +652,12 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $codeT = '-' . $r . ' % : ' . $code . "\nValable " . ($relance ? '' : $jours . ' jours, ') . 'jusqu’au ' . $date . ', sur la création de votre site : ' . aled08e_euro_txt($prix['reduit']) . ' avec ce code. À taper dans la case « Code promo » au moment de commander.';
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde. Alex, 26 novembre 2026 : on ne dit plus le prix d'après, et on
-        // donne le paiement en 4 fois sans frais. Jamais « réduction » ni « au lieu de » : aucun prix plus haut n'a été pratiqué.
-        $quart = aled08e_euro_txt(round((float) $prix['prix'] / 4, 2));
+        // dit qu'on peut payer en 4 fois (« Possibilité de fractionner en 4 fois », sans parler de frais). Jamais « réduction » ni
+        // « au lieu de » : aucun prix plus haut n'a été pratiqué.
         $codeH = $cadre . ($relance ? 'L’offre de lancement est toujours là :' : '<b>Offre de lancement</b>') . '<br>' . $gros(aled08e_euro($prix['prix']) . ' la création de votre site')
-            . '<br><span style="font-size:14px;color:#2e2a47;">ou <b>4 × ' . esc_html($quart) . ' sans frais</b></span>'
+            . '<br><span style="font-size:14px;color:#2e2a47;">Possibilité de fractionner en <b>4 fois</b></span>'
             . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '.</span></td></tr></table>';
-        $codeT = ($relance ? 'L’offre de lancement est toujours là : ' : 'Offre de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, ou 4 × ' . $quart . ' sans frais, pour toute commande jusqu’au ' . $lanc['jusquau'] . '.';
+        $codeT = ($relance ? 'L’offre de lancement est toujours là : ' : 'Offre de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site (possibilité de fractionner en 4 fois), pour toute commande jusqu’au ' . $lanc['jusquau'] . '.';
     } else {
         $codeH = $cadre . 'La création de votre site :<br>' . $gros(aled08e_euro($prix['prix'])) . '</td></tr></table>';
         $codeT = 'La création de votre site : ' . aled08e_euro_txt($prix['prix']) . '.';
