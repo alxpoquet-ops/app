@@ -17,7 +17,7 @@ Chaque nouveau site atteint au moins ce niveau, avec son propre style et uniquem
 
 Même le Site Essentiel est une page longue, découpée en parties qu'on fait défiler. Voici notre base. L'ordre des parties 3 à 10 et la façon de montrer les produits suivent l'exemple de la référence du métier (par exemple les produits avant les points forts, si c'est ce que fait la marque connue) :
 
-1. **L'en-tête, collé en haut** : le nom, les liens vers chaque partie (celle qu'on lit s'allume), un bouton « Contact » toujours visible, le bouton soleil / lune.
+1. **L'en-tête, collé en haut et toujours affiché** (Alex, 26 novembre 2026) : le nom, les liens vers chaque partie (celle qu'on lit s'allume), un bouton « Contact » toujours visible, le bouton soleil / lune. Il ne disparaît jamais en descendant. Dans un thème à blocs, WordPress enveloppe l'en-tête dans `<header class="wp-block-template-part">` : un `position:sticky` posé à l'intérieur s'arrête au bas de cette enveloppe et l'en-tête s'en va. Mettre `header.wp-block-template-part{display:contents}` (ou le `sticky` sur l'enveloppe elle-même). Le `scroll-padding-top` vaut la hauteur réelle de l'en-tête plus 6 à 10 px, sur ordinateur et sur téléphone : un lien du menu amène le titre de la partie juste sous l'en-tête, sans grand vide au-dessus.
 2. **L'ouverture** : un titre fort, une phrase, deux boutons d'action (voir `conversion.md` pour le titre et les boutons).
 3. **Les points forts** dans un cadre fixe aux couleurs du site, avec des icônes. Pas de bandeau qui défile en boucle.
 4. **« Pourquoi choisir … »** : 3 ou 4 raisons avec icônes, tirées de la réponse du client.

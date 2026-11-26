@@ -18,6 +18,7 @@
 
 - [ ] Chaque page à 320, 360, 390 et 430 px : rien ne dépasse, aucun défilement de côté.
 - [ ] L'en-tête tient sur une ligne.
+- [ ] À 390 px, après avoir descendu la page, l'en-tête est toujours affiché ; un clic sur chaque lien du menu (et sur « Contact ») amène le titre de la partie juste sous l'en-tête, sans vide au-dessus.
 - [ ] Le menu s'ouvre, se ferme, et chaque lien mène au bon endroit.
 - [ ] Les boutons importants se touchent facilement.
 
