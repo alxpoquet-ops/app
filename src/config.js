@@ -34,16 +34,17 @@ const site = {
   },
   geo: { lat: 49.6996, lng: 4.4183 },
 
-  // Informations légales : ⚠️ À REMPLACER
+  // Informations légales (complètes depuis le 26 novembre 2026 : SIRET avec l'activité, médiateur CM2C)
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
     siren: '948 617 782',
     siret: '948 617 782 00024', // le siège (registre officiel, vérifié le 26 novembre 2026)
     adresse: '31 rue du Bonhery', // l'adresse du siège : seulement sur les pages légales, les factures et les mails (pas dans les données pour Google)
-    activite: 'l’activité de création de sites internet est en cours d’ajout au Registre national des entreprises', // Alex, 26 novembre 2026 : à retirer quand c'est fait
+    activite: '', // Alex, 26 novembre 2026 : l'activité de création de sites internet est inscrite au SIRET (plus de mention « en cours »)
     tva: '', // vide : « non applicable, art. 293 B du CGI » (franchise de TVA)
-    mediator: 'en cours de désignation, ses coordonnées seront indiquées ici', // ⚠️ À REMPLACER
-    mediatorUrl: '',
+    // le médiateur de la consommation : CM2C (adhésion d'Alex, valable jusqu'au 26 novembre 2029)
+    mediator: 'CM2C, 49 rue de Ponthieu, 75008 Paris, téléphone 01 89 47 00 14, e-mail litiges@cm2c.net, en ligne sur https://www.cm2c.net/declarer-un-litige.php',
+    mediatorUrl: 'https://www.cm2c.net/declarer-un-litige.php',
     host: 'o2switch, 222-224 boulevard Gustave Flaubert, 63000 Clermont-Ferrand, 04 44 44 60 40, www.o2switch.fr',
     publicationDirector: 'Alexandre Poquet',
   },
