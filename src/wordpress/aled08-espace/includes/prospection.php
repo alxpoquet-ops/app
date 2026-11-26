@@ -779,6 +779,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
             $code = 'MAIL' . aled08e_px_remise() . '-7KQ2';
             $fin = time() + aled08e_px_offre()['jours'] * DAY_IN_SECONDS;
         }
+        // une maquette par métier (dossier maquettes/), montrée dans l'essai : seulement une image de ce site
+        $mq = esc_url_raw((string) ($d['maquette'] ?? ''));
+        if ($mq !== '' && wp_parse_url($mq, PHP_URL_HOST) === wp_parse_url(home_url(), PHP_URL_HOST)) $p['apercu_lien'] = $mq;
         $mail = aled08e_px_mail($p, $m, $pour, $code, $fin);
         if ($faire === 'apercu') return new WP_REST_Response(['ok' => true, 'sujet' => $mail['sujet'], 'html' => $mail['html'], 'texte' => $mail['texte']], 200);
         // l'essai part chez Alex seulement, sans liens suivis ni compteur
