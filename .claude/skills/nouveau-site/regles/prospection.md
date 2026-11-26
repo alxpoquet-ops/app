@@ -32,9 +32,9 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 2. « On a imaginé votre site » : la maquette (quand elle sera branchée) ;
 3. « Un site, c'est quoi ? » : une vitrine ouverte jour et nuit, et une adresse à soi ; puis les trois points du métier ;
 4. « Et pour vous, ça demande quoi ? » : un questionnaire d'une dizaine de minutes ; on écrit les textes, on s'occupe de tout ; en ligne en 24 à 48 heures ;
-5. « Tout compris dans le prix » : le prix de lancement et ce qui est compris (`aled08e_px_inclus()`) ;
-6. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ;
-7. une ligne pour les trois arguments (moins cher qu'une agence, un vrai suivi, tout vous appartient), les deux boutons, puis **le téléphone d'Alex** pour en parler (`prospection.telephone` dans la configuration ; tant qu'il est vide, « répondez simplement à ce mail ») ;
+5. « Tout compris dans le prix » : « Offre de lancement », le prix et « ou 4 × … sans frais », la date de fin, **sans le prix d'après** (Alex, 26 novembre 2026), puis ce qui est compris (`aled08e_px_inclus()`). Jamais « réduction », « remise » ni « au lieu de » : aucun prix plus haut n'a été pratiqué (le site a été vendu 399 € et 400 € avant), une réduction annoncée serait trompeuse (prix de référence : le plus bas des 30 derniers jours) ;
+6. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ; la capture de l'espace client (`assets/img/mail/espace-client.jpg`) et le lien « Essayer l'espace client de démo » ;
+7. une ligne pour les trois arguments (moins cher qu'une agence, un vrai suivi, tout vous appartient), les deux boutons, puis **le téléphone d'Alex**, pour appeler ou laisser un SMS, (`prospection.telephone` dans la configuration ; tant qu'il est vide, « répondez simplement à ce mail ») ;
 8. « À très vite, la bande des Minis Monstres ».
 
 L'étude France Num reste dans la configuration mais ne figure plus dans le premier mail. Ce qui suit décrit le fond de ces parties.
