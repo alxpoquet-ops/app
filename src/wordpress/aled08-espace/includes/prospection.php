@@ -175,18 +175,23 @@ function aled08e_px_envois_recents() {
     $l = is_array($l) ? array_map('intval', $l) : [];
     return array_values(array_filter($l, function ($t) { return $t > time() - DAY_IN_SECONDS; }));
 }
+/* Le plafond d'envois par heure (30 ; relevé quand les deux envois du jour ont leurs propres plafonds : prospection-plus.php) */
+function aled08e_px_heure_max() { return max(1, (int) apply_filters('aled08e_px_heure_max', ALED08E_PX_HEURE_MAX)); }
 function aled08e_px_envois_heure() { return count(array_filter(aled08e_px_envois_recents(), function ($t) { return $t > time() - HOUR_IN_SECONDS; })); }
 /* Minutes à attendre avant le prochain envoi possible dans l'heure (0 : tout de suite) */
 function aled08e_px_attente_minutes() {
     $h = array_values(array_filter(aled08e_px_envois_recents(), function ($t) { return $t > time() - HOUR_IN_SECONDS; }));
-    if (count($h) < ALED08E_PX_HEURE_MAX) return 0;
+    $max = aled08e_px_heure_max();
+    if (count($h) < $max) return 0;
     sort($h);
-    return max(1, (int) ceil(($h[count($h) - ALED08E_PX_HEURE_MAX] + HOUR_IN_SECONDS - time()) / 60));
+    return max(1, (int) ceil(($h[count($h) - $max] + HOUR_IN_SECONDS - time()) / 60));
 }
-function aled08e_px_noter_envoi() {
+function aled08e_px_noter_envoi($premier = true) {
     $l = aled08e_px_envois_recents();
     $l[] = time();
     update_option('aled08_prospection_envois', array_slice($l, -400), false);
+    // les premiers mails à part : ce sont eux que comptent les plafonds des deux envois du jour (les relances passent en plus)
+    if ($premier) { $q = array_values(array_filter(array_map('intval', (array) get_option('aled08_prospection_premiers', [])), function ($t) { return $t > time() - 2 * DAY_IN_SECONDS; })); $q[] = time(); update_option('aled08_prospection_premiers', array_slice($q, -800), false); }
     if (!get_option('aled08_prospection_premier_envoi')) update_option('aled08_prospection_premier_envoi', time(), false);
 }
 function aled08e_px_quota_restant() { return (int) apply_filters('aled08e_px_quota_restant', max(0, aled08e_px_quota_jour() - aled08e_px_envoyes_aujourdhui())); }
@@ -938,8 +943,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
         if (time() < $quand) return $err('Trop tôt : la relance est possible à partir du ' . wp_date('j F Y à H:i', $quand) . '.');
         if (time() > aled08e_px_code_fin($id)) return $err('Plus de ' . aled08e_px_offre()['jours'] . ' jours depuis le premier mail : pas de relance.');
     }
-    if (aled08e_px_quota_restant() <= 0) return $err('Le quota du jour est atteint (' . aled08e_px_quota_jour() . ' envois). La suite demain.', 429);
-    if (($att = aled08e_px_attente_minutes()) > 0) return $err('Déjà ' . ALED08E_PX_HEURE_MAX . ' envois dans l’heure : réessayez dans ' . $att . ' minutes.', 429, ['reessayer_dans_minutes' => $att]);
+    // le plafond ne compte que les premiers mails (Alex, 26 novembre 2026 : « 20 clients différents le matin et 20 autres à midi », les relances en plus)
+    if ($faire === 'envoyer' && aled08e_px_quota_restant() <= 0) return $err('Le plafond de cet envoi est atteint (nouvelles entreprises). La suite au prochain envoi.', 429);
+    if (($att = aled08e_px_attente_minutes()) > 0) return $err('Déjà ' . aled08e_px_heure_max() . ' envois dans l’heure : réessayez dans ' . $att . ' minutes.', 429, ['reessayer_dans_minutes' => $att]);
     $m = aled08e_px_morceaux($d, $faire);
     if (is_wp_error($m)) return $m;
 
@@ -959,7 +965,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
         aled08e_px_journal($id, 'Envoi impossible (wp_mail).');
         return $err('L’e-mail n’est pas parti (wp_mail a échoué). Rien n’a changé ; réessayez au prochain passage.', 502);
     }
-    aled08e_px_noter_envoi();
+    aled08e_px_noter_envoi($premier);
     if ($premier) {
         if (is_string($ok)) aled08e_px_set($id, 'msgid', $ok);
         aled08e_px_set($id, 'sujet', $mail['sujet']);
@@ -1012,7 +1018,7 @@ function aled08e_px_resume() {
     return [
         'active' => aled08e_px_active(), 'site_et_ventes_ouverts' => aled08e_px_site_pret(), 'heure_d_envoi' => aled08e_px_heure_ok(),
         'quota_jour' => aled08e_px_quota_jour(), 'envoyes_aujourdhui' => aled08e_px_envoyes_aujourdhui(), 'quota_restant' => aled08e_px_quota_restant(),
-        'envois_cette_heure' => aled08e_px_envois_heure(), 'max_par_heure' => ALED08E_PX_HEURE_MAX,
+        'envois_cette_heure' => aled08e_px_envois_heure(), 'max_par_heure' => aled08e_px_heure_max(),
         'quota_depart' => (int) get_option('aled08_prospection_quota_depart', 20), 'quota_max' => (int) get_option('aled08_prospection_quota_max', 150),
         'premier_envoi' => $premier ? wp_date('Y-m-d', $premier) : '',
         'semaine' => aled08e_px_stats_sur(7), 'total' => $c['par_etat'], 'clics_total' => $c['clics'], 'liste_opposition' => $c['oppositions'],
@@ -1094,14 +1100,14 @@ function aled08e_px_poste($agent) {
         }
         // ceux qui ont cliqué d'abord : ils ont montré de l'intérêt
         usort($relancer, function ($a, $b) { return (int) $b['a_clique'] <=> (int) $a['a_clique']; });
-        $relancer = array_slice($relancer, 0, max(0, $restant));
+        $relancer = array_slice($relancer, 0, 100); // les relances passent en plus du plafond des nouvelles entreprises
         $out['travail'] = [
             'a_verifier' => $r['active'] ? aled08e_px_liste(['etat' => ['nouveau'], 'limite' => 30, 'orderby' => 'date', 'order' => 'ASC']) : [],
             'a_ecrire' => $r['active'] ? aled08e_px_liste(['etat' => ['a_ecrire'], 'limite' => max(1, min(50, $restant)), 'meta_key' => '_aled08_px_note', 'order' => 'DESC']) : [],
             'a_relancer' => $relancer,
-            'quota' => ['jour' => $r['quota_jour'], 'restant' => $restant, 'cette_heure' => $r['envois_cette_heure'], 'max_par_heure' => ALED08E_PX_HEURE_MAX, 'attendre_minutes' => aled08e_px_attente_minutes()],
+            'quota' => ['jour' => $r['quota_jour'], 'restant' => $restant, 'cette_heure' => $r['envois_cette_heure'], 'max_par_heure' => aled08e_px_heure_max(), 'attendre_minutes' => aled08e_px_attente_minutes()],
         ];
-        $peutEnvoyer = $r['site_et_ventes_ouverts'] && $r['heure_d_envoi'] && $restant > 0;
+        $peutEnvoyer = $r['site_et_ventes_ouverts'] && $r['heure_d_envoi'] && ($restant > 0 || $relancer);
         $w = $out['travail'];
         if ($pourquoi === '' && !$w['a_verifier'] && (!$peutEnvoyer || (!$w['a_ecrire'] && !$w['a_relancer']))) {
             $pourquoi = !$r['site_et_ventes_ouverts'] ? 'Le site ou les ventes ne sont pas ouverts : aucun envoi.' : (!$r['heure_d_envoi'] ? 'Hors des deux envois du jour (en semaine, 8 h à 10 h et 12 h à 14 h) : vérifie seulement les nouveaux prospects et prépare les maquettes.' : ($restant <= 0 ? 'Quota du jour atteint.' : 'Personne à vérifier, à écrire ni à relancer.'));

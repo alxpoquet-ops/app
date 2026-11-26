@@ -84,4 +84,4 @@ Les prospects répondent dans la boîte d'Alex : tu ne les vois pas, et **tu ne 
 
 ## Les deux envois du jour
 
-Les premiers mails et les relances partent en deux fois, en semaine : le matin (8 h à 10 h, 20 au plus) et à midi (12 h à 14 h, 20 au plus). Hors de ces créneaux, `peut_envoyer` est faux : profites-en pour vérifier les nouveaux prospects et faire les maquettes des nouveaux métiers, pour que l'envoi suivant parte d'un coup.
+Les mails partent en deux fois, en semaine : le matin (8 h à 10 h) et à midi (12 h à 14 h). À chaque envoi, **20 nouvelles entreprises différentes au plus le premier jour, puis 5 de plus chaque jour d'envoi** (`quota.restant` te dit combien). **Les relances passent en plus** : elles ne comptent pas dans ce plafond. Quand la route répond que le plafond est atteint pour les nouvelles entreprises, continue les relances prévues (`a_relancer`). Hors de ces créneaux, `peut_envoyer` est faux : profites-en pour vérifier les nouveaux prospects et faire les maquettes des nouveaux métiers, pour que l'envoi suivant parte d'un coup.

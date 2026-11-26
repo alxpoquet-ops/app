@@ -403,7 +403,8 @@ add_filter('aled08e_px_heure_ok', function ($ok, $t) {
 }, 10, 2);
 
 /* ====================================================================== 7. deux envois par jour (Alex, 26 novembre 2026) */
-/* « 20 le matin, 20 à 12 h 30 » : les premiers mails partent dans deux créneaux seulement, chacun avec son plafond. Le Facteur
+/* « 20 le matin, 20 à 12 h 30 » : les premiers mails partent dans deux créneaux seulement, chacun avec son plafond (20 nouvelles
+ * entreprises différentes, + 5 par jour d'envoi ; les relances passent en plus). Le Facteur
  * passe à 8 h 28 et à 12 h 28 pour envoyer ; ses autres passages vérifient les nouvelles entreprises et préparent les maquettes.
  * Réglage : option aled08_px_creneaux, [[heure de début, heure de fin, plafond], …] (heure de Paris). */
 function aled08e_px_creneaux() {
@@ -424,14 +425,42 @@ function aled08e_px_creneau($t = null) {
     }
     return null;
 }
-add_filter('aled08e_px_quota_jour', function ($q) {
+/* Le plafond d'un envoi aujourd'hui : 20 le premier jour, puis 5 de plus par jour d'envoi (Alex, 26 novembre 2026 : « on
+ * augmente de 5 tous les jours »), jusqu'à la moitié du plafond du jour (aled08_prospection_quota_max, 150 : 75 par envoi). */
+function aled08e_px_jours_envoi($now = null) {
+    $premier = (int) get_option('aled08_prospection_premier_envoi', 0);
+    if (!$premier) return 0;
+    // la montée part du premier jour des deux envois (vendredi 27 novembre 2026 : 20 + 20), pas de la fournée d'essai de la veille
+    $premier = max($premier, (int) get_option('aled08_px_rampe_debut', 1795734000));
+    $d = new DateTime('@' . $premier); $d->setTimezone(wp_timezone()); $d->setTime(0, 0, 0);
+    $fin = new DateTime('@' . (int) ($now ?? time())); $fin->setTimezone(wp_timezone()); $fin->setTime(0, 0, 0);
+    $n = 0;
+    while ($d < $fin) { $d->modify('+1 day'); if ((int) $d->format('N') <= 5) $n++; }
+    return $n;
+}
+function aled08e_px_plafond_creneau($base, $now = null) {
+    $nb = max(1, count(aled08e_px_creneaux()));
+    $max = (int) floor(max($base, (int) get_option('aled08_prospection_quota_max', 150)) / $nb);
+    return (int) min($max, $base + (int) get_option('aled08_px_hausse_jour', 5) * aled08e_px_jours_envoi($now));
+}
+/* Les premiers mails envoyés entre deux instants (les relances ne comptent pas) */
+function aled08e_px_premiers_entre($de, $a) {
+    return count(array_filter(array_map('intval', (array) get_option('aled08_prospection_premiers', [])), function ($t) use ($de, $a) { return $t >= $de && $t < $a; }));
+}
+add_filter('aled08e_px_quota_jour', function ($q, $now = null) {
     $c = aled08e_px_creneaux();
-    return $c ? array_sum(array_column($c, 2)) : $q;
-});
+    if (!$c) return $q;
+    $t = 0; foreach ($c as $x) $t += aled08e_px_plafond_creneau($x[2], $now);
+    return $t;
+}, 10, 2);
 add_filter('aled08e_px_quota_restant', function ($r) {
-    if ((int) get_option('aled08_px_envoi_force_jusqua', 0) > time()) return $r;
+    if (!aled08e_px_creneaux()) return $r;
+    $minuit = (new DateTime('today', wp_timezone()))->getTimestamp();
+    $jour = max(0, aled08e_px_quota_jour() - aled08e_px_premiers_entre($minuit, $minuit + DAY_IN_SECONDS));
+    if ((int) get_option('aled08_px_envoi_force_jusqua', 0) > time()) return $jour;
     $c = aled08e_px_creneau();
-    if (!$c) return $r;
-    $deja = count(array_filter(aled08e_px_envois_recents(), function ($t) use ($c) { return $t >= $c['de'] && $t < $c['a']; }));
-    return max(0, min($r, $c['max'] - $deja));
+    if (!$c) return $jour;
+    return max(0, min($jour, aled08e_px_plafond_creneau($c['max']) - aled08e_px_premiers_entre($c['de'], $c['a'])));
 });
+/* Avec deux envois et leurs plafonds, la limite de 30 par heure ne sert plus (elle bloquerait les relances) : 200 par heure au plus */
+add_filter('aled08e_px_heure_max', function ($m) { return aled08e_px_creneaux() ? 200 : $m; });
