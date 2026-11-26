@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.16.1
+ * Version: 2.16.2
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.16.1');
+define('ALEXLIA_CONN_VERSION', '2.16.2');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 require_once __DIR__ . '/copie.php'; // la copie du site (zip HTML et CSS, ou WordPress complet), à la demande de son propriétaire
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
@@ -1074,11 +1074,19 @@ function alexlia_conn_surligner($ancien, $nouveau) {
  *  et le sel change chaque jour. Aucune donnée personnelle n'est gardée.
  * ========================================================================= */
 function alexlia_stats_get() { $s = get_option('alexlia_stats'); return is_array($s) ? $s : ['jours' => [], 'srv' => []]; }
+/* Un fichier technique, pas une page (robots.txt, favicon.ico, plans du site, fichiers .xml, .php, images…) : jamais compté comme une page vue */
+function alexlia_stats_technique($chemin) {
+    $c = strtolower((string) $chemin);
+    return (bool) preg_match('#(^|/)(robots\.txt|favicon\.ico|ads\.txt|sitemap[^/]*|wp-sitemap[^/]*|apple-touch-icon[^/]*|site\.webmanifest|manifest\.json|browserconfig\.xml)$#', $c)
+        || (bool) preg_match('#\.(txt|ico|xml|php|png|jpe?g|gif|webp|svg|css|js|json|map|woff2?|ttf)$#', $c)
+        || strpos($c, '/wp-') === 0 || strpos($c, '/.well-known/') === 0;
+}
 function alexlia_stats_robot($ua) { return $ua === '' || (bool) preg_match('/bot|crawl|spider|slurp|facebookexternalhit|preview|monitor|curl|wget|python|headless|lighthouse|pingdom|uptime/i', $ua); }
 
 add_action('template_redirect', function () {
-    if (is_admin() || wp_doing_ajax() || is_feed() || is_preview() || is_404() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+    if (is_admin() || wp_doing_ajax() || is_feed() || is_preview() || is_404() || is_robots() || (function_exists('is_favicon') && is_favicon()) || (defined('REST_REQUEST') && REST_REQUEST)) return;
     if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET' || isset($_GET['alexlia_apercu']) || is_user_logged_in()) return;
+    if (alexlia_stats_technique((string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH))) return;
     $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
     if (alexlia_stats_robot($ua)) return;
     $GLOBALS['alexlia_stats_hit'] = ['ua' => $ua, 'url' => (string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH), 'ref' => (string) ($_SERVER['HTTP_REFERER'] ?? '')];
@@ -1163,7 +1171,7 @@ function alexlia_conn_stats() {
         'le' => time(),
         'aujourdhui' => ['vues' => (int) ($auj['vues'] ?? 0), 'visiteurs' => (int) ($auj['visiteurs'] ?? 0), 'actifs' => $actifs, 'heures' => array_values(array_map('intval', (array) ($auj['heures'] ?? array_fill(0, 24, 0))))],
         'jours' => $jours,
-        'pages' => array_slice($somme('pages'), 0, 8, true),
+        'pages' => array_slice(array_filter($somme('pages'), function ($k) { return !alexlia_stats_technique((string) $k); }, ARRAY_FILTER_USE_KEY), 0, 8, true),
         'sources' => $somme('sources'),
         'appareils' => $somme('appareils'),
         'serveur' => [

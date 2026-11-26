@@ -31,6 +31,11 @@ add_action('wp_ajax_aled08e_stats2', function () {
     if (($d['etat'] ?? '') === 'ok') {
         $titres = aled08e_stats2_titres($uid);
         $infos = [];
+        // les fichiers techniques (robots.txt, favicon.ico…) ne sont pas des pages : retirés, même d'un site au connecteur pas encore à jour
+        $d['pages'] = array_filter((array) ($d['pages'] ?? []), function ($k) {
+            $c = strtolower((string) $k);
+            return !preg_match('#\.(txt|ico|xml|php|png|jpe?g|gif|webp|svg|css|js|json|map|woff2?|ttf)$#', $c) && strpos($c, '/wp-') !== 0 && strpos($c, '/.well-known/') !== 0;
+        }, ARRAY_FILTER_USE_KEY);
         foreach ((array) ($d['pages'] ?? []) as $chemin => $vues) {
             $k = aled08e_mp_cle((string) $chemin);
             if (isset($titres[$k])) $infos[(string) $chemin] = $titres[$k];
