@@ -1,0 +1,10 @@
+{
+  "groupe": "immobilier",
+  "nom": "Agences immobilières indépendantes",
+  "mots": ["immobil", "agence immo", "gestion locative"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/34681428/pexels-photo-34681428.jpeg",
+    "interieur": "https://images.pexels.com/photos/8146158/pexels-photo-8146158.jpeg",
+    "cle": "https://images.pexels.com/photos/101808/pexels-photo-101808.jpeg"
+  }
+}

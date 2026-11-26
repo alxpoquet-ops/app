@@ -1,0 +1,10 @@
+{
+  "groupe": "cours-loisirs",
+  "nom": "Cours et loisirs : musique, danse, soutien scolaire",
+  "mots": ["cours", "musique", "danse", "soutien scolaire", "professeur", "ecole de"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/8520479/pexels-photo-8520479.jpeg",
+    "atelier": "https://images.pexels.com/photos/3901639/pexels-photo-3901639.jpeg",
+    "detail": "https://images.pexels.com/photos/5905851/pexels-photo-5905851.jpeg"
+  }
+}
