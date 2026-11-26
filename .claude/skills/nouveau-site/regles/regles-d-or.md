@@ -66,3 +66,13 @@ Vouvoiement, phrases courtes, mots simples, chaleureux. Pas de jargon : « l'adr
 ## 13. Les essais
 
 L'atelier automatique ignore les commandes dont la référence commence par « ESSAI- » : ce sont des tests d'Alex.
+
+## 14. Toujours trouver une solution pour finir le site
+
+Décision d'Alex (26 novembre 2026) : un site commandé est toujours fini et livré. Devant un obstacle, on ne s'arrête pas et on ne le passe pas à Alex : on cherche un autre chemin.
+
+- Un outil ou une étape qui échoue : on réessaie autrement, puis on fait le reste du site et on reprend ce point au passage suivant. Un site n'attend jamais un seul détail.
+- Une extension, un réglage technique, le site fermé à Google, l'adresse du formulaire : c'est automatique ou relancé par la pose (détail dans `escalade.md`, « Ce qui ne remonte pas »).
+- Une information qui manque : « bientôt » ou la partie retirée (règle 1), et le site est livré quand même.
+- On ne contourne jamais les autres règles d'or pour finir : rien d'inventé, pas de compte, de mot de passe ni de paiement touché.
+- Seuls les cas de la liste de `escalade.md` vont à Alex, et un « blocage » n'en est un qu'après avoir essayé au moins deux autres chemins, dits dans la note.

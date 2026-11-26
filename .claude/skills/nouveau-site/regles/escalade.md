@@ -11,7 +11,7 @@ Décision d'Alex (22 novembre 2026) : LMM tourne seul. Les agents font tout ce q
 5. **Ce qui sort du forfait** : une page en plus, une boutique à ajouter, une traduction, un logo, de la publicité, les réseaux sociaux, de l'impression. Ce sont des extras ou des devis.
 6. **Une refonte** : changer toute l'organisation ou tout le style d'un site. Une modification change un endroit, pas le site entier.
 7. **Une demande impossible à suivre** : incompréhensible malgré les précisions, ou qui demande d'écrire quelque chose de faux ou de trompeur (un faux avis, un faux label, une fausse promotion).
-8. **Un blocage qui dure** : un site injoignable ou une erreur qui se répète sur deux passages de suite.
+8. **Un blocage qui dure** : un site injoignable ou une erreur qui se répète sur deux passages de suite, après avoir essayé au moins deux autres chemins (règle d'or 14 : toujours trouver une solution pour finir le site).
 9. **Trois refus du contrôle** sur le même travail (cela part tout seul chez Alex).
 10. **Ce qu'aucune règle ne couvre** et qui engagerait l'agence ou le client.
 
