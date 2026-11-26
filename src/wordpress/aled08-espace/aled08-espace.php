@@ -226,7 +226,8 @@ require_once __DIR__ . '/includes/edition.php';
 // Outils mis de côté (outilsOffre.actif faux, 24 novembre 2026) : ni l'écran des outils ni le kit de publication ne sont
 // chargés (aucune route, aucune tâche). Les fichiers restent pour plus tard.
 require_once __DIR__ . '/includes/abonnements-outils.php';
-if (aled08e_outils_offre() && file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
+require_once __DIR__ . '/includes/appli.php'; // l'application (/appli/) : Publier partout, compris dans le forfait Mini
+if ((aled08e_outils_offre() || aled08e_appli_on()) && file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
 // la tâche de ménage du kit, si elle avait été planifiée pendant un essai : retirée (sans le kit, elle ne ferait rien)
 if (!aled08e_outils_offre()) add_action('init', function () { if (wp_next_scheduled('aled08_kits_menage')) wp_clear_scheduled_hook('aled08_kits_menage'); }, 30);
 // l'aide en lien avec Mes Tutos (les petits tutos gratuits) : les liens « ? » à côté des endroits clés

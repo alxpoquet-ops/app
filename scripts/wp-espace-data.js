@@ -52,6 +52,7 @@ process.stdout.write(
     // la maison et ses ateliers (24 novembre 2026) : les cartes de l'accueil de l'espace client, et les outils vendus par abonnement
     // (outil par outil ou « toute la bande », essai gratuit, usage compris avec une limite par mois). Lus par includes/abonnements-outils.php.
     ateliers: (cfg.ateliers || []).map((a) => ({ id: a.id, label: a.label, path: a.path, monstre: a.monstre, color: a.color, chef: a.chef || '', court: a.court || '', cache: !!a.cache })),
+    appli: cfg.appli || { actif: false },
     outilsOffre: cfg.outilsOffre ? {
       actif: cfg.outilsOffre.actif !== false,
       essaiJours: cfg.outilsOffre.essaiJours || 14,

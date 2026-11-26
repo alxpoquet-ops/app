@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Les Minis Monstres</string>
+    <string name="title_activity_main">Les Minis Monstres</string>
+    <string name="package_name">fr.lesminismonstres.appli</string>
+    <string name="custom_url_scheme">fr.lesminismonstres.appli</string>
+</resources>

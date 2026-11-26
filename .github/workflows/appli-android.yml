@@ -1,0 +1,65 @@
+# Fabrique l'application Android des Minis Monstres (dossier appli/).
+# - À chaque changement du dossier appli/ (ou à la main, onglet Actions › « Application Android » › Run workflow) :
+#   un fichier .apk d'essai, à installer directement sur un téléphone Android (Artifacts › appli-essai).
+# - Quand les quatre secrets de signature existent (Settings › Secrets and variables › Actions) : aussi le fichier .aab
+#   signé pour Google Play (Artifacts › appli-google-play).
+#   LMM_KEYSTORE_B64 (la clé, en base64), LMM_KEYSTORE_PASSWORD, LMM_KEY_ALIAS, LMM_KEY_PASSWORD. Voir appli/LISEZ-MOI.md.
+name: Application Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'appli/**'
+      - '.github/workflows/appli-android.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fabriquer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: appli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: appli/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci --no-fund --no-audit
+      - run: npx cap sync android
+      - name: L'application d'essai (.apk)
+        working-directory: appli/android
+        run: ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: appli-essai
+          path: appli/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: La version Google Play (.aab), si la clé de signature est là
+        env:
+          LMM_KEYSTORE_B64: ${{ secrets.LMM_KEYSTORE_B64 }}
+          LMM_KEYSTORE_PASSWORD: ${{ secrets.LMM_KEYSTORE_PASSWORD }}
+          LMM_KEY_ALIAS: ${{ secrets.LMM_KEY_ALIAS }}
+          LMM_KEY_PASSWORD: ${{ secrets.LMM_KEY_PASSWORD }}
+          LMM_VERSION_CODE: ${{ github.run_number }}
+        working-directory: appli/android
+        run: |
+          if [ -z "$LMM_KEYSTORE_B64" ]; then echo "Pas de clé de signature : seule l'application d'essai est fabriquée."; exit 0; fi
+          echo "$LMM_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/lmm.jks"
+          LMM_KEYSTORE="$RUNNER_TEMP/lmm.jks" ./gradlew bundleRelease --no-daemon
+          rm -f "$RUNNER_TEMP/lmm.jks"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: appli-google-play
+          path: appli/android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: ignore

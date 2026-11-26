@@ -559,3 +559,15 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 - « Adresse des réponses » : vide, les réponses arrivent à l'adresse de réception du site. Le Répondeur lit Gmail : cette adresse doit donc arriver dans le Gmail d'Alex, directement ou par un transfert automatique.
 
 **On ne dit pas que c'est automatique** dans les mails (Alex, 25 novembre 2026). La politique de confidentialité (point « Si je vous ai écrit pour vous proposer un site ») dit que des outils automatiques aident à repérer les entreprises, à préparer les messages et à trier les réponses. Les réponses aux prospects sont toujours envoyées par Alex lui-même.
+
+## L'application Les Minis Monstres (26 novembre 2026)
+
+- **Où elle est** : `https://www.les-minis-monstres.fr/appli/`. Elle s'installe depuis Chrome (« Ajouter à l'écran d'accueil ») ; l'application Android (dossier `appli/`, mode d'emploi `appli/LISEZ-MOI.md`) ouvre la même adresse. Pour changer un écran, on change le site (`src/wordpress/aled08-espace/includes/appli.php`, `appli.js`), pas l'application.
+- **Ce qu'elle contient** : l'accueil (le point du jour : visiteurs, dernière publication, un conseil d'un petit monstre), « Mon site » (voir mon site, demander une modification, écrire à Cerise : c'est l'espace client), « Mes outils » avec un seul outil, Publier partout. Sur les pages du site, une barre en bas ramène à l'application (seulement dans l'application installée).
+- **Qui y a droit** : Publier partout est compris dans le forfait Mini (`aled08e_appli_mini`). Pas d'achat dans l'application, donc rien à verser à Google.
+- **Les limites** : 2 publications préparées par jour et par client (`appli.parJour` dans `src/config.js`), 60 par mois. Chaque publication coûte environ 4 à 5 centimes de Claude (bilan dans les Réglages).
+- **Facebook et Instagram** : Réglages, « Facebook et Instagram, par Upload-Post » : coller la clé d'un compte upload-post.com. Chaque client relie ensuite ses comptes depuis « Mes réseaux ». Sans clé, la publication passe par le bouton de chaque réseau (texte copié).
+- **La dictée** : le bouton « Dicter » utilise la reconnaissance vocale du téléphone ; seul le texte nous arrive.
+- **Le point du soir** : un message par jour au plus, vers 18 h 30, jamais le dimanche, seulement s'il y a quelque chose d'utile. Le client l'allume ou l'éteint. L'envoi sur le téléphone n'est pas encore branché (il faut un projet Firebase, gratuit) : en attendant, le point se lit sur l'accueil.
+- **L'éteindre** : `appli.actif` à `false` dans `src/config.js`, puis export.
+

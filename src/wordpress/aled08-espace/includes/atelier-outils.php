@@ -57,6 +57,8 @@ function aled08e_ao_outil($id) { $o = aled08e_ao_offre(); return $o[(string) $id
 function aled08e_ao_actif($uid, $id) {
     $o = aled08e_ao_outil($id);
     if (!$uid || !$o || ($o['statut'] ?? 'pret') !== 'pret') return false;
+    // l'application : Publier partout est compris dans le forfait Mini
+    if ($id === 'publier' && function_exists('aled08e_appli_on') && aled08e_appli_on() && aled08e_appli_mini($uid)) return true;
     if (function_exists('aled08e_outil_actif')) return (bool) aled08e_outil_actif($uid, $id);
     return user_can($uid, 'manage_options');
 }
@@ -132,6 +134,9 @@ add_action('wp_ajax_aled08e_ao_brique', function () {
     $b = aled08e_jl_outil($bid);
     if (!$b || !in_array($bid, (array) $o['briques'], true) || !empty($b['local']) || empty($b['champs'])) wp_send_json_error(['message' => 'Ce bouton n’existe pas dans cet outil.'], 400);
     if (aled08e_ao_reste($uid, $id) < 1) wp_send_json_error(['message' => aled08e_ao_limite_txt($id), 'limite' => true], 400);
+    // l'application : Pépite prépare quelques publications par jour, pas plus (data.json « appli.parJour »)
+    $parJour = $bid === 'publier' && function_exists('aled08e_appli_on') && aled08e_appli_on();
+    if ($parJour && aled08e_appli_jour_reste($uid) < 1) wp_send_json_error(['message' => aled08e_appli_jour_txt($uid), 'limite' => true], 400);
     // garde-fou : 30 essais par heure, comptés dès maintenant (avant tout traitement de photo)
     if (!aled08e_jl_quota($uid, 'aled08_ao_nb_', 30)) wp_send_json_error(['message' => 'Vous avez beaucoup travaillé cette heure-ci. Faites une pause et revenez dans un moment.'], 429);
     // un seul travail à la fois par client (le verrou tombe tout seul à la fin de la requête)
@@ -162,6 +167,7 @@ add_action('wp_ajax_aled08e_ao_brique', function () {
         $kit = aled08e_kit_normaliser(isset($r['json']) ? $r['json'] : aled08e_kit_depuis_blocs($r['blocs'] ?? []), $v['valeurs']['reseaux'] ?? []);
         if (is_wp_error($kit)) wp_send_json_error(['message' => $kit->get_error_message()], 400);
         aled08e_ao_compter($uid, $id);
+        if ($parJour) aled08e_appli_jour_compter($uid);
         $enr = aled08e_kit_creer($uid, $kit, $_FILES['c_image'] ?? [], (string) ($v['valeurs']['description'] ?? ''));
         aled08e_ao_fil($uid, 'etoile', 'Pépite a préparé votre publication pour ' . aled08e_kit_noms($kit['ordre']) . '.');
         $res = ['kit' => $kit, 'enr' => is_wp_error($enr) ? null : $enr, 'usage' => aled08e_outil_usage($uid, $id), 'usageTxt' => aled08e_ao_usage_txt($uid, $id)];
@@ -450,6 +456,12 @@ function aled08e_ao_publier_html($uid, $o) {
         $options[] = $r;
     }
     $prefs = aled08e_ao_prefs($uid, 'publier');
+    if (function_exists('aled08e_appli_ici') && aled08e_appli_ici()) {
+        $noms = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'site' => 'Mon site', 'bluesky' => 'Bluesky', 'mastodon' => 'Mastodon'];
+        $simples = array_values(array_intersect($options, array_map(function ($k) use ($noms) { return $noms[$k] ?? ''; }, array_keys($directs))));
+        $options = $simples ?: array_values(array_intersect($options, ['Instagram', 'Facebook']));
+        $prefs['reseaux'] = $options;
+    }
     // la première fois, un client qui a un site chez nous publie aussi sur son site
     if (!isset($prefs['reseaux']) && $site) foreach ($b['champs'] as $c) if ($c['id'] === 'reseaux') $prefs['reseaux'] = array_merge((array) ($c['defaut'] ?? []), ['Mon site']);
     // les anciens choix (avant le kit) : TikTok et YouTube s'ajoutent une fois, puisqu'ils viennent d'arriver

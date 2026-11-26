@@ -1,0 +1,20 @@
+{
+  "name": "les-minis-monstres-appli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "L'application Android des Minis Monstres : elle ouvre https://www.les-minis-monstres.fr/appli/",
+  "scripts": {
+    "sync": "cap sync android",
+    "apk": "cap sync android && cd android && ./gradlew assembleDebug",
+    "aab": "cap sync android && cd android && ./gradlew bundleRelease"
+  },
+  "dependencies": {
+    "@capacitor-community/speech-recognition": "^7.0.1",
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/core": "^8.6.3"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.3"
+  }
+}

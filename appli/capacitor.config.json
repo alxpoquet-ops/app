@@ -1,0 +1,16 @@
+{
+  "appId": "fr.lesminismonstres.appli",
+  "appName": "Les Minis Monstres",
+  "webDir": "www",
+  "backgroundColor": "#FFF8F2",
+  "appendUserAgent": "LMMAppli/1.0",
+  "server": {
+    "url": "https://www.les-minis-monstres.fr/appli/",
+    "allowNavigation": ["www.les-minis-monstres.fr", "les-minis-monstres.fr"],
+    "androidScheme": "https",
+    "errorPath": "index.html"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -21,6 +21,9 @@ defined('ABSPATH') || exit;
  * ========================================================================= */
 function aled08e_rs_opt($k) { return trim((string) get_option('aled08_rs_' . $k, '')); }
 function aled08e_rs_meta_ok() { return aled08e_rs_opt('meta_id') !== '' && aled08e_rs_opt('meta_secret') !== ''; }
+/* Upload-Post : un service déjà validé par Meta, qui publie sur la page Facebook et le compte Instagram du client.
+ * Alex colle sa clé dans les Réglages. Sans clé, Facebook et Instagram passent par leur bouton (texte copié). */
+function aled08e_rs_up_ok() { return aled08e_rs_opt('uploadpost_key') !== ''; }
 function aled08e_rs_linkedin_ok() { return aled08e_rs_opt('linkedin_id') !== '' && aled08e_rs_opt('linkedin_secret') !== ''; }
 function aled08e_rs_retour($reseau) { return aled08e_url(['aled08e_rs' => $reseau]); }
 /* Publier partout est-il ouvert pour ce client ? (abonnement ou essai de l'outil, atelier-outils.php) */
@@ -33,6 +36,8 @@ function aled08e_rs_site_ok($uid) { return aled08e_meta($uid, 'lia_url') !== '' 
 /* Après une liaison (ou une erreur), retour sur l'outil Publier partout */
 function aled08e_rs_revenir($uid, $ok, $texte) {
     set_transient('aled08_ao_flash_' . (int) $uid, [$ok, $texte], 300);
+    // parti de l'application : on y revient
+    if (get_transient('aled08_rs_depuis_' . (int) $uid) === 'appli' && function_exists('aled08e_appli_url')) { delete_transient('aled08_rs_depuis_' . (int) $uid); wp_safe_redirect(aled08e_appli_url(), 303); exit; }
     wp_safe_redirect(function_exists('aled08e_ao_url') ? aled08e_ao_url('publier') : aled08e_url() . '#outils', 303);
     exit;
 }
@@ -56,6 +61,8 @@ function aled08e_rs_relies($uid) {
         $r['facebook'] = $p['nom'];
         if (!empty($p['ig_id'])) $r['instagram'] = '@' . $p['ig_nom'];
     }
+    // reliés par Upload-Post (quand l'application Meta des Minis Monstres n'a pas servi)
+    foreach (['facebook', 'instagram'] as $x) if (!isset($r[$x]) && !empty($c['up']['comptes'][$x]) && aled08e_rs_up_ok()) $r[$x] = (string) $c['up']['comptes'][$x];
     if (!empty($c['linkedin']['jeton']) && (int) ($c['linkedin']['exp'] ?? 0) > time()) $r['linkedin'] = $c['linkedin']['nom'];
     return $r;
 }
@@ -201,6 +208,97 @@ function aled08e_rs_instagram_publier($p, $texte, $image) {
     return ['url' => !is_wp_error($lien) && !empty($lien['json']['permalink']) ? (string) $lien['json']['permalink'] : 'https://www.instagram.com/' . $p['ig_nom'] . '/'];
 }
 
+/* ---------- Upload-Post : Facebook et Instagram, sans attendre la validation de Meta ----------
+ * Un « profil » par client chez Upload-Post, nommé d'après son numéro de compte chez nous (aucun nom, aucun e-mail).
+ * Le client relie ses comptes sur la page de connexion d'Upload-Post ; nous ne recevons ni mot de passe ni jeton. */
+function aled08e_rs_up_profil($uid) { return 'lmm-' . (int) $uid; }
+function aled08e_rs_up_appel($methode, $chemin, $donnees = null) {
+    $args = ['headers' => ['Authorization' => 'Apikey ' . aled08e_rs_opt('uploadpost_key')], 'timeout' => 70];
+    if ($donnees !== null) { $args['headers']['Content-Type'] = 'application/json'; $args['body'] = wp_json_encode($donnees, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); }
+    return aled08e_rs_http($methode, 'https://api.upload-post.com' . $chemin, $args);
+}
+/* Le profil existe (créé au besoin) */
+function aled08e_rs_up_creer($uid) {
+    $r = aled08e_rs_up_appel('POST', '/api/uploadposts/users', ['username' => aled08e_rs_up_profil($uid)]);
+    if (is_wp_error($r) && (int) ($r->get_error_data()['code'] ?? 0) !== 409) return $r; // 409 : il existe déjà
+    return true;
+}
+/* Les comptes que le client a reliés : ['facebook' => nom, 'instagram' => @nom], et la page Facebook */
+function aled08e_rs_up_rafraichir($uid) {
+    $r = aled08e_rs_up_appel('GET', '/api/uploadposts/users/' . rawurlencode(aled08e_rs_up_profil($uid)));
+    if (is_wp_error($r)) return $r;
+    $sa = (array) ($r['json']['profile']['social_accounts'] ?? []);
+    $comptes = [];
+    foreach (['facebook', 'instagram'] as $x) {
+        $a = $sa[$x] ?? null;
+        if (!is_array($a) || !$a || !empty($a['reauth_required'])) continue;
+        $nom = (string) ($a['display_name'] ?? ($a['handle'] ?? ($a['username'] ?? '')));
+        $nom = mb_substr(sanitize_text_field($nom), 0, 80);
+        $comptes[$x] = $nom !== '' ? ($x === 'instagram' && $nom[0] !== '@' && !empty($a['handle']) ? '@' . ltrim((string) $a['handle'], '@') : $nom) : ($x === 'facebook' ? 'Votre page' : 'Votre compte');
+    }
+    $c = aled08e_rs_get($uid);
+    $page = (string) ($c['up']['page'] ?? '');
+    if (isset($comptes['facebook'])) {
+        $p = aled08e_rs_up_appel('GET', '/api/uploadposts/facebook/pages?profile=' . rawurlencode(aled08e_rs_up_profil($uid)));
+        $pages = is_wp_error($p) ? [] : (array) ($p['json']['pages'] ?? []);
+        $ids = array_map(function ($x) { return (string) ($x['page_id'] ?? ''); }, $pages);
+        if ($page === '' || !in_array($page, $ids, true)) $page = (string) ($ids[0] ?? '');
+        foreach ($pages as $x) if ((string) ($x['page_id'] ?? '') === $page && !empty($x['page_name'])) $comptes['facebook'] = mb_substr(sanitize_text_field((string) $x['page_name']), 0, 80);
+    }
+    $c['up'] = ['comptes' => $comptes, 'page' => $page, 'maj' => time()];
+    aled08e_rs_set($uid, $c);
+    return $comptes;
+}
+/* Publier une photo et son texte sur Facebook ou Instagram */
+function aled08e_rs_up_publier($uid, $reseau, $texte, $image) {
+    if (!$image) return new WP_Error('aled08_rs', ($reseau === 'instagram' ? 'Instagram' : 'Facebook') . ' demande une photo : ajoutez-en une.');
+    $c = aled08e_rs_get($uid);
+    $champs = [['user', aled08e_rs_up_profil($uid)], ['platform[]', $reseau], ['photos[]', $image['url']], ['title', mb_substr($texte, 0, 2200)]];
+    if ($reseau === 'facebook' && !empty($c['up']['page'])) $champs[] = ['facebook_page_id', (string) $c['up']['page']];
+    $sep = '----aled08' . wp_generate_password(16, false, false);
+    $corps = '';
+    foreach ($champs as $ch) $corps .= "--$sep\r\nContent-Disposition: form-data; name=\"" . $ch[0] . "\"\r\n\r\n" . $ch[1] . "\r\n";
+    $corps .= "--$sep--\r\n";
+    // la même demande rejouée (connexion coupée) ne publie pas deux fois
+    $cle = substr(hash('sha256', $uid . '|' . $reseau . '|' . $image['url'] . '|' . $texte), 0, 40);
+    $r = aled08e_rs_http('POST', 'https://api.upload-post.com/api/upload_photos', ['headers' => ['Authorization' => 'Apikey ' . aled08e_rs_opt('uploadpost_key'), 'Content-Type' => 'multipart/form-data; boundary=' . $sep, 'Idempotency-Key' => $cle], 'body' => $corps, 'timeout' => 75]);
+    if (is_wp_error($r)) {
+        $code = (int) ($r->get_error_data()['code'] ?? 0);
+        if ($code === 429) return new WP_Error('aled08_rs', 'Trop de publications pour l’instant. Réessayez un peu plus tard, ou utilisez le bouton du réseau.');
+        return $r;
+    }
+    $j = $r['json'];
+    // la publication a pris plus d'une minute : on attend sa fin (40 secondes au plus)
+    $suivi = (string) ($j['request_id'] ?? '');
+    if (empty($j['results']) && $suivi !== '') {
+        for ($i = 0; $i < 8; $i++) {
+            sleep(5);
+            $e = aled08e_rs_up_appel('GET', '/api/uploadposts/status?request_id=' . rawurlencode($suivi));
+            if (is_wp_error($e)) break;
+            $j = $e['json'];
+            if (in_array((string) ($j['status'] ?? ''), ['completed', 'failed'], true)) break;
+        }
+    }
+    $res = $j['results'][$reseau] ?? null;
+    if (!is_array($res) && isset($j['results']) && is_array($j['results'])) foreach ($j['results'] as $x) if (is_array($x) && ($x['platform'] ?? '') === $reseau) $res = $x;
+    if (is_array($res) && (isset($res['success']) ? !$res['success'] : ($res['status'] ?? '') === 'failed')) {
+        $m = mb_substr(wp_strip_all_tags((string) ($res['error'] ?? ($res['message'] ?? ''))), 0, 200);
+        return new WP_Error('aled08_rs', ($reseau === 'instagram' ? 'Instagram' : 'Facebook') . ' a refusé la publication' . ($m !== '' ? ' : ' . $m : '.') );
+    }
+    $lien = is_array($res) ? esc_url_raw((string) ($res['url'] ?? ($res['post_url'] ?? '')), ['https']) : '';
+    if ($lien === '' && is_array($res) && !empty($res['post_id']) && $reseau === 'facebook') $lien = 'https://www.facebook.com/' . rawurlencode((string) $res['post_id']);
+    if (!is_array($res) && empty($j['success'])) return new WP_Error('aled08_rs', 'La publication n’a pas pu être confirmée. Regardez sur ' . ($reseau === 'instagram' ? 'Instagram' : 'Facebook') . ' avant de réessayer.');
+    return ['url' => $lien !== '' ? $lien : ($reseau === 'instagram' ? 'https://www.instagram.com/' : 'https://www.facebook.com/')];
+}
+/* Ne plus publier : le profil est supprimé chez Upload-Post (les comptes y sont déliés) */
+function aled08e_rs_up_oublier($uid) {
+    if (aled08e_rs_up_ok()) aled08e_rs_up_appel('DELETE', '/api/uploadposts/users', ['username' => aled08e_rs_up_profil($uid)]);
+    $c = aled08e_rs_get($uid);
+    unset($c['up']);
+    aled08e_rs_set($uid, $c);
+}
+add_action('delete_user', function ($uid) { $c = aled08e_rs_get((int) $uid); if (!empty($c['up'])) aled08e_rs_up_oublier((int) $uid); });
+
 /* ---------- LinkedIn (profil) ---------- */
 function aled08e_rs_linkedin_publier($c, $texte, $image) {
     $auth = ['Authorization' => 'Bearer ' . $c['jeton'], 'X-Restli-Protocol-Version' => '2.0.0'];
@@ -266,8 +364,8 @@ function aled08e_rs_publier($uid, $reseau, $texte, $image) {
         case 'site': return aled08e_rs_site_publier($uid, $texte, $image);
         case 'bluesky': return aled08e_rs_bluesky_publier($c['bluesky'], $texte, $image);
         case 'mastodon': return aled08e_rs_mastodon_publier($c['mastodon'], $texte, $image);
-        case 'facebook': return aled08e_rs_facebook_publier(aled08e_rs_page($c), $texte, $image);
-        case 'instagram': return aled08e_rs_instagram_publier(aled08e_rs_page($c), $texte, $image);
+        case 'facebook': $p = aled08e_rs_page($c); return $p ? aled08e_rs_facebook_publier($p, $texte, $image) : aled08e_rs_up_publier($uid, 'facebook', $texte, $image);
+        case 'instagram': $p = aled08e_rs_page($c); return $p && !empty($p['ig_id']) ? aled08e_rs_instagram_publier($p, $texte, $image) : aled08e_rs_up_publier($uid, 'instagram', $texte, $image);
         case 'linkedin': return aled08e_rs_linkedin_publier($c['linkedin'], $texte, $image);
     }
     return new WP_Error('aled08_rs', 'Réseau inconnu.');
@@ -286,6 +384,7 @@ add_action('wp_ajax_aled08e_rs', function () {
     $c = aled08e_rs_get($uid);
     if ($op === 'delier') {
         $cle = in_array($reseau, ['facebook', 'instagram'], true) ? 'meta' : $reseau;
+        if ($cle === 'meta' && empty($c['meta']) && !empty($c['up'])) { aled08e_rs_up_oublier($uid); wp_send_json_success(['message' => 'C’est fait : Pépite ne publie plus sur ces comptes.']); }
         unset($c[$cle]);
         aled08e_rs_set($uid, $c);
         wp_send_json_success(['message' => 'C’est fait : Pépite ne publie plus sur ce compte.']);
@@ -327,9 +426,36 @@ add_action('template_redirect', function () {
     if (empty($_GET['aled08e_rs']) || !is_user_logged_in()) return;
     $uid = get_current_user_id();
     $reseau = sanitize_key(wp_unslash($_GET['aled08e_rs']));
-    if (!in_array($reseau, ['facebook', 'linkedin'], true)) return;
+    if (!in_array($reseau, ['facebook', 'linkedin', 'uploadpost'], true)) return;
     $fin = function ($ok, $texte) use ($uid) { aled08e_rs_revenir($uid, $ok, $texte); };
+    if (!empty($_GET['aller']) && sanitize_key(wp_unslash($_GET['depuis'] ?? '')) === 'appli') set_transient('aled08_rs_depuis_' . $uid, 'appli', HOUR_IN_SECONDS);
     if (!aled08e_rs_ouvert($uid)) $fin(false, 'Publier partout n’est pas actif sur votre compte.');
+    if ($reseau === 'uploadpost') {
+        if (!aled08e_rs_up_ok()) $fin(false, 'Ce réseau n’est pas encore ouvert à la liaison directe.');
+        if (!empty($_GET['aller'])) {
+            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_n'] ?? '')), 'aled08e_rs_aller')) $fin(false, 'La page avait expiré. Réessayez.');
+            if (!aled08e_jl_quota($uid, 'aled08_rs_lier_', 12)) $fin(false, 'Trop d’essais cette heure-ci. Réessayez dans un moment.');
+            $cr = aled08e_rs_up_creer($uid);
+            if (is_wp_error($cr)) $fin(false, 'La liaison n’a pas pu démarrer. Réessayez dans un instant.');
+            $j = aled08e_rs_up_appel('POST', '/api/uploadposts/users/generate-jwt', [
+                'username' => aled08e_rs_up_profil($uid), 'redirect_url' => aled08e_rs_retour('uploadpost'), 'platforms' => ['facebook', 'instagram'], 'language' => 'fr',
+                'logo_image' => get_template_directory_uri() . '/assets/img/logo-512.png', 'connect_title' => 'Les Minis Monstres',
+                'connect_description' => 'Reliez votre page Facebook et votre compte Instagram : Pépite y publiera vos photos.', 'redirect_button_text' => 'Revenir aux Minis Monstres', 'show_calendar' => false,
+            ]);
+            $url = is_wp_error($j) ? '' : esc_url_raw((string) ($j['json']['access_url'] ?? ''), ['https']);
+            if ($url === '' || !preg_match('#^https://([a-z0-9-]+\.)?upload-post\.com/#', $url)) $fin(false, 'La liaison n’a pas pu démarrer. Réessayez dans un instant.');
+            wp_redirect($url, 302); // phpcs:ignore -- adresse du service, vérifiée ci-dessus
+            exit;
+        }
+        // retour : on relit les comptes reliés
+        $comptes = aled08e_rs_up_rafraichir($uid);
+        if (is_wp_error($comptes)) $fin(false, 'Je n’ai pas pu vérifier vos comptes. Rechargez la page dans un instant.');
+        if (!$comptes) $fin(false, 'Aucun compte relié pour l’instant. Il faut une page Facebook (pas seulement un profil) et, pour Instagram, un compte professionnel.');
+        $noms = [];
+        if (isset($comptes['facebook'])) $noms[] = 'votre page Facebook « ' . $comptes['facebook'] . ' »';
+        if (isset($comptes['instagram'])) $noms[] = 'votre Instagram ' . $comptes['instagram'];
+        $fin(true, 'Pépite connaît maintenant ' . implode(' et ', $noms) . '.');
+    }
     $retour = aled08e_rs_retour($reseau);
     $pret = $reseau === 'facebook' ? aled08e_rs_meta_ok() : aled08e_rs_linkedin_ok();
     if (!$pret) $fin(false, 'Ce réseau n’est pas encore ouvert à la liaison directe.');
@@ -454,19 +580,26 @@ function aled08e_rs_noms() {
 function aled08e_rs_html($uid) {
     $relies = aled08e_rs_relies($uid);
     $c = aled08e_rs_get($uid);
-    $aller = function ($r) { return esc_url(add_query_arg(['aled08e_rs' => $r, 'aller' => 1, '_n' => wp_create_nonce('aled08e_rs_aller')], aled08e_url())); };
+    $ici = function_exists('aled08e_appli_ici') && aled08e_appli_ici() ? ['depuis' => 'appli'] : [];
+    $aller = function ($r) use ($ici) { return esc_url(add_query_arg(['aled08e_rs' => $r, 'aller' => 1, '_n' => wp_create_nonce('aled08e_rs_aller')] + $ici, aled08e_url())); };
     $ligne = function ($nom, $droite, $on = false) { return '<li class="rs-ligne' . ($on ? ' is-on' : '') . '"><strong>' . esc_html($nom) . '</strong>' . $droite . '</li>'; };
     $compte = function ($id) use ($relies) { return '<span class="rs-compte">' . aled08e_icon('check') . esc_html($relies[$id]) . '</span>'; };
     $delier = function ($id) { return '<button type="button" class="link-btn" data-rs-delier="' . esc_attr($id) . '">Ne plus publier ici</button>'; };
     $nb = count($relies) + (aled08e_rs_site_ok($uid) ? 1 : 0);
-    $h = '<details class="rs ao-reseaux"' . (isset($_GET['aled08e_rs']) ? ' open' : '') . '><summary>' . aled08e_icon('link') . '<span>Mes réseaux' . ($nb ? ' : Pépite en connaît ' . $nb : '') . '</span></summary>'
+    $h = '<details class="rs ao-reseaux"' . (isset($_GET['aled08e_rs']) || ($ici && !$relies) ? ' open' : '') . '><summary>' . aled08e_icon('link') . '<span>Mes réseaux' . ($nb ? ' : Pépite en connaît ' . $nb : '') . '</span></summary>'
         . '<p class="app-note">Présentez Pépite une seule fois à un compte : ensuite, elle y publie toute seule. Un réseau pas présenté marche aussi, avec son bouton : le texte et le bon fichier sont prêts, il reste un geste.</p><ul class="rs-liste">';
     // Facebook et Instagram : un seul accord chez Meta donne les deux
     if (isset($relies['facebook'])) {
         $h .= $ligne('Facebook', $compte('facebook') . $delier('facebook'), true);
-        $h .= $ligne('Instagram', isset($relies['instagram']) ? $compte('instagram') : '<span class="rs-bientot">Pour publier directement, il faut un compte Instagram professionnel relié à votre page Facebook. En attendant, le bouton « Publier sur Instagram » marche très bien.</span>', isset($relies['instagram']));
+        $parUp = empty($c['meta']) && aled08e_rs_up_ok();
+        $h .= $ligne('Instagram', isset($relies['instagram']) ? $compte('instagram') : ($parUp ? '<a class="btn btn-light btn-sm" href="' . $aller('uploadpost') . '">' . aled08e_icon('send') . '<span>Ajouter mon Instagram</span></a>' : '<span class="rs-bientot">Pour publier directement, il faut un compte Instagram professionnel relié à votre page Facebook. En attendant, le bouton « Publier sur Instagram » marche très bien.</span>'), isset($relies['instagram']));
+    } elseif (isset($relies['instagram'])) { // Instagram seul, par Upload-Post
+        $h .= $ligne('Instagram', $compte('instagram') . $delier('instagram'), true);
+        if (aled08e_rs_up_ok()) $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('uploadpost') . '">' . aled08e_icon('send') . '<span>Ajouter ma page Facebook</span></a></li>';
     } elseif (aled08e_rs_meta_ok()) {
         $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('facebook') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon Instagram et mon Facebook</span></a></li>';
+    } elseif (aled08e_rs_up_ok()) {
+        $h .= '<li class="rs-ligne"><a class="btn btn-primary btn-sm" href="' . $aller('uploadpost') . '">' . aled08e_icon('send') . '<span>Relier mon Facebook et mon Instagram</span></a><small class="ol-aide">Une seule fois. La liaison se fait sur la page sécurisée de notre partenaire Upload-Post : nous ne voyons jamais votre mot de passe.</small></li>';
     }
     if (isset($relies['linkedin'])) $h .= $ligne('LinkedIn', $compte('linkedin') . $delier('linkedin'), true);
     elseif (aled08e_rs_linkedin_ok()) $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('linkedin') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon LinkedIn</span></a></li>';
@@ -512,6 +645,9 @@ function aled08e_rs_reglages_html() {
     echo '<tr><th>Facebook et Instagram (Meta)</th><td><p><label>Identifiant de l’application <input type="text" name="rs_meta_id" class="regular-text" value="' . esc_attr(aled08e_rs_opt('meta_id')) . '" autocomplete="off"></label></p>'
         . '<p><label>Clé secrète <input type="password" name="rs_meta_secret" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('meta_secret')) . '. Laissez vide pour ne rien changer.</span></p>'
         . '<p class="description">Sur developers.facebook.com : créer une application de type « Entreprise », ajouter « Facebook Login », et dans ses réglages coller cette adresse de retour : <code>' . esc_html(aled08e_rs_retour('facebook')) . '</code>. Autorisations à demander en « accès avancé » : pages_show_list, pages_manage_posts, pages_read_engagement, instagram_basic, instagram_content_publish. Meta demande de vérifier l’entreprise (SIRET) avant d’ouvrir l’application aux clients.</p></td></tr>';
+    echo '<tr><th>Facebook et Instagram, par Upload-Post</th><td><p><label>Clé Upload-Post <input type="password" name="rs_uploadpost_key" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('uploadpost_key')) . '. Laissez vide pour ne rien changer.</span></p>'
+        . '<p><label><input type="checkbox" name="rs_uploadpost_effacer" value="1"> Effacer la clé</label></p>'
+        . '<p class="description">Le plus rapide : Upload-Post est déjà validé par Meta. Créez un compte sur upload-post.com, copiez la clé (API Keys) et collez-la ici. Chaque client relie ensuite sa page Facebook et son Instagram depuis l’application, sur la page de connexion d’Upload-Post. L’application Meta ci-dessus n’est alors plus nécessaire.</p></td></tr>';
     echo '<tr><th>LinkedIn</th><td><p><label>Identifiant client <input type="text" name="rs_linkedin_id" class="regular-text" value="' . esc_attr(aled08e_rs_opt('linkedin_id')) . '" autocomplete="off"></label></p>'
         . '<p><label>Clé secrète <input type="password" name="rs_linkedin_secret" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('linkedin_secret')) . '. Laissez vide pour ne rien changer.</span></p>'
         . '<p class="description">Sur linkedin.com/developers : créer une application, ajouter les produits « Share on LinkedIn » et « Sign In with LinkedIn using OpenID Connect » (ouverts tout de suite), et coller cette adresse de retour : <code>' . esc_html(aled08e_rs_retour('linkedin')) . '</code>. Le client publie sur son profil.</p></td></tr>';
@@ -519,5 +655,6 @@ function aled08e_rs_reglages_html() {
 }
 function aled08e_rs_reglages_save($P) {
     foreach (['meta_id', 'linkedin_id'] as $k) if (isset($P['rs_' . $k])) aled08e_option_set('aled08_rs_' . $k, preg_replace('/[^A-Za-z0-9_-]/', '', (string) $P['rs_' . $k]));
-    foreach (['meta_secret', 'linkedin_secret'] as $k) { $v = trim((string) ($P['rs_' . $k] ?? '')); if ($v !== '') aled08e_option_set('aled08_rs_' . $k, preg_replace('/[^A-Za-z0-9_=.-]/', '', $v)); }
+    foreach (['meta_secret', 'linkedin_secret', 'uploadpost_key'] as $k) { $v = trim((string) ($P['rs_' . $k] ?? '')); if ($v !== '') aled08e_option_set('aled08_rs_' . $k, preg_replace('/[^A-Za-z0-9_=.-]/', '', $v)); }
+    if (!empty($P['rs_uploadpost_effacer'])) delete_option('aled08_rs_uploadpost_key');
 }

@@ -298,6 +298,10 @@ const ateliers = [
 // statut : 'pret' (vendu) ou 'bientot' (affiché, pas encore vendu). inclusSite : offert avec le forfait d'un site (Mini).
 // briques : les petits outils déjà écrits (src/content/outils-lia.js, ids) qui deviennent des boutons de cet outil.
 // Sur le site public, on ne parle jamais d'IA : ce sont des petits monstres qui travaillent pour le client.
+// L'application Les Minis Monstres (Alex, 26 novembre 2026) : /appli/ et l'application Android (dossier appli/).
+// Un seul outil pour commencer, « Publier partout », compris dans le forfait Mini (c'est le forfait qui fait l'abonnement).
+// parJour : publications que Pépite prépare par jour et par client (le coût reste petit). heurePoint : le point du soir.
+const appli = { actif: true, outil: 'publier', parJour: 2, heurePoint: '18:30' };
 const outilsOffre = {
   actif: false, // 24 novembre 2026, soir : Alex met les outils de côté pour se concentrer sur les sites (rien de public, rien dans l'espace client)
   essaiJours: 14,
@@ -560,4 +564,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { lancement, ateliers, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { lancement, ateliers, appli, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

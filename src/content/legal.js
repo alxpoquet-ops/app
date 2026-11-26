@@ -78,6 +78,10 @@ const listeOutils = outilsPrets
   .join('\n');
 const nomsBientot = liste(outilsBientot.map((o) => `« ${o.nom} »`));
 // Mentions légales : le SIRET s'affiche dès qu'il est dans config.js (14 chiffres). D'ici là, le SIREN de l'entreprise individuelle.
+// L'application (config.appli, 26 novembre 2026) : ce qu'elle utilise, dit dans la politique de confidentialité.
+const APPLI = (cfg.appli || {}).actif ? `
+**L’application Les Minis Monstres.** Elle ouvre votre espace client sur votre téléphone. Elle demande l’appareil photo pour la photo que vous choisissez de publier, et le micro seulement quand vous touchez « Dicter » : la reconnaissance vocale de votre téléphone transforme votre voix en texte, et seul ce texte nous arrive (nous ne recevons et ne gardons aucun enregistrement). Quand vous reliez votre page Facebook ou votre compte Instagram, la liaison et la publication passent par notre prestataire Upload-Post : il reçoit la photo et le texte à publier, et un numéro de compte, sans votre nom ni votre e-mail. Vous pouvez délier vos comptes à tout moment depuis « Mes réseaux ». Le point du soir est un message par jour au plus, que vous allumez ou éteignez dans l’application.
+` : '';
 const SIRET_PRET = /^\d{14}$/.test(String(L.siret || '').replace(/\s/g, ''));
 const ligneSiren = SIRET_PRET
   ? `- **SIREN** : ${L.siren}\n- **SIRET** : ${L.siret}${L.activite ? ` (${L.activite})` : ''}`
@@ -195,6 +199,7 @@ Les outils au mois (article 20 des conditions générales) préparent des public
 ## ${AVEC_OUTILS ? 9 : 8}. Destinataires
 
 Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous écrivez dans la bulle d’aide ou dans une demande de modification${AVEC_OUTILS ? ', et ce que vous confiez à un outil,' : ''} passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données.${AVEC_OUTILS ? ' Quand vous publiez, votre publication et la clé du réseau sont envoyées au réseau que vous avez choisi parmi ceux que vous avez reliés : Meta (Facebook et Instagram), LinkedIn, Bluesky ou votre serveur Mastodon. Ces réseaux la traitent ensuite selon leurs propres règles, parfois hors de l’Union européenne.' : ''} Vos données ne sont jamais vendues ni cédées.
+${APPLI}
 
 ## ${AVEC_OUTILS ? 10 : 9}. Cookies et stockage local
 
