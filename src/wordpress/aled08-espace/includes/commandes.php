@@ -816,14 +816,14 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $reglages = $boutique
         ? [['mochi', 'Vos articles, leurs prix et vos promos', 'Ma boutique'], ['bricou', 'Vos paiements et votre livraison', 'Ma boutique'], ['gelee', 'Vos commandes, au fur et à mesure', 'Ma boutique']]
         : [];
-    $reglages = array_merge($reglages, [['etoile', 'L’apparence claire ou sombre à l’ouverture du site', 'Mon compte'], ['champi', 'Vos demandes de changement : textes, photos, dates…', 'Mes demandes'], ['chaton', 'Votre compte, votre forfait et vos factures', 'Mon compte']]);
+    $reglages = array_merge($reglages, [['etoile', 'L’apparence claire ou sombre à l’ouverture du site', 'Mon compte'], ['champi', 'Vos demandes de changement : textes, photos, dates…', 'Mes modifications'], ['chaton', 'Votre compte, votre forfait et vos factures', 'Mon compte']]);
 
     $p = function ($t, $taille = 16) { return '<p style="margin:0 0 14px;font-size:' . $taille . 'px;line-height:1.6;color:#4B4668;">' . $t . '</p>'; };
     $h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:0 0 6px;">' . aled08e_mail_monstre('ravie', 110) . '</td></tr></table>'
         . '<h1 style="margin:0 0 10px;font-size:28px;line-height:1.2;color:#2E2A47;text-align:center;">Votre site est en ligne !</h1>'
         . ($v1 ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 16px;background:#F1ECFF;border:2px solid #8C6CF2;border-radius:18px;"><tr><td style="padding:14px 16px;">'
             . '<p style="margin:0 0 6px;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:#5B3FC4;">Version 1</p>'
-            . '<p style="margin:0;font-size:15px;line-height:1.55;color:#2E2A47;"><b>Voici la V1 de votre site</b>, faite avec vos réponses et vos photos. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application, avec le bouton « Modifier mon site moi-même », ou demandez-le-nous dans « Mes modifications ».</p>'
+            . '<p style="margin:0;font-size:15px;line-height:1.55;color:#2E2A47;"><b>Voici la V1 de votre site</b>, faite à partir de vos réponses. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application, avec le bouton « Modifier mon site moi-même », ou demandez-le-nous dans « Mes modifications ».</p>'
             . '</td></tr></table>' : '')
         . $p('Bonjour ' . esc_html($c['prenom']) . ', bonne nouvelle : votre ' . esc_html(mb_strtolower($typeNom)) . ' est prêt, et toute la petite bande est fière de vous le présenter.')
         . ($site ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' . aled08e_mail_bouton($site, 'Voir mon site') . '<p style="margin:-4px 0 18px;font-size:14px;font-weight:bold;color:#5B3FC4;">' . esc_html($host) . '</p></td></tr></table>' : '');
@@ -886,20 +886,21 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
         . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 12px;">' . $li . '</table>'
         . aled08e_mail_bouton($espace, 'Ouvrir mon application', '#FFFFFF'), 'mascotte', aled08e_mail_etiquette('Tout se règle depuis votre application', '#176A4C'));
     if ($soldeDu) {
-        $h .= aled08e_mail_carte('rose', '<p style="margin:6px 0 0;font-size:15px;line-height:1.6;color:#4B4668;">Il reste ' . esc_html(aled08e_euro_txt($solde)) . ' pour la création : en une fois, ou ' . esc_html(aled08e_fois_txt()) . '. Votre forfait démarre à ce moment-là. ' . (aled08e_stripe_ready() ? 'Tout se fait dans votre application, onglet « Ma commande ».' : 'Je vous envoie le lien de paiement dans un e-mail séparé.') . '</p>', '', aled08e_mail_etiquette('Le solde de la création'));
+        // la création est souvent déjà payée en entier : il ne reste alors qu'à démarrer le forfait (jamais « Il reste 0 € »)
+        $h .= aled08e_mail_carte('rose', '<p style="margin:6px 0 0;font-size:15px;line-height:1.6;color:#4B4668;">' . ($solde > 0 ? 'Il reste ' . esc_html(aled08e_euro_txt($solde)) . ' pour la création : en une fois, ou ' . esc_html(aled08e_fois_txt()) . '. Votre forfait démarre à ce moment-là. ' : 'Votre création est payée, merci ! Il ne reste qu’à démarrer votre forfait, pour l’hébergement et le suivi de votre site. ') . (aled08e_stripe_ready() ? 'Tout se fait dans votre application, onglet « Ma commande ».' : 'Je vous envoie le lien de paiement dans un e-mail séparé.') . '</p>', '', aled08e_mail_etiquette($solde > 0 ? 'Le solde de la création' : 'Votre forfait'));
     }
     $h .= $p('Votre site existe en deux apparences, claire et sombre. Il s’ouvre en clair, et vos visiteurs passent en sombre d’un geste avec le petit soleil ou la lune en haut du site.', 15)
         . '<p style="margin:16px 0 0;font-size:16px;line-height:1.6;color:#2E2A47;">Merci pour votre confiance,<br><b>Alex et sa petite bande</b></p>';
 
     // la version texte, pour les messageries qui n'affichent pas le HTML
-    $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($v1 ? "Voici la V1 de votre site, faite avec vos réponses et vos photos. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application (bouton « Modifier mon site moi-même »), ou demandez-le-nous dans « Mes modifications ».\n" : '') . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
+    $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($v1 ? "Voici la V1 de votre site, faite à partir de vos réponses. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application (bouton « Modifier mon site moi-même »), ou demandez-le-nous dans « Mes modifications ».\n" : '') . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google : autant de portes d’entrée sur votre site' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google : autant de portes d’entrée sur votre site.\n\n" : ''))
         . ($offertes > 0 ? 'Votre formule ' . $typeNom . ' comprend ' . $formule . ' pages. Les ' . $offertes . " pages en plus vous sont offertes par les Minis Monstres.\n\n" : '')
         . ($offerts ? "Offert par les Minis Monstres :\n" . implode("\n", array_map(function ($o) { return '- ' . $o[0] . ' : ' . $o[1] . ', offert'; }, $offerts)) . "\n\n" : ($forfaitNom !== '' ? 'Votre forfait : ' . $forfaitNom . " (le détail est dans votre application, rubrique Mon compte).\n\n" : ''))
         . ($articles > 0 ? 'Votre boutique compte ' . $articles . ' article' . ($articles > 1 ? 's' : '') . ". Ajoutez-en autant que vous voulez, sans limite, depuis votre application (Ma boutique, puis Mes articles).\n\n" : '')
         . ($res !== '' ? "Ce que contient votre site :\n" . $res . "\n\n" : '')
         . "Tout se règle depuis votre application (votre espace client) :\n" . implode("\n", array_map(function ($r) { return '- ' . $r[1] . ' (' . $r[2] . ')'; }, $reglages)) . "\n" . aled08e_url() . "\n\n"
-        . ($soldeDu ? 'Il reste ' . aled08e_euro_txt($solde) . ' pour la création : en une fois, ou ' . aled08e_fois_txt() . ". Votre forfait démarre à ce moment-là.\n\n" : '')
+        . ($soldeDu ? ($solde > 0 ? 'Il reste ' . aled08e_euro_txt($solde) . ' pour la création : en une fois, ou ' . aled08e_fois_txt() . ". Votre forfait démarre à ce moment-là.\n\n" : "Votre création est payée, merci ! Il ne reste qu’à démarrer votre forfait, pour l’hébergement et le suivi de votre site : dans votre application, onglet « Ma commande ».\n\n") : '')
         . "Votre site existe en deux apparences, claire et sombre. Il s’ouvre en clair, et vos visiteurs passent en sombre avec le petit soleil ou la lune en haut du site.\n\nMerci pour votre confiance,\nAlex et sa petite bande\n";
     $alt = function ($m) use ($txt) { $m->AltBody = $txt; };
     add_action('phpmailer_init', $alt, 20);

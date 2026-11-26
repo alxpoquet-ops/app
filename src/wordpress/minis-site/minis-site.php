@@ -270,7 +270,7 @@ function minis_site_e_formulaire() {
     $p = $f->get_properties();
     $p['form'] = "<label> Votre nom\n    [text* your-name autocomplete:name] </label>\n\n<label> Votre e-mail\n    [email* your-email autocomplete:email] </label>\n\n<label> Votre téléphone (facultatif)\n    [tel your-tel autocomplete:tel] </label>\n\n<label> Votre message\n    [textarea* your-message] </label>\n\n[submit \"Envoyer\"]";
     $mail = is_array($p['mail'] ?? null) ? $p['mail'] : [];
-    $mail['subject'] = '[_site_title] Nouveau message de [your-name]';
+    $mail['subject'] = '[_site_title] : nouveau message de [your-name]';
     $mail['body'] = "De : [your-name]\nE-mail : [your-email]\nTéléphone : [your-tel]\n\nMessage :\n[your-message]\n\n--\nEnvoyé depuis le formulaire de contact du site [_site_title] ([_site_url])";
     $mail['additional_headers'] = 'Reply-To: [your-email]';
     $p['mail'] = $mail;
