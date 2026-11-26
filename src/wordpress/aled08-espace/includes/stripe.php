@@ -10,7 +10,7 @@
 defined('ABSPATH') || exit;
 
 define('ALED08E_STRIPE_API', '2026-10-28.endive');
-define('ALED08E_STRIPE_FOOTER_DEFAUT', 'Les Minis Monstres, entreprise individuelle. TVA non applicable, art. 293 B du CGI.');
+define('ALED08E_STRIPE_FOOTER_DEFAUT', 'Les Minis Monstres, Alexandre Poquet EI, SIRET 948 617 782 00024, 31 rue du Bonhery, 08460 Signy-l’Abbaye. TVA non applicable, art. 293 B du CGI.');
 
 /* =========================================================================
  *  Réglages

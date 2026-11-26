@@ -7,10 +7,10 @@ const cfg = require('../config');
 const { site, paiement, fidelite, forfaits, fractionne, bande, limites, aLaDemande, creationSeule } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
-const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
-const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
+const addr = `${(site.legal || {}).adresse ? site.legal.adresse + ', ' : site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
+const UPDATED = '2026-11-26'; // mentions légales : 26 novembre 2026, le SIRET du siège et son adresse (24 novembre : le SIREN)
 const UPDATED_CONF = '2026-11-25'; // 25 novembre 2026 : le jeu-concours de Ruban (l'adresse e-mail des participants). 24 novembre : politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
-const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026, nuit : le parrainage revient (article 17, 6 mois offerts chacun). 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-26'; // 26 novembre 2026 : l'identité du prestataire en tête (SIRET et adresse du siège). 25 novembre 2026, nuit : le parrainage revient (article 17, 6 mois offerts chacun). 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -80,7 +80,7 @@ const nomsBientot = liste(outilsBientot.map((o) => `« ${o.nom} »`));
 // Mentions légales : le SIRET s'affiche dès qu'il est dans config.js (14 chiffres). D'ici là, le SIREN de l'entreprise individuelle.
 const SIRET_PRET = /^\d{14}$/.test(String(L.siret || '').replace(/\s/g, ''));
 const ligneSiren = SIRET_PRET
-  ? `- **SIRET** : ${L.siret}`
+  ? `- **SIREN** : ${L.siren}\n- **SIRET** : ${L.siret}${L.activite ? ` (${L.activite})` : ''}`
   : `- **SIREN** : ${L.siren || 'en cours d’attribution'} (le numéro SIRET de l’activité de création de sites est ${L.siret || 'en cours d’attribution'})`;
 const exploitant = /individuel/i.test(L.status || '') ? `${site.owner} EI` : site.owner; // l'entrepreneur individuel signe « EI »
 
@@ -227,7 +227,7 @@ Cette prospection repose sur mon intérêt légitime à faire connaître mes ser
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement au mois, extras et services liés${AVEC_OUTILS ? ', ainsi que les outils au mois, ouverts à tous, avec ou sans site (article 20)' : ''}. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (le forfait ${AUTO} ou le forfait ${mini.name}) et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres (${exploitant}, ${minus(L.status)}, ${SIRET_PRET ? `SIRET ${L.siret}` : `SIREN ${L.siren}`}, ${addr}) : création d’un site internet, abonnement au mois, extras et services liés${AVEC_OUTILS ? ', ainsi que les outils au mois, ouverts à tous, avec ou sans site (article 20)' : ''}. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (le forfait ${AUTO} ou le forfait ${mini.name}) et les prix.
 
 ## 2. Commande en ligne
 
@@ -345,7 +345,7 @@ Aucun de ces deux choix n’est coché d’avance. Le nom de domaine déjà rés
 
 Pour se rétracter, le client peut, s’il le souhaite, utiliser ce modèle, envoyé par ${contact} :
 
-> À l’attention des Minis Monstres (Alexandre Poquet EI, ${site.address.postalCode} ${site.address.city}) : je vous notifie par la présente ma rétractation du contrat portant sur la prestation ci-dessous. Commandée le : … Référence de commande : … Nom du client : … Adresse du client : … Date : …
+> À l’attention des Minis Monstres (Alexandre Poquet EI, ${addr}) : je vous notifie par la présente ma rétractation du contrat portant sur la prestation ci-dessous. Commandée le : … Référence de commande : … Nom du client : … Adresse du client : … Date : …
 ${AVEC_OUTILS ? `
 Pour un outil au mois, les règles de rétractation sont précisées à l’article 20.
 ` : ''}
@@ -485,7 +485,7 @@ ${listeOutils}
     updated: '2026-11-25',
     body: `## 1. Organisateur
 
-Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, SIREN ${L.siren}.
+Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, ${SIRET_PRET ? `SIRET ${L.siret}` : `SIREN ${L.siren}`}.
 
 ## 2. Le principe
 

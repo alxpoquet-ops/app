@@ -96,7 +96,7 @@ process.stdout.write(
     // « 4 à 5 fois moins cher qu'une agence » dans le mail de prospection, calculé et jamais écrit à la main
     marche: { agenceMin: (cfg.marche || {}).agenceMin || 0 },
     // l'identité de l'expéditeur, écrite au pied de chaque mail de prospection (jamais en dur dans l'extension)
-    identite: { nom: site.name, proprietaire: site.owner, statut: (site.legal || {}).status || '', siren: (site.legal || {}).siren || '', codePostal: (site.address || {}).postalCode || '', ville: (site.address || {}).city || '' },
+    identite: { nom: site.name, proprietaire: site.owner, statut: (site.legal || {}).status || '', siren: (site.legal || {}).siren || '', siret: /^\d{14}$/.test(String((site.legal || {}).siret || '').replace(/\s/g, '')) ? site.legal.siret : '', adresse: (site.legal || {}).adresse || '', codePostal: (site.address || {}).postalCode || '', ville: (site.address || {}).city || '' },
     // nos pages « Votre métier » (src/content/metiers.js) : les métiers que le Repéreur cherche d'abord (+10 à la note)
     metiers: require('../src/content/metiers').metiers.map((m) => ({ slug: m.slug, nom: m.nom, qui: m.qui || '' })),
     // création seule : le client a son hébergement, il reçoit le code de son site (pas de formule, pas d'hébergement chez nous)

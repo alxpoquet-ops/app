@@ -535,7 +535,9 @@ function aled08e_px_identite() {
     $statut = $statut !== '' ? mb_strtolower(mb_substr($statut, 0, 1)) . mb_substr($statut, 1) : '';
     $qui = (string) ($i['proprietaire'] ?? '');
     $de = $qui !== '' ? (preg_match('/^[aeiouyhAEIOUYHÉÈÊÂÎÔÛ]/u', $qui) ? 'd’' : 'de ') . $qui : '';
-    $morceaux = array_filter([$nom, trim($statut . ($de !== '' ? ' ' . $de : '')), !empty($i['siren']) ? 'SIREN ' . $i['siren'] : '', trim(($i['codePostal'] ?? '') . ' ' . ($i['ville'] ?? ''))]);
+    $num = !empty($i['siret']) ? 'SIRET ' . $i['siret'] : (!empty($i['siren']) ? 'SIREN ' . $i['siren'] : '');
+    $lieu = trim((!empty($i['adresse']) ? $i['adresse'] . ', ' : '') . ($i['codePostal'] ?? '') . ' ' . ($i['ville'] ?? ''));
+    $morceaux = array_filter([$nom, trim($statut . ($de !== '' ? ' ' . $de : '')), $num, $lieu]);
     return str_replace("'", '’', implode(', ', $morceaux)) . '.';
 }
 /* Le mail, en HTML (tableaux, styles en ligne, 600 px, lisible sur téléphone) et en texte.

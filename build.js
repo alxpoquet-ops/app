@@ -103,6 +103,6 @@ require('./scripts/glossaire').appliquer(path.join(ROOT, 'dist'));
 
 // ---------------------------------------------------------------- rapport
 const warn = [];
-if (/en cours/.test(site.legal.siret + site.legal.mediator)) warn.push('Informations légales en attente dans src/config.js (SIRET, médiateur).');
+{ const manque = [/en cours/.test(site.legal.siret) && 'SIRET', /en cours/.test(site.legal.mediator) && 'médiateur'].filter(Boolean); if (manque.length) warn.push(`Informations légales en attente dans src/config.js (${manque.join(', ')}).`); }
 console.log(`✔ ${rendered.length} pages générées dans dist/ (${urls.length} URL dans le sitemap)`);
 if (warn.length) console.log('\n⚠ À faire avant la mise en ligne :\n  - ' + warn.join('\n  - '));

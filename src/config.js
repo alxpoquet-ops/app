@@ -37,9 +37,11 @@ const site = {
   // Informations légales : ⚠️ À REMPLACER
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
-    siren: '948 617 782', // l'entreprise individuelle existe (SIREN) ; le SIRET de l'activité de création de sites est en cours
-    siret: 'en cours d’attribution', // ⚠️ À REMPLACER par le numéro dès réception
-    tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
+    siren: '948 617 782',
+    siret: '948 617 782 00024', // le siège (registre officiel, vérifié le 26 novembre 2026)
+    adresse: '31 rue du Bonhery', // l'adresse du siège : seulement sur les pages légales, les factures et les mails (pas dans les données pour Google)
+    activite: 'l’activité de création de sites internet est en cours d’ajout au Registre national des entreprises', // Alex, 26 novembre 2026 : à retirer quand c'est fait
+    tva: '', // vide : « non applicable, art. 293 B du CGI » (franchise de TVA)
     mediator: 'en cours de désignation, ses coordonnées seront indiquées ici', // ⚠️ À REMPLACER
     mediatorUrl: '',
     host: 'o2switch, 222-224 boulevard Gustave Flaubert, 63000 Clermont-Ferrand, 04 44 44 60 40, www.o2switch.fr',

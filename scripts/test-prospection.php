@@ -130,7 +130,7 @@ verifie('note : sans site, métier recherché, activité, indépendante, page m�
 verifie('libellé de la source Facebook', aled08e_px_source_libelle('https://www.facebook.com/x') === 'sa page Facebook');
 $prixSite = (float) aled08e_type('une-page')['price'];
 verifie('prix réduit calculé depuis la config (' . $prixSite . ' € moins 10 %)', aled08e_px_prix()['prix'] === $prixSite && abs(aled08e_px_prix()['reduit'] - round($prixSite * 0.9, 2)) < 0.001, aled08e_euro_txt(aled08e_px_prix()['reduit']));
-verifie('identité tirée de data.json', aled08e_px_identite() === 'Les Minis Monstres, entreprise individuelle d’Alexandre Poquet, SIREN 948 617 782, 08460 Signy-l’Abbaye.', aled08e_px_identite());
+verifie('identité tirée de data.json', aled08e_px_identite() === 'Les Minis Monstres, entreprise individuelle d’Alexandre Poquet, SIRET 948 617 782 00024, 31 rue du Bonhery, 08460 Signy-l’Abbaye.', aled08e_px_identite());
 update_option('aled08_prospection_premier_envoi', time() - 15 * DAY_IN_SECONDS);
 verifie('quota : 20 + 20 par semaine (deux semaines : 60)', aled08e_px_quota_jour() === 60, (string) aled08e_px_quota_jour());
 update_option('aled08_prospection_premier_envoi', time() - 70 * WEEK_IN_SECONDS);
@@ -183,7 +183,7 @@ verifie('au prospect, avec le sujet', $mail['a'] === 'boulangerie.martin@orange.
 verifie('code personnel MAIL10-XXXX', (bool) preg_match('/^MAIL10-[2-9A-HJKMNP-Z]{4}$/', $code), $code);
 verifie('le mail porte le code, le prix réduit et le prix', strpos($mail['m'], $code) !== false && strpos($mail['m'], aled08e_euro(round($prixSite * 0.9, 2))) !== false && strpos($mail['m'], 'à partir de ' . aled08e_euro($prixSite)) !== false);
 verifie('le mail dit la source de l’adresse', strpos($mail['m'], 'l’adresse de la Boulangerie Martin est publiée sur <a href="https://www.google.com/maps/place/x"') !== false);
-verifie('le mail a l’identité de l’expéditeur', strpos($mail['m'], 'SIREN 948 617 782') !== false && strpos($mail['m'], 'Alexandre Poquet') !== false);
+verifie('le mail a l’identité de l’expéditeur', strpos($mail['m'], 'SIRET 948 617 782 00024') !== false && strpos($mail['m'], 'Alexandre Poquet') !== false);
 verifie('le mail a le lien de désinscription signé', strpos($mail['m'], 'lmm_stop=' . $id . '-' . aled08e_px_signe($id, 'stop')) !== false);
 verifie('les boutons passent par le suivi des clics', strpos($mail['m'], 'lmm_px=' . $id . '-demo-') !== false && strpos($mail['m'], 'lmm_px=' . $id . '-site-') !== false);
 verifie('pas de pixel espion (une seule image : le logo)', substr_count($mail['m'], '<img') === 1);
