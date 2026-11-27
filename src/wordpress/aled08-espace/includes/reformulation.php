@@ -1,7 +1,7 @@
 <?php
 /**
  * Les Minis Monstres Espace client : Cerise prépare les demandes, Alex fait les modifications (17 novembre 2026).
- * 1. Le client écrit sa demande (onglet Demandes).
+ * 1. Le client écrit sa demande (onglet « Mes modifications »).
  * 2. Cerise la lit (avec le site du client sous les yeux, en lecture seule) et, si besoin, pose une ou deux questions
  *    (une capture d'écran peut aider). Elle n'écrit rien sur le site.
  * 3. Elle rédige la demande, claire et précise, et la montre au client : « C'est bien ça ? ».
@@ -110,7 +110,7 @@ function aled08e_cer_traiter($pid) {
     update_post_meta($pid, '_aled08_reponse', 'Cerise : ' . mb_substr(trim((string) ($fin['message_client'] ?? '')) ?: 'Voici votre demande telle que je vais la transmettre à Alex. Est-ce bien ça ?', 0, 900));
     aled08e_ech_activite($pid);
     aled08e_lia_journal_add('Demande #' . $pid . ' : Cerise a préparé la demande, en attente de la confirmation du client.');
-    if ($u) wp_mail($u->user_email, 'Votre demande est prête à vérifier', 'Bonjour ' . aled08e_prenom($u) . ",\n\nJ’ai préparé votre demande pour Alex :\n\n" . $resume . "\n\nEst-ce bien ça ? Confirmez-la dans votre espace (onglet Demandes) :\n" . aled08e_url() . "#demandes\n\nÀ très vite,\nCerise, des Minis Monstres\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
+    if ($u) wp_mail($u->user_email, 'Votre demande est prête à vérifier', 'Bonjour ' . aled08e_prenom($u) . ",\n\nJ’ai préparé votre demande pour Alex :\n\n" . $resume . "\n\nEst-ce bien ça ? Confirmez-la dans votre espace (onglet « Mes modifications ») :\n" . aled08e_url() . "#demandes\n\nÀ très vite,\nCerise, des Minis Monstres\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
 }
 
 /* La demande part chez Alex : date limite, e-mail clair, message chaleureux pour le client */

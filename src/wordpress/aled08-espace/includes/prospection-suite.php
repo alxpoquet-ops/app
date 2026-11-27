@@ -386,6 +386,8 @@ function aled08e_px_debrief_texte() {
     $rep = function_exists('aled08e_px_bilan_reponses_lignes') ? aled08e_px_bilan_reponses_lignes() : ['repondus' => [], 'pour_alex' => []];
     if ($rep['pour_alex']) { $l[] = ''; $l[] = 'À VOUS (la bande n’a pas la réponse) :'; foreach ($rep['pour_alex'] as $x) $l[] = $x; }
     if ($rep['repondus']) { $l[] = ''; $l[] = 'Les réponses du jour, et ce que nous avons répondu :'; foreach ($rep['repondus'] as $x) $l[] = $x; }
+    // les réseaux des Minis Monstres (includes/reseaux-lmm.php)
+    if (function_exists('aled08e_lmm_bilan_lignes')) { $l[] = ''; foreach (aled08e_lmm_bilan_lignes() as $x) $l[] = $x; }
     $l[] = '';
     $l[] = 'Sur 7 jours : ' . $n((int) $s['envois'] + (int) $s['relances'], 'mail', 'mails') . ', ' . $n((int) $s['clics_demo'] + (int) $s['clics_apercu'] + (int) $s['clics_site'], 'clic', 'clics') . ', ' . $n($s['repondus'], 'réponse', 'réponses')
         . ' (' . $n($s['interesses'], 'intéressé', 'intéressés') . '), ' . (int) $s['desinscrits'] . ' refus, ' . $n($s['rebonds'], 'adresse fausse', 'adresses fausses') . ', ' . $n($s['commandes'], 'commande', 'commandes') . '.';

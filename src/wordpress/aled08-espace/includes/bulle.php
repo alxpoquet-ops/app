@@ -166,7 +166,7 @@ function aled08e_bulle_contexte($uid) {
     else $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     if ($pause && $retMax) $offre[] = 'Une petite retouche du site par Alex : comprise, jusqu’à ' . $retMax . ' par mois.';
     elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Aucun délai n’est annoncé.' . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
-    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
+    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet « Mes modifications » de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     $ald = [];
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $ald[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis (gratuit, sans engagement)' : aled08e_euro_txt($x['prix']) . ', sans abonnement, réglé par carte au moment de commander');
     if ($ald) $offre[] = 'Les extras, dans l’onglet Extras : ' . implode(' ; ', $ald) . '.';
@@ -175,9 +175,9 @@ function aled08e_bulle_contexte($uid) {
     if (count($fo) > 1) $offre[] = 'Les deux abonnements, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
     elseif (count($fo) === 1) $offre[] = 'Un seul abonnement, sans engagement, qui comprend tout : ' . $fo[0] . '.';
     if (!empty($D['domainePrix'])) $offre[] = 'Nom de domaine (l’adresse du site) avec le forfait Mini : si le client a déjà le sien, le forfait reste à 10 € par mois. S’il n’en a pas, on le lui fournit pour ' . aled08e_euro_txt($D['domainePrix']) . ' de plus par mois, soit 12 € par mois en tout.';
-    if (!empty($D['creationSeule'])) $offre[] = 'Forfait Autonome, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Maintenance et modifications non comprises. Il peut passer à Mini quand il veut, depuis l’onglet Demandes.';
+    if (!empty($D['creationSeule'])) $offre[] = 'Forfait Autonome, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Maintenance et modifications non comprises. Il peut passer à Mini quand il veut, depuis l’onglet « Mes modifications ».';
     $offre[] = 'L’offre (depuis le 21 novembre 2026) : un seul site, ' . implode(' ; ', array_map(function ($t) { return $t['name'] . ' ' . aled08e_euro_txt($t['price']); }, array_values(array_filter((array) ($D['types'] ?? []), function ($t) { return empty($t['retire']); })))) . '. L’option e-commerce ouvre l’onglet « Ma boutique » : le client y gère lui-même ses articles, ses prix, ses promos, ses paiements et sa livraison ; sans l’option, cet onglet est verrouillé, avec un bouton pour la demander. Les pages de visibilité Google se prennent en plus, 10 € la page, depuis l’espace client. Le client modifie lui-même les textes et les photos de ses pages avec « Modifier mon site moi-même ».';
-    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
+    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet « Mes modifications » de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     foreach (aled08e_bulle_outils_faits() as $l) $offre[] = $l;
     $v = aled08e_bulle_ventes_fait();
     if ($v !== '') $offre[] = $v;
@@ -302,7 +302,7 @@ add_action('wp_ajax_aled08e_bulle', function () {
     if ($msg === '') wp_send_json_error(['message' => 'Écrivez votre message, puis envoyez.'], 400);
     if (mb_strlen($msg) > $max) wp_send_json_error(['message' => 'Votre message fait ' . mb_strlen($msg) . ' caractères. La bulle en prend ' . $max . ' : faites plus court, ou passez par l’onglet Mes demandes.'], 400);
     if (!aled08e_famille($uid) && !aled08e_jl_forfait_actif($uid)) wp_send_json_error(['message' => 'Cerise vous répond ici dès que votre abonnement a démarré. En attendant, écrivez à Alex par l’onglet Mes demandes.'], 400);
-    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'On a beaucoup papoté aujourd’hui ! Reviens demain, ou passe par l’onglet Demandes.'], 429);
+    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'On a beaucoup papoté aujourd’hui ! Reviens demain, ou passe par l’onglet « Mes modifications ».'], 429);
     // un seul message à la fois par client (le verrou tombe tout seul à la fin de la requête)
     global $wpdb;
     if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_bulle_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Cerise est déjà en train de vous répondre. Attendez sa réponse.'], 429);

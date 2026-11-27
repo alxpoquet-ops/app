@@ -224,6 +224,7 @@ require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/prospection.php'; // la prospection par e-mail (le Repéreur et le Facteur), éteinte par défaut
 require_once __DIR__ . '/includes/prospection-suite.php'; // l'aperçu personnalisé, ce qui marche, le Répondeur, le débrief du soir, la pause automatique
 require_once __DIR__ . '/includes/prospection-plus.php'; // Alex, 26 novembre 2026 : 40 km au moins, une maquette par métier, le bilan du soir (hébergement)
+require_once __DIR__ . '/includes/reseaux-lmm.php'; // Alex, 26 novembre 2026 : la publication du jour des Minis Monstres (Instagram, Facebook, TikTok en un clic)
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 // la maison et ses ateliers (24 novembre 2026) : les outils par abonnement, le fil de la bande. L'écran de chaque outil
