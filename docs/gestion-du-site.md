@@ -602,3 +602,9 @@ Décision d'Alex du 27 novembre 2026 : « le client ne doit pas être spammé »
 
 Les mails de prospection ont pour adresse de réponse `alx.poquet+lmm@gmail.com` (même boîte, avec « +lmm »). Le Répondeur ne cherche que `to:` cette adresse, plus, pendant 45 jours, les adresses des prospects écrits avant ce changement (`aled08e_px_recherche_reponses()` dans `includes/prospection.php`). Il ne voit plus le reste de la boîte d'Alex.
 
+## Formulaire de contact des sites clients (27 novembre 2026)
+
+Le formulaire posé par l'extension minis-site (1.1.2) parle français partout (22 messages) et la page Contact ne promet aucun délai : « Une question, une envie ? Écrivez-nous ici : votre message nous arrive directement. » Le connecteur 2.16.4 corrige une fois, tout seul, les sites déjà en ligne (texte de la page et messages du formulaire).
+
+Le nom de domaine proposé à un prospect ne met plus l'article devant une forme juridique (« l’EURL Collot » donnait lcollot.fr) ; « l’ » ne se colle que devant une voyelle ou un h (latelier.fr).
+

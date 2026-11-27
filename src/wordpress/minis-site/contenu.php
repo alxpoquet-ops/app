@@ -57,7 +57,7 @@ function minis_site_pages() {
             . minis_site_b_titre('Nos services', 2, 'services')
             . minis_site_b_services()
             . minis_site_b_titre('Nous contacter', 2, 'contact')
-            . minis_site_b_p('Une question, une envie ? Écrivez-nous, on vous répond vite.')
+            . minis_site_b_p('Une question, une envie ? Écrivez-nous ici : votre message nous arrive directement.')
             . minis_site_b_coordonnees()
             . minis_site_b_formulaire()];
     } else {
@@ -100,7 +100,7 @@ function minis_site_pages() {
             . minis_site_b_titre('[Une troisième question ?]', 3) . minis_site_b_p('[La réponse, en deux ou trois phrases simples.]')
             . minis_site_b_titre('[Une quatrième question ?]', 3) . minis_site_b_p('[La réponse, en deux ou trois phrases simples.]')];
         $P['contact'] = ['titre' => 'Contact', 'slug' => 'contact', 'contenu' =>
-            minis_site_b_p('Une question, une envie ? Écrivez-nous, on vous répond vite.')
+            minis_site_b_p('Une question, une envie ? Écrivez-nous ici : votre message nous arrive directement.')
             . minis_site_b_coordonnees()
             . minis_site_b_formulaire()];
         if ($boutique) {

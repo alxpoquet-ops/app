@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Minis Monstres : installation du Site Boutique
  * Description: À mettre sur le WordPress tout neuf d'un client. À l'activation, tout se prépare tout seul : réglages, extensions, pages, menu, lien avec l'espace client. Il ne reste que le visuel.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Une seule de ces trois extensions sert par site. */
 if (defined('MINIS_SITE_TYPE')) return;
 define('MINIS_SITE_TYPE', 'boutique');
-define('MINIS_SITE_VERSION', '1.1.1');
+define('MINIS_SITE_VERSION', '1.1.2');
 define('MINIS_SITE_FICHIER', __FILE__);
 
 require_once __DIR__ . '/contenu.php';
@@ -278,9 +278,25 @@ function minis_site_e_formulaire() {
         'mail_sent_ok' => 'Merci, votre message est bien parti.', // aucun délai promis : le client n'en a pas donné
         'mail_sent_ng' => 'Le message n’a pas pu partir. Réessayez dans un instant.',
         'validation_error' => 'Un champ est à corriger. Regardez juste au-dessus.',
-        'invalid_required' => 'Ce champ est à remplir.',
-        'invalid_email' => 'Cette adresse e-mail ne semble pas complète.',
         'spam' => 'Le message n’a pas pu partir. Réessayez dans un instant.',
+        'accept_terms' => 'Cochez la case pour envoyer votre message.',
+        'invalid_required' => 'Ce champ est à remplir.',
+        'invalid_too_long' => 'Ce texte est trop long.',
+        'invalid_too_short' => 'Ce texte est trop court.',
+        'upload_failed' => 'Le fichier n’a pas pu être envoyé.',
+        'upload_file_type_invalid' => 'Ce type de fichier n’est pas accepté.',
+        'upload_file_too_large' => 'Ce fichier est trop lourd.',
+        'upload_failed_php_error' => 'Le fichier n’a pas pu être envoyé.',
+        'invalid_date' => 'Cette date ne semble pas complète.',
+        'date_too_early' => 'Cette date est trop tôt.',
+        'date_too_late' => 'Cette date est trop tard.',
+        'invalid_number' => 'Ce nombre ne semble pas correct.',
+        'number_too_small' => 'Ce nombre est trop petit.',
+        'number_too_large' => 'Ce nombre est trop grand.',
+        'quiz_answer_not_correct' => 'La réponse n’est pas la bonne.',
+        'invalid_email' => 'Cette adresse e-mail ne semble pas complète.',
+        'invalid_url' => 'Cette adresse ne semble pas complète.',
+        'invalid_tel' => 'Ce numéro de téléphone ne semble pas complet.',
     ]);
     $f->set_properties($p);
     $id = (int) $f->save();

@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.16.3
+ * Version: 2.16.4
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.16.3');
+define('ALEXLIA_CONN_VERSION', '2.16.4');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 require_once __DIR__ . '/copie.php'; // la copie du site (zip HTML et CSS, ou WordPress complet), à la demande de son propriétaire
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
@@ -47,6 +47,50 @@ add_filter('auto_theme_update_send_email', '__return_false');
 add_filter('auto_core_update_send_email', function ($envoyer, $type) { return $type === 'critical' ? $envoyer : false; }, 10, 2);
 add_filter('send_core_update_notification_email', '__return_false');
 add_filter('automatic_updates_send_debug_email', '__return_false');
+
+/* 2.16.4 (Alex, 27 novembre 2026) : le formulaire de contact posé par les Minis Monstres parle français partout, et la page
+ * ne promet aucun délai de réponse que le client n'a pas donné (« on vous répond vite » retiré). Une seule fois par site. */
+function alexlia_conn_cf7_messages() {
+    return [
+        'mail_sent_ok' => 'Merci, votre message est bien parti.', // aucun délai promis : le client n'en a pas donné
+        'mail_sent_ng' => 'Le message n’a pas pu partir. Réessayez dans un instant.',
+        'validation_error' => 'Un champ est à corriger. Regardez juste au-dessus.',
+        'spam' => 'Le message n’a pas pu partir. Réessayez dans un instant.',
+        'accept_terms' => 'Cochez la case pour envoyer votre message.',
+        'invalid_required' => 'Ce champ est à remplir.',
+        'invalid_too_long' => 'Ce texte est trop long.',
+        'invalid_too_short' => 'Ce texte est trop court.',
+        'upload_failed' => 'Le fichier n’a pas pu être envoyé.',
+        'upload_file_type_invalid' => 'Ce type de fichier n’est pas accepté.',
+        'upload_file_too_large' => 'Ce fichier est trop lourd.',
+        'upload_failed_php_error' => 'Le fichier n’a pas pu être envoyé.',
+        'invalid_date' => 'Cette date ne semble pas complète.',
+        'date_too_early' => 'Cette date est trop tôt.',
+        'date_too_late' => 'Cette date est trop tard.',
+        'invalid_number' => 'Ce nombre ne semble pas correct.',
+        'number_too_small' => 'Ce nombre est trop petit.',
+        'number_too_large' => 'Ce nombre est trop grand.',
+        'quiz_answer_not_correct' => 'La réponse n’est pas la bonne.',
+        'invalid_email' => 'Cette adresse e-mail ne semble pas complète.',
+        'invalid_url' => 'Cette adresse ne semble pas complète.',
+        'invalid_tel' => 'Ce numéro de téléphone ne semble pas complet.',
+    ];
+}
+add_action('init', function () {
+    if (get_option('alexlia_conn_fr_formulaire') === '1') return;
+    update_option('alexlia_conn_fr_formulaire', '1', false);
+    $avant = 'Une question, une envie ? Écrivez-nous, on vous répond vite.';
+    $apres = 'Une question, une envie ? Écrivez-nous ici : votre message nous arrive directement.';
+    foreach (get_posts(['post_type' => 'page', 'post_status' => 'any', 'numberposts' => 100, 's' => 'on vous répond vite']) as $p) {
+        if (strpos($p->post_content, $avant) !== false) wp_update_post(['ID' => $p->ID, 'post_content' => str_replace($avant, $apres, $p->post_content)]);
+    }
+    $id = (int) get_option('minis_site_formulaire');
+    if ($id && class_exists('WPCF7_ContactForm') && ($f = WPCF7_ContactForm::get_instance($id))) {
+        $pr = $f->get_properties();
+        $f->set_properties(['messages' => array_merge(is_array($pr['messages'] ?? null) ? $pr['messages'] : [], alexlia_conn_cf7_messages())]);
+        $f->save();
+    }
+}, 99);
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)

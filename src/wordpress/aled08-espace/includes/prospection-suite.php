@@ -250,9 +250,13 @@ function aled08e_px_domaine_candidats($nom, $ville = '', $article = '') {
     $colle = implode('', $m);
     $v = aled08e_px_domaine_mots($ville, false);
     $art = str_replace("'", '’', (string) $article);
+    // l'article ne va devant que s'il va avec le nom lui-même : pas devant une forme juridique (« l’EURL Collot » ne donne
+    // jamais « lcollot.fr », Alex, 27 novembre 2026), et « l’ » seulement devant une voyelle ou un h (l’atelier → latelier.fr)
+    $premier = strtolower((string) (preg_split('/[^a-z0-9]+/', strtolower(remove_accents(preg_replace("/^(?:(?:le|la|les)\s+|l['’])/iu", '', trim((string) $nom)))), -1, PREG_SPLIT_NO_EMPTY)[0] ?? ''));
+    if (in_array($premier, ['sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'scop', 'ets', 'etablissements'], true)) $art = '';
     $c = [$tiret . '.fr', $colle . '.fr'];
     if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . '-' . $tiret . '.fr';
-    if ($art === 'l’') $c[] = 'l' . $tiret . '.fr';
+    if ($art === 'l’' && preg_match('/^[aeiouyh]/', $m[0])) $c[] = 'l' . $tiret . '.fr';
     if ($v) $c[] = $tiret . '-' . implode('-', $v) . '.fr';
     $c[] = $tiret . '.com';
     // une forme correcte (lettres, chiffres, tirets ; 3 à 50 caractères), sans doublon, et jamais un mot en moins
