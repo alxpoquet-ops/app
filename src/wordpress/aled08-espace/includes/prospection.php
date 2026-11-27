@@ -130,7 +130,29 @@ function aled08e_px_telephone() {
 /* D'où partent les mails, et où arrivent les réponses. Une adresse d'envoi à part protège les mails des clients :
  * si des prospects signalent nos messages, ce n'est pas l'adresse des clients qui en souffre. */
 function aled08e_px_expediteur() { $e = sanitize_email((string) get_option('aled08_prospection_expediteur', '')); return is_email($e) ? $e : aled08e_mail_from(); }
-function aled08e_px_reponse() { $e = sanitize_email((string) get_option('aled08_prospection_reponse', '')); return is_email($e) ? $e : aled08e_to(); }
+/* L'adresse où arrivent les réponses des prospects. Une boîte Gmail reçoit à « +lmm » (Alex, 27 novembre 2026) : le Répondeur ne
+ * cherche que ces réponses-là, et ne voit jamais le reste de la boîte d'Alex (banque, Urssaf, employeur…). */
+function aled08e_px_reponse() {
+    $e = sanitize_email((string) get_option('aled08_prospection_reponse', ''));
+    $e = is_email($e) ? $e : aled08e_to();
+    if (preg_match('/^([^+@]+)@(gmail\.com|googlemail\.com)$/i', $e, $m)) {
+        if (!get_option('aled08_px_alias_depuis')) update_option('aled08_px_alias_depuis', time(), false);
+        return $m[1] . '+lmm@' . strtolower($m[2]);
+    }
+    return $e;
+}
+/* La recherche Gmail des réponses : l'adresse « +lmm », plus, pendant 45 jours, les adresses des prospects écrits avant elle */
+function aled08e_px_recherche_reponses() {
+    $q = ['to:' . aled08e_px_reponse()];
+    $depuis = (int) get_option('aled08_px_alias_depuis', 0);
+    if ($depuis > 0 && $depuis > time() - 45 * DAY_IN_SECONDS) {
+        $ids = get_posts(['post_type' => ALED08E_CPT_PROSPECT, 'post_status' => 'private', 'numberposts' => 400, 'fields' => 'ids', 'suppress_filters' => true,
+            'meta_query' => [['key' => '_aled08_px_envoye_le', 'value' => [time() - 45 * DAY_IN_SECONDS, $depuis], 'compare' => 'BETWEEN', 'type' => 'NUMERIC']]]);
+        foreach ($ids as $id) { $m = sanitize_email((string) aled08e_px_meta($id, 'email')); if (is_email($m)) $q[] = 'from:' . $m; }
+    }
+    $q = array_values(array_unique($q));
+    return (count($q) > 1 ? '{' . implode(' ', $q) . '}' : $q[0]) . ' newer_than:5d -label:LMM-traite';
+}
 function aled08e_px_remise() { return aled08e_px_offre()['remise']; }
 /* Le prix de création du Site Essentiel (data.json), et le prix avec la remise du mail */
 function aled08e_px_prix() {

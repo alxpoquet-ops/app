@@ -344,7 +344,7 @@ function aled08e_px_poste_repondeur() {
     $out['travail'] = [
         'adresse_reponses' => $adr, 'adresse_envoi' => $exp, 'etiquette_gmail' => 'LMM-traite',
         'recherches_gmail' => [
-            'reponses' => 'to:' . $adr . ' newer_than:5d -label:LMM-traite -from:' . $exp,
+            'reponses' => aled08e_px_recherche_reponses(),
             'adresses_fausses' => 'from:(mailer-daemon OR postmaster) newer_than:5d -label:LMM-traite',
         ],
         'faits' => aled08e_px_faits(),

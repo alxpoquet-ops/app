@@ -598,3 +598,7 @@ Décision d'Alex du 26 novembre 2026 : tout en gratuit, et la demande d'accès c
 
 Décision d'Alex du 27 novembre 2026 : « le client ne doit pas être spammé ». Depuis le connecteur 2.16.3, WordPress ne prévient plus le client par e-mail quand une extension, un thème ou WordPress se met à jour tout seul. Seul le cas grave reste (WordPress n'a pas pu se mettre à jour et le site risque d'être cassé). Pour poser une nouvelle version du connecteur sans le dernier mail de l'ancienne, retenir l'annonce le temps de l'installer soi-même : `wp option update aled08_connecteur_annonce <version actuelle>`, installer le paquet sur chaque site (route `/atelier/pose` ou outil d'installation), puis `wp option delete aled08_connecteur_annonce`.
 
+## Le Répondeur ne lit que les réponses à la prospection (27 novembre 2026)
+
+Les mails de prospection ont pour adresse de réponse `alx.poquet+lmm@gmail.com` (même boîte, avec « +lmm »). Le Répondeur ne cherche que `to:` cette adresse, plus, pendant 45 jours, les adresses des prospects écrits avant ce changement (`aled08e_px_recherche_reponses()` dans `includes/prospection.php`). Il ne voit plus le reste de la boîte d'Alex.
+
