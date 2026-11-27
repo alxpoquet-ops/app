@@ -794,7 +794,7 @@ function comparatifLignes() {
       ['Un support en ligne', 'pour l’outil, pas pour votre site'],
     ] },
     { id: 'delai', l: 'Délai', c: [
-      ['Quelques jours', `la création elle-même prend ${offreSite.site.delai}, une fois votre questionnaire envoyé`],
+      ['Moins d’une semaine', 'une fois votre questionnaire envoyé, votre site est en ligne'],
       ['Selon son planning', 'fixé au devis'],
       ['Selon le planning de l’équipe', 'fixé au devis'],
       ['À votre rythme', 'le temps de tout construire'],
