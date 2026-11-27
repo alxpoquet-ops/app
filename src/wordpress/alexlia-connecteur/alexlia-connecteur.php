@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.16.2
+ * Version: 2.16.3
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.16.2');
+define('ALEXLIA_CONN_VERSION', '2.16.3');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 require_once __DIR__ . '/copie.php'; // la copie du site (zip HTML et CSS, ou WordPress complet), à la demande de son propriétaire
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
@@ -38,6 +38,15 @@ add_filter('pre_set_site_transient_update_plugins', function ($t) {
 add_filter('auto_update_plugin', function ($maj, $item) {
     return (is_object($item) && ($item->plugin ?? '') === plugin_basename(__FILE__)) ? true : $maj;
 }, 10, 2);
+
+/* 2.16.3 (Alex, 27 novembre 2026 : « le client ne doit pas être spammé ») : les mises à jour automatiques se font sans
+ * prévenir le client par e-mail (extensions, thèmes, WordPress). Seul le cas grave est gardé : WordPress n'a pas pu se mettre
+ * à jour et le site risque d'être cassé. La surveillance des sites, elle, passe par les Minis Monstres. */
+add_filter('auto_plugin_update_send_email', '__return_false');
+add_filter('auto_theme_update_send_email', '__return_false');
+add_filter('auto_core_update_send_email', function ($envoyer, $type) { return $type === 'critical' ? $envoyer : false; }, 10, 2);
+add_filter('send_core_update_notification_email', '__return_false');
+add_filter('automatic_updates_send_debug_email', '__return_false');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)

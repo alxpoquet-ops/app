@@ -594,3 +594,7 @@ Décision d'Alex du 26 novembre 2026 : tout en gratuit, et la demande d'accès c
 - **Pour les agents** : `GET /aled08/v1/atelier/reseaux` (état, 14 dernières publications) et `POST` avec `faire` : `preparer` (réécrire celle du jour), `publier`, `pause`, `reprendre`.
 - Code : `includes/reseaux-lmm.php`.
 
+## Pas de mail de mise à jour chez les clients (connecteur 2.16.3)
+
+Décision d'Alex du 27 novembre 2026 : « le client ne doit pas être spammé ». Depuis le connecteur 2.16.3, WordPress ne prévient plus le client par e-mail quand une extension, un thème ou WordPress se met à jour tout seul. Seul le cas grave reste (WordPress n'a pas pu se mettre à jour et le site risque d'être cassé). Pour poser une nouvelle version du connecteur sans le dernier mail de l'ancienne, retenir l'annonce le temps de l'installer soi-même : `wp option update aled08_connecteur_annonce <version actuelle>`, installer le paquet sur chaque site (route `/atelier/pose` ou outil d'installation), puis `wp option delete aled08_connecteur_annonce`.
+

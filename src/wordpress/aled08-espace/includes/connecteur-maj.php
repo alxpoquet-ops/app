@@ -28,6 +28,9 @@ function aled08e_connecteur_version() {
 add_action('rest_api_init', function () {
     register_rest_route('aled08/v1', '/connecteur', ['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function () {
         $v = aled08e_connecteur_version();
+        // une version peut être retenue le temps de la poser soi-même sur les sites (sans le mail de mise à jour de WordPress)
+        $ann = (string) get_option('aled08_connecteur_annonce', '');
+        if ($v !== '' && $ann !== '' && version_compare($ann, $v, '<')) $v = $ann;
         if ($v === '') return new WP_Error('aled08_connecteur', 'Paquet introuvable.', ['status' => 404]);
         return new WP_REST_Response(['version' => $v, 'paquet' => plugins_url('pkg/alexlia-connecteur.zip', dirname(__DIR__) . '/aled08-espace.php')], 200);
     }]);
