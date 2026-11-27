@@ -29,11 +29,11 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 **La forme du premier mail** (Alex, 26 novembre 2026 : « trop de texte », « plus familial et vendeur ») : court, chaleureux, en petites parties à titre coloré, dans cet ordre :
 
 1. « Bonjour ! » et la phrase vraie (et l'encadré « Nous avons fait le test » s'il y a une mesure) ;
-2. « On a imaginé votre site » : la maquette de son métier, à son nom (branchée le 26 novembre 2026) ;
-3. « Un site, c'est quoi ? » : une vitrine ouverte jour et nuit, et une adresse à soi ; puis les trois points du métier ;
-4. « Et pour vous, ça demande quoi ? » : un questionnaire d'une dizaine de minutes ; on écrit les textes, on s'occupe de tout ; en ligne en moins d’une semaine ;
-5. « Tout compris dans le prix » : « Offre de lancement », le prix et « Possibilité de fractionner en 4 fois » (Alex, 26 novembre 2026 : ni montant par échéance, ni « sans frais »), la date de fin, **sans le prix d'après** (Alex, 26 novembre 2026), puis ce qui est compris (`aled08e_px_inclus()`). Jamais « réduction », « remise » ni « au lieu de » : aucun prix plus haut n'a été pratiqué (le site a été vendu 399 € et 400 € avant), une réduction annoncée serait trompeuse (prix de référence : le plus bas des 30 derniers jours) ;
-6. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ; puis le lien « Essayer l'espace client de démo » (un lien, pas de capture : Alex, 26 novembre 2026) ;
+2. « Un site, c'est quoi ? » : une vitrine ouverte jour et nuit, et une adresse à soi ; puis les trois points du métier ;
+3. « Et pour vous, ça demande quoi ? » : un questionnaire d'une dizaine de minutes ; on écrit les textes, on s'occupe de tout ; en ligne en moins d’une semaine ;
+4. « Tout compris dans le prix » : « Offre de lancement », le prix et « Possibilité de fractionner en 4 fois » (Alex, 26 novembre 2026 : ni montant par échéance, ni « sans frais »), la date de fin, **sans le prix d'après** (Alex, 26 novembre 2026), puis ce qui est compris (`aled08e_px_inclus()`). Jamais « réduction », « remise » ni « au lieu de » : aucun prix plus haut n'a été pratiqué (le site a été vendu 399 € et 400 € avant), une réduction annoncée serait trompeuse (prix de référence : le plus bas des 30 derniers jours) ;
+5. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ; puis le lien « Essayer l'espace client de démo » (un lien, pas de capture : Alex, 26 novembre 2026) ;
+6. « On a imaginé votre site » : la maquette de son métier, à son nom, **juste sous la démo de l'espace client** (Alex, 27 novembre 2026 : plus bas dans le mail) ;
 7. une ligne pour les trois arguments (moins cher qu'une agence, un vrai suivi, tout vous appartient), les deux boutons, puis **le téléphone d'Alex**, pour appeler ou laisser un SMS, (`prospection.telephone` dans la configuration ; tant qu'il est vide, « répondez simplement à ce mail ») ;
 8. « À très vite, la bande des Minis Monstres ».
 

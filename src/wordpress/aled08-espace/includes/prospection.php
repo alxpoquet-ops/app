@@ -728,7 +728,6 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $corps = '<h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#2e2a47;">Bonjour&nbsp;! &#128075;</h1>'
             . $P($phraseH)
             . $constatH
-            . ($avecApercu ? $titre('On a imaginé votre site') . $P('Pour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site ' . esc_html($deX) . ', en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
             . $titre('Un site, c’est quoi&nbsp;?')
             . $P('Votre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous' . ($dom !== '' ? ' (comme <b>' . esc_html($dom) . '</b>)' : '') . ' à mettre sur vos cartes, votre véhicule et vos factures.', '0 0 8px')
             . ($ptsH ? $liste($ptsH, '#f6f3ff', '') : '')
@@ -740,6 +739,8 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $titre('L’hébergement aussi, si vous voulez', '#176a4c')
             . $P(esc_html($heb), '0 0 10px')
             . $P('Votre espace client : vos modifications, vos statistiques et vos tutos, au même endroit, depuis votre téléphone. <a href="' . esc_url($l['demo']) . '" style="color:#176a4c;font-weight:bold;">Essayer l’espace client de démo</a>', '8px 0 14px')
+            // la maquette du métier, juste sous la démo de l'espace client (Alex, 27 novembre 2026)
+            . ($avecApercu ? $titre('On a imaginé votre site') . $P('Pour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site ' . esc_html($deX) . ', en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
             . $domH
             . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html(rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
             . $boutons
@@ -775,11 +776,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' : ' . rtrim($x['texte'], '.') . ".\n";
         $tel = aled08e_px_telephone();
         $texte = "Bonjour !\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '')
-            . ($avecApercu ? "ON A IMAGINÉ VOTRE SITE\nPour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site " . $deX . ", en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.\n" . $l['apercu'] . "\n\n" : '')
             . "UN SITE, C’EST QUOI ?\nVotre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous" . ($dom !== '' ? ' (comme ' . $dom . ')' : '') . " à mettre sur vos cartes, votre véhicule et vos factures.\n" . $pt . "\n"
             . "ET POUR VOUS, ÇA DEMANDE QUOI ?\nPresque rien ! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. On écrit les textes, on s’occupe de tout, et votre site est en ligne en moins d’une semaine.\n\n"
             . "TOUT COMPRIS DANS LE PRIX\n" . $codeT . "\n- " . implode("\n- ", aled08e_px_inclus()) . "\n\n"
             . "L’HÉBERGEMENT AUSSI, SI VOUS VOULEZ\n" . aled08e_px_hebergement() . "\nVotre espace client : vos modifications, vos statistiques et vos tutos, au même endroit. Essayez la démo : " . $l['demo'] . "\n\n"
+            . ($avecApercu ? "ON A IMAGINÉ VOTRE SITE\nPour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site " . $deX . ", en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.\n" . $l['apercu'] . "\n\n" : '')
             . ($domT !== '' ? $domT . "\n\n" : '')
             . 'Une petite famille, de vrais prix : ' . rtrim(aled08e_px_atouts()[0][0], '.') . ", un vrai suivi, et tout vous appartient.\n\n"
             . 'Voir les sites déjà en ligne : ' . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
