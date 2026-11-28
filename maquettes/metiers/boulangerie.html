@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ENTREPRISE}} : maquette d'exemple</title>
+<!--
+  Les Minis Monstres : maquette par métier, boulangerie-pâtisserie (nouvelle génération, 28 novembre 2026).
+  Sa signature : un petit croissant qui se balade le long de la page quand on la fait défiler, de la farine qui tombe
+  doucement sur l'accueil, de la vapeur qui sort du four. Tout est en CSS (aucun script : la page s'ouvre avec
+  script-src 'none'). Sans « animation-timeline » (anciens navigateurs), le croissant reste sagement en haut.
+  Remplie pour chaque prospect : {{ENTREPRISE}}, {{VILLE}}, {{INITIALE}}. Tout le reste est un exemple à adapter.
+  Photos : Pexels (licence libre). Dessins : faits pour Les Minis Monstres.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{--farine:#FBF7F0;--mie:#F4EADB;--mie2:#EAD9C0;--croute:#8A4A1E;--croute-d:#6B3713;--four:#2F1D12;--ble:#C79A3E;--ble-c:#F1DFAE;--sauge:#5F6E4F;--texte:#3A2A1F;--doux:#6E5B4C;--ligne:#E6D8C4;--ombre:0 18px 40px rgba(47,29,18,.13)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--farine);color:var(--texte);font-family:"DM Sans",system-ui,sans-serif;font-size:17px;line-height:1.65;overflow-x:hidden}
+h1,h2,h3{font-family:"Playfair Display",Georgia,serif;color:var(--four);line-height:1.12;margin:0 0 14px;font-weight:700}
+h2{font-size:clamp(30px,4vw,46px)}
+p{margin:0 0 14px}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.exemple{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:999px;background:var(--ble-c);color:#6B4A0E;font:700 11px/1.6 "DM Sans",sans-serif;letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
+.surtitre{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--croute)}
+.surtitre::before{content:"";width:28px;height:2px;background:var(--ble);border-radius:2px}
+
+/* ---------- maquette : bandeau et filigrane ---------- */
+.bandeau{margin:0;padding:9px 18px;background:var(--four);color:#F6E9D6;font-size:13.5px;text-align:center}
+.bandeau b{color:var(--ble-c)}
+.filigrane{position:fixed;inset:0;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.filigrane span{transform:rotate(-24deg);font:800 clamp(30px,6vw,74px)/1 "DM Sans",sans-serif;letter-spacing:.08em;color:rgba(138,74,30,.07);white-space:nowrap}
+
+/* ---------- en-tête ---------- */
+.tete{position:sticky;top:0;z-index:50;background:rgba(251,247,240,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.tete .wrap{display:flex;align-items:center;gap:22px;height:76px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.tampon{position:relative;width:48px;height:48px;border-radius:50%;background:var(--croute);color:var(--ble-c);display:grid;place-items:center;font:700 22px/1 "Playfair Display",serif}
+.tampon::after{content:"";position:absolute;inset:4px;border-radius:50%;border:1.5px dashed rgba(241,223,174,.55)}
+.logo b{font:700 21px/1.1 "Playfair Display",serif;color:var(--four)}
+.logo small{display:block;font-size:12px;color:var(--doux);letter-spacing:.08em;text-transform:uppercase}
+.menu{display:flex;gap:26px;margin-left:auto}
+.menu a{text-decoration:none;font-weight:500;font-size:15.5px;position:relative}
+.menu a::after{content:"";position:absolute;left:0;right:100%;bottom:-6px;height:2px;background:var(--ble);transition:right .3s}
+.menu a:hover::after{right:0}
+.btn-appel{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;background:var(--four);color:#fff;text-decoration:none;font-weight:700;font-size:15px;transition:transform .2s,background .2s}
+.btn-appel:hover{background:var(--croute);transform:translateY(-2px)}
+.soleil{width:40px;height:40px;border-radius:50%;border:1px solid var(--ligne);display:grid;place-items:center;color:var(--croute)}
+.burger{display:none;width:42px;height:42px;border-radius:12px;background:var(--mie);place-items:center}
+
+/* ---------- accueil ---------- */
+.accueil{position:relative;overflow:hidden;background:radial-gradient(1200px 600px at 85% 10%,#F6E6CC 0,transparent 60%),var(--farine)}
+.accueil .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-top:64px;padding-bottom:84px}
+.accueil h1{font-size:clamp(40px,5.6vw,72px);letter-spacing:-.01em}
+.accueil h1 em{font-style:italic;color:var(--croute);position:relative;white-space:nowrap}
+.accueil h1 em svg{position:absolute;left:-2%;bottom:-.18em;width:104%;height:.42em;overflow:visible}
+.accueil h1 em path{stroke-dasharray:420;stroke-dashoffset:420;animation:trait 1.4s .5s ease-out forwards}
+@keyframes trait{to{stroke-dashoffset:0}}
+.chapeau{font-size:19px;color:var(--doux);max-width:520px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px 26px;margin:28px 0 30px}
+.btn-four{display:inline-flex;align-items:center;gap:12px;padding:16px 26px;border-radius:999px;background:var(--croute);color:#fff;text-decoration:none;font-weight:700;box-shadow:0 10px 24px rgba(138,74,30,.3);transition:transform .25s,box-shadow .25s,background .25s}
+.btn-four span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);transition:transform .3s}
+.btn-four:hover{background:var(--croute-d);transform:translateY(-2px);box-shadow:0 16px 30px rgba(138,74,30,.36)}
+.btn-four:hover span{transform:translateX(4px) rotate(-12deg)}
+.btn-lien{display:inline-flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;color:var(--four);padding-bottom:4px;background:linear-gradient(var(--ble),var(--ble)) left bottom/100% 2px no-repeat;transition:background-size .3s}
+.btn-lien:hover{background-size:40% 2px}
+.points{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:14.5px;color:var(--doux)}
+.points span{display:inline-flex;align-items:center;gap:8px}
+.points span::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ble)}
+
+.vitrine{position:relative;justify-self:center;width:min(440px,100%)}
+.arche{position:relative;border-radius:220px 220px 26px 26px;overflow:hidden;aspect-ratio:4/5.2;box-shadow:var(--ombre);border:10px solid #fff}
+.arche img{width:100%;height:100%;object-fit:cover;transform:scale(1.04)}
+.vapeur{position:absolute;left:50%;top:-74px;width:150px;height:110px;transform:translateX(-50%)}
+.vapeur path{fill:none;stroke:#CDB79A;stroke-width:5;stroke-linecap:round;opacity:0;animation:vapeur 4.2s ease-in-out infinite}
+.vapeur path:nth-child(2){animation-delay:1.3s}
+.vapeur path:nth-child(3){animation-delay:2.6s}
+@keyframes vapeur{0%{opacity:0;transform:translateY(22px)}35%{opacity:.85}100%{opacity:0;transform:translateY(-26px)}}
+.badge{position:absolute;left:-58px;bottom:44px;width:136px;height:136px;border-radius:50%;background:var(--four);color:var(--ble-c);display:grid;place-items:center;box-shadow:var(--ombre)}
+.badge>svg{position:absolute;inset:0;width:100%;height:100%;animation:tourne 22s linear infinite}
+.badge text{font:700 11.5px "DM Sans",sans-serif;letter-spacing:3px;fill:var(--ble-c);text-transform:uppercase}
+.badge i{font-style:normal;font-size:34px}
+@keyframes tourne{to{transform:rotate(360deg)}}
+.etiquette{position:absolute;right:-26px;top:58px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:var(--ombre);font-size:14px;line-height:1.35;transform:rotate(3deg)}
+.etiquette b{display:block;font:700 17px "Playfair Display",serif;color:var(--croute)}
+/* la farine qui tombe */
+.farine{position:absolute;inset:0;pointer-events:none}
+.farine i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(199,154,62,.35);opacity:.0;animation:tombe linear infinite}
+@keyframes tombe{0%{transform:translate(0,0);opacity:0}10%{opacity:.9}100%{transform:translate(40px,640px);opacity:0}}
+
+/* ---------- le croissant qui se balade (signature) ---------- */
+.balade{position:fixed;right:20px;top:120px;bottom:96px;width:58px;z-index:45;pointer-events:none}
+.balade::before{content:"";position:absolute;left:28px;top:4px;bottom:34px;border-left:2px dashed rgba(138,74,30,.22)}
+.balade .croissant{position:absolute;left:1px;top:0;width:56px;height:56px;filter:drop-shadow(0 6px 8px rgba(47,29,18,.22))}
+.balade .sac{position:absolute;left:7px;bottom:-8px;width:44px;height:46px}
+@supports (animation-timeline: scroll()){
+ .balade .croissant{animation:balade linear both;animation-timeline:scroll(root)}
+ @media (max-width:960px){.balade .croissant{animation-name:balade-tel}}
+ @keyframes balade-tel{0%{left:0;transform:rotate(-10deg)}50%{transform:translateY(-5px) rotate(190deg)}100%{left:calc(100% - 68px);transform:rotate(370deg)}}
+ @keyframes balade{0%{top:0;transform:rotate(-24deg)}20%{transform:translateX(-14px) rotate(60deg)}40%{transform:translateX(10px) rotate(160deg)}60%{transform:translateX(-12px) rotate(250deg)}80%{transform:translateX(8px) rotate(330deg)}100%{top:calc(100% - 92px);transform:rotate(380deg)}}
+ /* les sections apparaissent quand on arrive dessus */
+ .monte{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 80%}
+ @keyframes monte{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+ .zoom img{animation:zoom linear both;animation-timeline:view()}
+ @keyframes zoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+}
+
+/* ---------- la fournée du jour ---------- */
+.section{padding:96px 0}
+.tete-section{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:42px}
+.tete-section p{max-width:470px;color:var(--doux);margin:0}
+.etal{display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-auto-rows:minmax(230px,auto);gap:22px}
+.piece{position:relative;border-radius:26px;background:#fff;border:1px solid var(--ligne);padding:26px;overflow:hidden;transition:transform .35s,box-shadow .35s}
+.piece:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:var(--ombre)}
+.piece .num{font:italic 600 15px "Playfair Display",serif;color:var(--ble)}
+.piece h3{font-size:25px;margin:6px 0 8px}
+.piece p{color:var(--doux);font-size:15.5px;margin:0}
+.piece.photo{grid-row:span 2;padding:0;border:0;color:#fff;display:flex;align-items:flex-end}
+.piece.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.piece.photo:hover img{transform:scale(1.06)}
+.piece.photo .voile{position:relative;padding:30px;background:linear-gradient(transparent,rgba(47,29,18,.85) 48%);width:100%}
+.piece.photo h3,.piece.photo .num{color:#fff}
+.piece.photo p{color:#F3E6D4}
+.piece.creme{background:var(--mie)}
+.piece.nuit{background:var(--four);border-color:var(--four)}
+.piece.nuit h3{color:#fff}.piece.nuit p{color:#E5D3BC}
+.piece .picto{width:54px;height:54px;border-radius:16px;background:var(--ble-c);display:grid;place-items:center;margin-bottom:16px}
+.piece.nuit .picto{background:rgba(241,223,174,.14)}
+.btn-ticket{position:relative;display:inline-block;margin-top:16px;padding:9px 22px 9px 16px;background:var(--ble);color:var(--four);font-weight:700;font-size:14.5px;text-decoration:none;clip-path:polygon(0 0,100% 0,calc(100% - 12px) 50%,100% 100%,0 100%);transition:padding .25s}
+.btn-ticket:hover{padding-right:32px}
+
+/* ---------- les fournées ---------- */
+.fournees{background:var(--four);color:#F3E6D4;position:relative;overflow:hidden}
+.fournees::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 260px at 15% 0,rgba(199,154,62,.25),transparent 70%),radial-gradient(500px 260px at 90% 100%,rgba(199,154,62,.18),transparent 70%)}
+.fournees .wrap{position:relative}
+.fournees h2{color:#fff}
+.frise{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:44px;position:relative}
+.frise::before{content:"";position:absolute;left:8%;right:8%;top:37px;height:2px;background:repeating-linear-gradient(90deg,var(--ble) 0 10px,transparent 10px 20px)}
+.etape-four{text-align:center;padding:0 22px;position:relative}
+.four-rond{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;background:#3E2819;border:2px solid var(--ble);display:grid;place-items:center;position:relative}
+.four-rond::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(199,154,62,.3);animation:pulse 2.8s ease-out infinite}
+@keyframes pulse{from{transform:scale(.9);opacity:1}to{transform:scale(1.25);opacity:0}}
+.etape-four h3{color:#fff;font-size:23px}
+.etape-four .heure{display:inline-block;margin-bottom:10px;padding:3px 12px;border-radius:999px;border:1px dashed rgba(241,223,174,.5);font-size:13px;color:var(--ble-c)}
+
+/* ---------- savoir-faire ---------- */
+.atelier{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.cadre{position:relative}
+.cadre .zoom{border-radius:28px;overflow:hidden;box-shadow:var(--ombre);aspect-ratio:5/4}
+.cadre .zoom img{width:100%;height:100%;object-fit:cover}
+.cadre .rond-photo{position:absolute;right:-30px;bottom:-34px;width:42%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:9px solid var(--farine);box-shadow:var(--ombre)}
+.cadre .rond-photo img{width:100%;height:100%;object-fit:cover}
+.liste-ble{list-style:none;padding:0;margin:22px 0 28px}
+.liste-ble li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--ligne)}
+.liste-ble li svg{flex:0 0 26px;margin-top:2px}
+.btn-rond{display:inline-flex;align-items:center;gap:14px;text-decoration:none;font-weight:700;color:var(--four)}
+.btn-rond i{width:52px;height:52px;border-radius:50%;border:2px solid var(--four);display:grid;place-items:center;font-style:normal;transition:background .25s,color .25s,transform .3s}
+.btn-rond:hover i{background:var(--four);color:#fff;transform:rotate(-45deg)}
+
+/* ---------- commander ---------- */
+.commande{background:var(--mie)}
+.cartes-etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.carte-etape{background:var(--farine);border-radius:24px;padding:30px;position:relative;border:1px solid var(--mie2)}
+.carte-etape b{display:block;font:italic 700 46px/1 "Playfair Display",serif;color:var(--ble);margin-bottom:12px}
+.carte-etape h3{font-size:23px}
+.carte-etape p{color:var(--doux);margin:0}
+
+/* ---------- avis ---------- */
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.avis-carte{background:#fff;border:1px dashed var(--mie2);border-radius:24px;padding:28px;color:var(--doux);font-size:15.5px}
+.avis-carte .etoiles{color:var(--ble);letter-spacing:4px;margin-bottom:10px}
+.avis-carte .vide{height:10px;border-radius:6px;background:var(--mie);margin:8px 0}
+.avis-carte .vide.court{width:60%}
+
+/* ---------- nous trouver ---------- */
+.trouver{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.carte-plan{border-radius:26px;overflow:hidden;min-height:360px;position:relative;background:
+ linear-gradient(90deg,transparent 48%,#E7D6BC 48% 52%,transparent 52%),linear-gradient(0deg,transparent 46%,#E7D6BC 46% 50%,transparent 50%),linear-gradient(32deg,transparent 60%,#EFE2CD 60% 64%,transparent 64%),#F6EDDF;border:1px solid var(--ligne)}
+.epingle{position:absolute;left:50%;top:46%;transform:translate(-50%,-100%);animation:saute 2.4s ease-in-out infinite}
+@keyframes saute{50%{transform:translate(-50%,-112%)}}
+.carte-plan .lieu{position:absolute;left:22px;bottom:22px;background:#fff;border-radius:16px;padding:14px 18px;box-shadow:var(--ombre);font-size:15px}
+.contact{background:#fff;border-radius:26px;padding:32px;border:1px solid var(--ligne)}
+.horaires{display:grid;grid-template-columns:1fr auto;gap:8px 18px;margin:16px 0 24px;font-size:15.5px}
+.horaires span:nth-child(even){color:var(--doux)}
+.champ{border:1.5px solid var(--ligne);border-radius:14px;padding:13px 16px;margin-bottom:12px;color:#A08B78;font-size:15px;background:var(--farine)}
+.champ.grand{height:96px}
+.btn-plein{display:block;text-align:center;padding:15px;border-radius:14px;background:var(--four);color:#fff;font-weight:700;text-decoration:none;transition:background .25s}
+.btn-plein:hover{background:var(--croute)}
+
+/* ---------- pied ---------- */
+.pied{background:var(--four);color:#D9C6AE;padding:56px 0 110px;font-size:15px;position:relative;overflow:hidden}
+.pied .wrap{display:flex;flex-wrap:wrap;gap:28px 60px;justify-content:space-between;position:relative}
+.pied b{color:#fff;font:700 22px "Playfair Display",serif}
+.pied::before{content:"";position:absolute;inset:0;opacity:.07;background-image:radial-gradient(circle at 10px 10px,#F1DFAE 2px,transparent 3px);background-size:26px 26px}
+
+/* ---------- téléphone ---------- */
+@media (max-width:960px){
+ .menu,.btn-appel span.txt{display:none}.burger{display:grid}
+ .accueil .wrap,.atelier,.trouver{grid-template-columns:1fr}
+ .vitrine{margin-top:40px}.badge{left:-14px;width:112px;height:112px}.etiquette{right:-6px}
+ .etal{grid-template-columns:1fr 1fr}.piece.photo{grid-column:span 2;grid-row:auto;min-height:340px}
+ .frise,.cartes-etapes,.avis{grid-template-columns:1fr}.frise::before{display:none}.etape-four{margin-bottom:34px}
+ .tete-section{flex-direction:column;align-items:flex-start}
+ .tete .wrap{height:66px;gap:10px}.tampon{width:40px;height:40px;font-size:18px;flex:0 0 40px}.logo{min-width:0}.logo b{font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}.logo small{display:none}.btn-appel{padding:10px 13px}.soleil{width:36px;height:36px}
+ .balade{left:10px;right:10px;top:72px;bottom:auto;width:auto;height:34px}
+ .balade::before{left:6px;right:40px;top:16px;bottom:auto;border-left:0;border-top:2px dashed rgba(138,74,30,.25)}
+ .balade .croissant{width:34px;height:30px;top:0}.balade .sac{left:auto;right:0;bottom:auto;top:0;width:28px;height:30px}
+ .cadre .rond-photo{right:8px}
+}
+@media (max-width:560px){.bandeau{font-size:12px;padding:7px 12px}.wrap{padding:0 18px}.etal{grid-template-columns:1fr}.piece.photo{grid-column:auto}.section{padding:70px 0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.accueil h1 em path{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+<div class="filigrane" aria-hidden="true"><span>MAQUETTE D’EXEMPLE · LES MINIS MONSTRES</span></div>
+
+<!-- la signature : le croissant qui se balade quand on fait défiler la page, jusqu'au sac en papier -->
+<div class="balade" aria-hidden="true">
+ <svg class="croissant" viewBox="0 0 64 56"><defs><linearGradient id="doreA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4C877"/><stop offset=".6" stop-color="#DB943C"/><stop offset="1" stop-color="#A9611F"/></linearGradient><linearGradient id="doreB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7A955"/><stop offset="1" stop-color="#9C561B"/></linearGradient></defs><g stroke="#7A4314" stroke-width="2" stroke-linejoin="round"><ellipse cx="9" cy="42" rx="7" ry="5" transform="rotate(-60 9 42)" fill="url(#doreB)"/><ellipse cx="55" cy="42" rx="7" ry="5" transform="rotate(60 55 42)" fill="url(#doreB)"/><ellipse cx="17" cy="31" rx="10" ry="8" transform="rotate(-38 17 31)" fill="url(#doreA)"/><ellipse cx="47" cy="31" rx="10" ry="8" transform="rotate(38 47 31)" fill="url(#doreA)"/><ellipse cx="32" cy="27" rx="12" ry="11" fill="url(#doreA)"/></g><path d="M26 20c3-2 8-2 11 0M12 26c2-2 4-3 7-3M45 23c3 0 5 1 7 3" stroke="#FFF3D6" stroke-width="2" stroke-linecap="round" fill="none" opacity=".75"/></svg>
+ <svg class="sac" viewBox="0 0 44 46"><path d="M5 12h34l-3 32H8z" fill="#E4C99E" stroke="#8A4A1E" stroke-width="2" stroke-linejoin="round"/><path d="M5 12l4-8h26l4 8" fill="#D6B47F" stroke="#8A4A1E" stroke-width="2" stroke-linejoin="round"/><path d="M15 24h14" stroke="#8A4A1E" stroke-width="2" stroke-linecap="round"/></svg>
+</div>
+
+<header class="tete">
+ <div class="wrap">
+  <a class="logo" href="#"><span class="tampon">{{INITIALE}}</span><span><b>{{ENTREPRISE}}</b><small>Boulangerie · {{VILLE}}</small></span></a>
+  <nav class="menu"><a href="#fournee">La fournée</a><a href="#savoir-faire">Notre savoir-faire</a><a href="#commander">Commander</a><a href="#trouver">Nous trouver</a></nav>
+  <a class="btn-appel" href="#trouver"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="txt">Votre numéro</span></a>
+  <span class="soleil" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+  <span class="burger" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F1D12" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span>
+ </div>
+</header>
+
+<section class="accueil">
+ <div class="farine" aria-hidden="true"><i style="left:6%;animation-duration:9s"></i><i style="left:14%;animation-duration:12s;animation-delay:2s"></i><i style="left:23%;animation-duration:10s;animation-delay:5s;width:4px;height:4px"></i><i style="left:34%;animation-duration:13s;animation-delay:1s"></i><i style="left:45%;animation-duration:11s;animation-delay:6s;width:5px;height:5px"></i><i style="left:57%;animation-duration:9.5s;animation-delay:3s"></i><i style="left:66%;animation-duration:12.5s;animation-delay:7s;width:4px;height:4px"></i><i style="left:76%;animation-duration:10.5s;animation-delay:4s"></i><i style="left:87%;animation-duration:13.5s;animation-delay:2.5s;width:5px;height:5px"></i><i style="left:95%;animation-duration:11.5s;animation-delay:8s"></i></div>
+ <div class="wrap">
+  <div>
+   <span class="surtitre">Boulangerie · pâtisserie à {{VILLE}}</span>
+   <h1>Le bon <em>pain<svg viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 20C40 6 80 26 118 13s60 2 79-4" stroke="#C79A3E" stroke-width="6" fill="none" stroke-linecap="round"/></svg></em>, sorti du four chaque matin</h1>
+   <p class="chapeau">Une phrase d’accueil qui vous ressemble : vos pains, vos viennoiseries, ce qui fait revenir vos clients. Nous l’écrirons avec vous. <span class="exemple">exemple</span></p>
+   <div class="actions">
+    <a class="btn-four" href="#fournee">Découvrir la fournée <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    <a class="btn-lien" href="#trouver"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C79A3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Nous trouver à {{VILLE}}</a>
+   </div>
+   <div class="points"><span>Vos spécialités ici</span><span>Vos horaires d’ouverture</span><span>Commandes pour vos fêtes</span></div>
+  </div>
+  <div class="vitrine">
+   <svg class="vapeur" viewBox="0 0 150 110" aria-hidden="true"><path d="M45 100c-12-18 12-26 0-46s10-28 2-44"/><path d="M75 104c-12-18 12-26 0-46s10-28 2-44"/><path d="M105 100c-12-18 12-26 0-46s10-28 2-44"/></svg>
+   <div class="arche"><img src="{{PHOTO:accueil}}" alt="Des baguettes croustillantes posées sur un plan de travail fariné"></div>
+   <div class="badge" aria-hidden="true"><svg viewBox="0 0 136 136"><defs><path id="cercle" d="M68 68m-52 0a52 52 0 1 1 104 0a52 52 0 1 1-104 0"/></defs><text><textPath href="#cercle">· Votre boulangerie · à {{VILLE}} </textPath></text></svg><i><svg width="50" height="44" viewBox="0 0 64 56"><g stroke="#7A4314" stroke-width="2" stroke-linejoin="round"><ellipse cx="9" cy="42" rx="7" ry="5" transform="rotate(-60 9 42)" fill="url(#doreB)"/><ellipse cx="55" cy="42" rx="7" ry="5" transform="rotate(60 55 42)" fill="url(#doreB)"/><ellipse cx="17" cy="31" rx="10" ry="8" transform="rotate(-38 17 31)" fill="url(#doreA)"/><ellipse cx="47" cy="31" rx="10" ry="8" transform="rotate(38 47 31)" fill="url(#doreA)"/><ellipse cx="32" cy="27" rx="12" ry="11" fill="url(#doreA)"/></g><path d="M26 20c3-2 8-2 11 0M12 26c2-2 4-3 7-3M45 23c3 0 5 1 7 3" stroke="#FFF3D6" stroke-width="2" stroke-linecap="round" fill="none" opacity=".75"/></svg></i></div>
+   <div class="etiquette"><b>Sorti du four</b>vos heures de fournée ici</div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="fournee">
+ <div class="wrap">
+  <div class="tete-section monte">
+   <div><span class="surtitre">La fournée du jour</span><h2>Ce que vous trouverez sur nos étals <span class="exemple">exemples à adapter</span></h2></div>
+   <p>Chaque carte devient une de vos familles de produits, avec vos photos et vos mots. Les prix s’ajoutent si vous le souhaitez.</p>
+  </div>
+  <div class="etal">
+   <article class="piece photo monte"><img src="{{PHOTO:pain}}" alt="Un pain aux graines tranché sur une planche"><div class="voile"><span class="num">01</span><h3>Les pains</h3><p>Baguettes, pains de campagne, pains spéciaux : présentez vos recettes et vos farines.</p></div></article>
+   <article class="piece monte"><div class="picto"><svg width="34" height="30" viewBox="0 0 64 56"><g stroke="#7A4314" stroke-width="2" stroke-linejoin="round"><ellipse cx="9" cy="42" rx="7" ry="5" transform="rotate(-60 9 42)" fill="url(#doreB)"/><ellipse cx="55" cy="42" rx="7" ry="5" transform="rotate(60 55 42)" fill="url(#doreB)"/><ellipse cx="17" cy="31" rx="10" ry="8" transform="rotate(-38 17 31)" fill="url(#doreA)"/><ellipse cx="47" cy="31" rx="10" ry="8" transform="rotate(38 47 31)" fill="url(#doreA)"/><ellipse cx="32" cy="27" rx="12" ry="11" fill="url(#doreA)"/></g><path d="M26 20c3-2 8-2 11 0M12 26c2-2 4-3 7-3M45 23c3 0 5 1 7 3" stroke="#FFF3D6" stroke-width="2" stroke-linecap="round" fill="none" opacity=".75"/></svg></div><span class="num">02</span><h3>Les viennoiseries</h3><p>Croissants, pains au chocolat, brioches : ce qui sort du four le matin.</p></article>
+   <article class="piece creme monte"><div class="picto"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8A4A1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M5 20v-6a7 7 0 0 1 14 0v6M12 7V4M9 4h6"/></svg></div><span class="num">03</span><h3>Les pâtisseries</h3><p>Tartes, entremets, gâteaux de saison : vos douceurs en vitrine.</p></article>
+   <article class="piece nuit monte"><div class="picto"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F1DFAE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18l-2 9H5zM8 11V7a4 4 0 0 1 8 0v4"/></svg></div><span class="num">04</span><h3>Le midi</h3><p>Sandwichs, quiches, formules : si vous en proposez.</p></article>
+   <article class="piece monte"><div class="picto"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8A4A1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 14h18M12 9c-2-4-7-4-6-1s6 1 6 1 5 2 6-1-4-3-6 1"/></svg></div><span class="num">05</span><h3>Sur commande</h3><p>Gâteaux d’anniversaire, pièces pour les fêtes.</p><a class="btn-ticket" href="#commander">Comment commander</a></article>
+  </div>
+ </div>
+</section>
+
+<section class="section fournees">
+ <div class="wrap">
+  <div class="monte"><span class="surtitre" style="color:var(--ble-c)">Les fournées</span><h2>Toujours une fournée qui sort du four <span class="exemple">vos vraies heures ici</span></h2><p style="max-width:620px;color:#E5D3BC">Vos clients savent quand passer pour le pain encore tiède. Une petite frise, simple à mettre à jour.</p></div>
+  <div class="frise">
+   <div class="etape-four monte"><div class="four-rond"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F1DFAE" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4"/></svg></div><span class="heure">Votre heure</span><h3>La première fournée</h3><p>Pour le petit-déjeuner et le chemin du travail.</p></div>
+   <div class="etape-four monte"><div class="four-rond"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F1DFAE" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></div><span class="heure">Votre heure</span><h3>La fournée de midi</h3><p>Pour le déjeuner, avec vos formules.</p></div>
+   <div class="etape-four monte"><div class="four-rond"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F1DFAE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div><span class="heure">Votre heure</span><h3>La fournée du soir</h3><p>Pour le dîner et le pain du lendemain.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="savoir-faire">
+ <div class="wrap atelier">
+  <div class="cadre monte"><div class="zoom"><img src="{{PHOTO:petrin}}" alt="Des mains qui façonnent la pâte sur un plan de travail fariné"></div><div class="rond-photo"><img src="{{PHOTO:croissant}}" alt="Un croissant doré sur une planche"></div></div>
+  <div class="monte">
+   <span class="surtitre">Notre savoir-faire</span>
+   <h2>Le pain, c’est d’abord du temps <span class="exemple">à compléter avec vous</span></h2>
+   <p>Racontez ce qui fait votre différence : vos farines, votre levain, vos temps de pousse, l’histoire de la boutique. Nous l’écrirons avec vos mots.</p>
+   <ul class="liste-ble">
+    <li><svg viewBox="0 0 26 26" width="26" height="26"><path d="M13 23V8" stroke="#C79A3E" stroke-width="2" stroke-linecap="round"/><path d="M13 9c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6zm0 5c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6z" fill="#C79A3E"/></svg><span><b>Vos farines et vos producteurs</b>, si vous travaillez avec des moulins de la région.</span></li>
+    <li><svg viewBox="0 0 26 26" width="26" height="26"><path d="M13 23V8" stroke="#C79A3E" stroke-width="2" stroke-linecap="round"/><path d="M13 9c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6zm0 5c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6z" fill="#C79A3E"/></svg><span><b>Vos façons de faire</b> : levain, pousse lente, cuisson.</span></li>
+    <li><svg viewBox="0 0 26 26" width="26" height="26"><path d="M13 23V8" stroke="#C79A3E" stroke-width="2" stroke-linecap="round"/><path d="M13 9c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6zm0 5c-4-1-5-4-5-6 3 0 5 2 5 6zm0 0c4-1 5-4 5-6-3 0-5 2-5 6z" fill="#C79A3E"/></svg><span><b>Votre équipe</b>, avec vos photos si vous le souhaitez.</span></li>
+   </ul>
+   <a class="btn-rond" href="#commander"><i>→</i>Voir comment commander</a>
+  </div>
+ </div>
+</section>
+
+<section class="section commande" id="commander">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Commander</span><h2>Un gâteau, un plateau, une fête ? <span class="exemple">exemple</span></h2></div><p>Trois étapes simples, que vos clients comprennent tout de suite.</p></div>
+  <div class="cartes-etapes">
+   <div class="carte-etape monte"><b>1</b><h3>Vous nous dites</h3><p>Par téléphone ou en boutique : ce que vous souhaitez, pour combien de personnes.</p></div>
+   <div class="carte-etape monte"><b>2</b><h3>Nous préparons</h3><p>Le délai et les détails, comme vous les pratiquez.</p></div>
+   <div class="carte-etape monte"><b>3</b><h3>Vous passez le prendre</h3><p>Le jour et l’heure convenus, à la boutique.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Ils en parlent</span><h2>Vos vrais avis Google ici</h2></div><p>Les avis de vos clients s’afficheront ici, tels qu’ils les ont écrits.</p></div>
+  <div class="avis">
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="trouver" style="padding-top:20px">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Nous trouver</span><h2>À {{VILLE}}, à deux pas de chez vous</h2></div></div>
+  <div class="trouver">
+   <div class="carte-plan monte"><svg class="epingle" width="54" height="66" viewBox="0 0 54 66" aria-hidden="true"><path d="M27 64S4 40 4 25a23 23 0 0 1 46 0c0 15-23 39-23 39z" fill="#8A4A1E"/><circle cx="27" cy="25" r="10" fill="#F1DFAE"/></svg><div class="lieu"><b>{{ENTREPRISE}}</b><br>Votre adresse · {{VILLE}}</div></div>
+   <div class="contact monte">
+    <h3 style="font-size:26px">Horaires et contact</h3>
+    <div class="horaires"><span>Du mardi au samedi</span><span>vos horaires</span><span>Le dimanche</span><span>vos horaires</span><span>Le lundi</span><span>vos horaires</span></div>
+    <div class="champ">Votre nom</div><div class="champ">Votre téléphone ou votre e-mail</div><div class="champ grand">Votre message ou votre commande</div>
+    <a class="btn-plein" href="#trouver">Envoyer</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+<footer class="pied">
+ <div class="wrap">
+  <div><b>{{ENTREPRISE}}</b><br>Boulangerie · pâtisserie à {{VILLE}}</div>
+  <div>Votre adresse<br>Votre numéro</div>
+  <div>Mentions légales · Confidentialité<br><span style="opacity:.7">Site réalisé par Les Minis Monstres</span></div>
+ </div>
+</footer>
+</body>
+</html>
