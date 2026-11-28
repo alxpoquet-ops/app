@@ -708,8 +708,12 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     // qui défile la page, cliquable vers la maquette à son nom
     $mqG = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) ($p['metier'] ?? '')) : '';
     $anim = $avecApercu && $mqG !== '' && function_exists('aled08e_mq_anim') ? aled08e_mq_anim($mqG) : '';
+    // Alex, 28 novembre 2026 : « je ne veux pas qu'ils aient accès à une maquette, seulement le mp4 ; quand il clique sur le gif,
+    // ça le met juste plus grand » : l'image animée et le lien ouvrent la vidéo (lien suivi, puis le MP4), plus de bouton vers la maquette
     $video = $anim !== '' && function_exists('aled08e_mq_video') ? aled08e_mq_video($mqG) : '';
-    if ($anim !== '') $boutonApercu = '<a href="' . esc_url($l['apercu']) . '" style="display:block;margin:4px 0 12px;text-decoration:none;"><img src="' . esc_url($anim) . '" width="552" alt="La maquette préparée pour ' . esc_attr($nom) . ', qui défile" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(46,42,71,.16);"></a>' . ($video !== '' ? '<p style="margin:0 0 12px;font-size:15px;"><a href="' . esc_url($video) . '" style="color:#5b3fc4;font-weight:bold;text-decoration:none;">&#9654;&nbsp;Regarder la vidéo de la maquette</a></p>' : '') . $boutonApercu;
+    $avecApercu = $avecApercu && $anim !== '' && $video !== '';
+    $boutonApercu = $avecApercu ? '<a href="' . esc_url($l['apercu']) . '" style="display:block;margin:4px 0 10px;text-decoration:none;"><img src="' . esc_url($anim) . '" width="552" alt="Le site préparé pour ' . esc_attr($nom) . ', en vidéo" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(46,42,71,.16);"></a>'
+        . '<p style="margin:0 0 14px;font-size:15px;"><a href="' . esc_url($l['apercu']) . '" style="color:#5b3fc4;font-weight:bold;text-decoration:none;">&#9654;&nbsp;Voir la vidéo en grand</a></p>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
     $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
@@ -721,11 +725,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         // grand ; jamais de prix barré ni de « au lieu de ».
         $dejaCode = $relance && empty($p['code_neuf']);
         $codeH = $cadre . ($dejaCode ? '<b>Votre offre personnelle est toujours valable</b>' : '<b>Offre de lancement, rien que pour ' . esc_html($nom !== '' ? $nom : 'vous') . '</b>')
-            . '<br><span style="font-size:14px;color:#2e2a47;">Pour nous faire connaître : <b>-' . (int) $r . '&nbsp;%</b> sur la création du site présenté dans ce mail, fait avec vos textes, vos photos et vos couleurs</span>'
+            . '<br><span style="font-size:14px;color:#2e2a47;">Pour nous faire connaître : <b>-' . (int) $r . '&nbsp;%</b> sur la création ' . ($avecApercu ? 'du site présenté dans ce mail, fait avec vos textes, vos photos et vos couleurs' : 'de votre site') . '</span>'
             . '<br>' . $gros(aled08e_euro($prix['reduit']) . ' la création de votre site')
             . '<br><span style="font-size:14px;color:#2e2a47;">Votre code personnel : <b style="letter-spacing:.04em;">' . esc_html($code) . '</b> · possibilité de fractionner en <b>4 fois</b></span>'
             . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : 'un mois, ') . 'jusqu’au ' . esc_html($date) . '. Cette offre est réservée à ' . esc_html($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.</span></td></tr></table>';
-        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création du site présenté dans ce mail (fait avec vos textes, vos photos et vos couleurs), soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? '' : 'un mois, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
+        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création ' . ($avecApercu ? 'du site présenté dans ce mail (fait avec vos textes, vos photos et vos couleurs)' : 'de votre site') . ', soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? '' : 'un mois, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde. Alex, 26 novembre 2026 : on ne dit plus le prix d'après, et on
         // dit qu'on peut payer en 4 fois (« Possibilité de fractionner en 4 fois », sans parler de frais). Jamais « réduction » ni
@@ -789,7 +793,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $P(esc_html($heb), '0 0 10px')
             . $P('Votre espace client : vos modifications, vos statistiques et vos tutos, au même endroit, depuis votre téléphone. <a href="' . esc_url($l['demo']) . '" style="color:#176a4c;font-weight:bold;">Essayer l’espace client de démo</a>', '8px 0 14px')
             // la maquette du métier, juste sous la démo de l'espace client (Alex, 27 novembre 2026)
-            . ($avecApercu ? $titre('Nous avons préparé votre site') . $P('Nous avons préparé cette maquette pour <b>' . esc_html($nom) . '</b>, parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Voici ce que pourrait donner le site ' . esc_html($deX) . ', en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
+            . ($avecApercu ? $titre('Nous avons préparé votre site') . $P('Nous avons préparé ce site pour <b>' . esc_html($nom) . '</b>, parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Le voici en vidéo, en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’un aperçu : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
             . $domH
             . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html(rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
             . $boutons
@@ -829,7 +833,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . "ET POUR VOUS, ÇA DEMANDE QUOI ?\nPresque rien ! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. On écrit les textes, on s’occupe de tout, et votre site est en ligne en moins d’une semaine.\n\n"
             . "TOUT COMPRIS DANS LE PRIX\n" . $codeT . "\n- " . implode("\n- ", aled08e_px_inclus()) . "\n\n"
             . "L’HÉBERGEMENT AUSSI, SI VOUS VOULEZ\n" . aled08e_px_hebergement() . "\nVotre espace client : vos modifications, vos statistiques et vos tutos, au même endroit. Essayez la démo : " . $l['demo'] . "\n\n"
-            . ($avecApercu ? "NOUS AVONS PRÉPARÉ VOTRE SITE\nNous avons préparé cette maquette pour " . $nom . ", parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Voici ce que pourrait donner le site " . $deX . ", en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.\n" . $l['apercu'] . "\n\n" : '')
+            . ($avecApercu ? "NOUS AVONS PRÉPARÉ VOTRE SITE\nNous avons préparé ce site pour " . $nom . ", parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Le voici en vidéo, en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’un aperçu : votre site sera modifiable à 100 %, selon vos goûts.\nLa vidéo : " . $l['apercu'] . "\n\n" : '')
             . ($domT !== '' ? $domT . "\n\n" : '')
             . 'Une petite famille, de vrais prix : ' . rtrim(aled08e_px_atouts()[0][0], '.') . ", un vrai suivi, et tout vous appartient.\n\n"
             . 'Voir les sites déjà en ligne : ' . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"

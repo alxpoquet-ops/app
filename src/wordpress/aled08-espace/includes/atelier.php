@@ -139,9 +139,9 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
             // le client vient d'un mail de prospection : son site part de la maquette qu'il a vue
             if (($mqG = (string) get_post_meta($cid, '_aled08_maquette_depart', true)) !== '') {
                 $px = (int) get_post_meta($cid, '_aled08_maquette_prospect', true);
-                $l['maquette_depart'] = ['groupe' => $mqG, 'lien_vu_par_le_client' => $px && function_exists('aled08e_px_apercu_lien') ? aled08e_px_apercu_lien($px) : '',
+                $l['maquette_depart'] = ['groupe' => $mqG, 'video_vue_par_le_client' => function_exists('aled08e_mq_video') ? aled08e_mq_video($mqG) : '',
                     'html' => 'GET /aled08/v1/atelier/maquettes?groupe=' . $mqG,
-                    'consigne' => 'Ce client a commandé avec l’offre du mail : son site part de la maquette qu’il a vue (même mise en page, même petit plus animé, mêmes boutons, couleurs de départ), remplie avec ses vraies réponses. Tout ce qui était un exemple est remplacé par ses informations ou retiré ; filigrane et bandeau « maquette » enlevés ; rien d’inventé.'];
+                    'consigne' => 'Ce client a commandé avec l’offre du mail : son site part de la maquette de son métier, qu’il a vue en vidéo (même mise en page, même petit plus animé, mêmes boutons, couleurs de départ), remplie avec ses vraies réponses. Tout ce qui était un exemple est remplacé par ses informations ou retiré ; filigrane et bandeau « maquette » enlevés ; rien d’inventé.'];
             }
             $l['journal'] = array_slice((array) get_post_meta($cid, '_aled08_journal', true), -15);
             // entre agents (jamais montré au client) : ce que le constructeur a remis au contrôle, et les corrections demandées

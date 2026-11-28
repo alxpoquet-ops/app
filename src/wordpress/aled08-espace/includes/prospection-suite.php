@@ -136,6 +136,11 @@ add_action('init', function () {
             delete_transient('aled08e_px_appr');
         }
     }
+    // Alex, 28 novembre 2026 : plus d'accès à une maquette, seulement la vidéo du site de son métier (le clic est déjà compté)
+    $gv = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) ($p['metier'] ?? '')) : '';
+    $vid = $gv !== '' && function_exists('aled08e_mq_video') ? aled08e_mq_video($gv) : '';
+    wp_redirect($vid !== '' ? $vid : home_url('/'), 302); // phpcs:ignore -- adresse de ce site (médiathèque)
+    exit;
     status_header(200);
     header('Content-Type: text/html; charset=UTF-8');
     // la maquette type de son métier, à son nom (prospection-plus.php) ; sinon l'aperçu simple

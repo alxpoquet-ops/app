@@ -24,6 +24,7 @@ const groupes = fs.readdirSync(MET).filter(f => f.endsWith('.json')).map(f => JS
   for (const j of groupes) {
     let h = fs.readFileSync(path.join(MET, j.groupe + '.html'), 'utf8')
       .replace(/\{\{ENTREPRISE\}\}/g, 'Votre entreprise').replace(/\{\{VILLE\}\}/g, 'votre ville').replace(/\{\{INITIALE\}\}/g, 'V');
+    h = h.replace(/<p class="bandeau">[\s\S]*?<\/p>/, ''); // dans la vidéo, pas de bandeau « maquette »
     h = h.replace(/\{\{PHOTO:([a-z0-9_-]+)\}\}/g, (m, r) => 'file://' + path.join(IMG, j.groupe + '-' + r + '.jpg'));
     const tmp = path.join(OUT, '.' + j.groupe + '.html');
     fs.writeFileSync(tmp, h);
@@ -43,10 +44,26 @@ const groupes = fs.readdirSync(MET).filter(f => f.endsWith('.json')).map(f => JS
     // 460 px de large, 8 images par seconde, une palette par fichier : moins de 1 Mo, léger pour un mail
     execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', '8', '-i', path.join(dir, '%04d.png'), '-vf',
       'scale=460:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '-loop', '0', gif]);
-    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', '10', '-i', path.join(dir, '%04d.png'), '-vf', 'scale=800:-2', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', path.join(OUT, j.groupe + '.mp4')]);
+    // la vraie vidéo (MP4) : un défilement doux et lent, environ 10 secondes (Alex, 28 novembre 2026 : « un peu plus lent, 10 secondes »)
+    const vdir = fs.mkdtempSync(path.join(OUT, '.film-'));
+    const ctx = await nav.newContext({ viewport: { width: 1280, height: 800 }, recordVideo: { dir: vdir, size: { width: 1280, height: 800 } } });
+    const v = await ctx.newPage();
+    await v.goto('file://' + tmp, { waitUntil: 'networkidle' });
+    await v.waitForTimeout(2100); // 1,2 s coupées au montage, puis l'accueil reste visible un instant
+    await v.evaluate(() => new Promise(fin => {
+      const H = document.documentElement.scrollHeight - innerHeight, duree = 7600, t0 = performance.now();
+      const doux = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+      const pas = t => { const k = Math.min(1, (t - t0) / duree); scrollTo(0, H * doux(k)); k < 1 ? requestAnimationFrame(pas) : fin(); };
+      requestAnimationFrame(pas);
+    }));
+    await v.waitForTimeout(700);
+    const brut = await v.video().path();
+    await ctx.close();
+    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-ss', '1.2', '-i', brut, '-vf', 'fps=30,scale=960:-2:flags=lanczos', '-c:v', 'libx264', '-crf', '24', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', path.join(OUT, j.groupe + '.mp4')]);
+    fs.rmSync(vdir, { recursive: true, force: true });
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(tmp, { force: true });
-    console.log(j.groupe, Math.round(fs.statSync(gif).size / 1024) + ' Ko');
+    console.log(j.groupe, 'gif ' + Math.round(fs.statSync(gif).size / 1024) + ' Ko', 'mp4 ' + Math.round(fs.statSync(path.join(OUT, j.groupe + '.mp4')).size / 1024) + ' Ko');
   }
   await nav.close();
 })();
