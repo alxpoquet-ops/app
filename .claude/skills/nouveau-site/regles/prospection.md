@@ -20,7 +20,7 @@ La CNIL permet d'écrire à un professionnel sans son accord préalable, à ces 
 
 Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre que tout le monde, le prix de lancement.**
 
-- Le mail annonce le prix de lancement de la création du site, sa date de fin et le prix d'après, tirés de la configuration. **Plus de code de réduction, plus de -10 %.** On n'écrit jamais « au lieu de ».
+- **Offre de lancement réservée à chaque entreprise contactée** (Alex, 28 novembre 2026 : « pour se faire connaître ») : -70 % sur la création de son site avec son code personnel (`prospection.remise` dans la configuration, code MAIL70-XXXX), valable un mois après le mail (`prospection.jours`), pas proposée sur le site. Le mail écrit en grand le prix payé (164,70 € aujourd'hui), le code, « possibilité de fractionner en 4 fois », la date de fin, et « Cette offre est réservée à … : elle n'est pas proposée sur notre site. » On n'écrit jamais « au lieu de » ni de prix barré.
 - Une commande passée avec l'adresse e-mail du prospect le marque « commande » tout seul.
 - L'agent n'écrit aucun chiffre : le prix vient de la route.
 
@@ -31,9 +31,9 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 1. « Bonjour ! » et la phrase vraie (et l'encadré « Nous avons fait le test » s'il y a une mesure) ;
 2. « Un site, c'est quoi ? » : une vitrine ouverte jour et nuit, et une adresse à soi ; puis les trois points du métier ;
 3. « Et pour vous, ça demande quoi ? » : un questionnaire d'une dizaine de minutes ; on écrit les textes, on s'occupe de tout ; en ligne en moins d’une semaine ;
-4. « Tout compris dans le prix » : « Offre de lancement », le prix et « Possibilité de fractionner en 4 fois » (Alex, 26 novembre 2026 : ni montant par échéance, ni « sans frais »), la date de fin, **sans le prix d'après** (Alex, 26 novembre 2026), puis ce qui est compris (`aled08e_px_inclus()`). Jamais « réduction », « remise » ni « au lieu de » : aucun prix plus haut n'a été pratiqué (le site a été vendu 399 € et 400 € avant), une réduction annoncée serait trompeuse (prix de référence : le plus bas des 30 derniers jours) ;
+4. « Tout compris dans le prix » : l'encadré « Offre de lancement, rien que pour [l'entreprise] » (-70 % avec son code personnel, le prix payé en grand, « possibilité de fractionner en 4 fois », valable un mois, réservée à elle), puis ce qui est compris (`aled08e_px_inclus()`). Jamais « au lieu de », jamais de prix barré, jamais « sans frais » ;
 5. « L'hébergement aussi, si vous voulez » : hébergement, sécurité, sauvegardes, mises à jour et modifications, au prix de la configuration (10 € par mois, 12 € avec le nom de domaine), sans engagement, **sans nommer le forfait** ; puis le lien « Essayer l'espace client de démo » (un lien, pas de capture : Alex, 26 novembre 2026) ;
-6. « On a imaginé votre site » : la maquette de son métier, à son nom, **juste sous la démo de l'espace client** (Alex, 27 novembre 2026 : plus bas dans le mail) ;
+6. « Nous avons préparé votre site » : la maquette de son métier, à son nom, **juste sous la démo de l'espace client** (Alex, 27 novembre 2026 : plus bas dans le mail), présentée comme préparée pour lui « parce que nous pensons qu'un site internet pourrait vraiment aider votre activité à se développer » (Alex, 28 novembre 2026). On ne dit pas qu'elle a été dessinée de zéro pour lui : c'est la maquette de son métier, remplie à son nom ;
 7. une ligne pour les trois arguments (moins cher qu'une agence, un vrai suivi, tout vous appartient), les deux boutons, puis **le téléphone d'Alex**, pour appeler ou laisser un SMS, (`prospection.telephone` dans la configuration ; tant qu'il est vide, « répondez simplement à ce mail ») ;
 8. « À très vite, la bande des Minis Monstres ».
 
