@@ -134,6 +134,8 @@ function aled08e_mq_pour($metier) {
     return '';
 }
 /* La vidéo de la maquette (une image animée qui défile, pour les mails) : option aled08_mq_anim { groupe: adresse } */
+/* La vraie vidéo (MP4, meilleure qualité) : option aled08_mq_video { groupe: adresse } (Alex, 28 novembre 2026 : « un bouton qui ouvre le lien mp4 ») */
+function aled08e_mq_video($g) { $m = get_option('aled08_mq_video', []); return is_array($m) && !empty($m[$g]) ? esc_url_raw((string) $m[$g]) : ''; }
 function aled08e_mq_anim($g) { $m = get_option('aled08_mq_anim', []); return is_array($m) && !empty($m[$g]) ? esc_url_raw((string) $m[$g]) : ''; }
 function aled08e_mq_html_brut($g) {
     $e = aled08e_mq_enregistrees();

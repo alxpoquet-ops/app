@@ -708,7 +708,8 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     // qui défile la page, cliquable vers la maquette à son nom
     $mqG = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) ($p['metier'] ?? '')) : '';
     $anim = $avecApercu && $mqG !== '' && function_exists('aled08e_mq_anim') ? aled08e_mq_anim($mqG) : '';
-    if ($anim !== '') $boutonApercu = '<a href="' . esc_url($l['apercu']) . '" style="display:block;margin:4px 0 12px;text-decoration:none;"><img src="' . esc_url($anim) . '" width="552" alt="La maquette préparée pour ' . esc_attr($nom) . ', qui défile" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(46,42,71,.16);"></a>' . $boutonApercu;
+    $video = $anim !== '' && function_exists('aled08e_mq_video') ? aled08e_mq_video($mqG) : '';
+    if ($anim !== '') $boutonApercu = '<a href="' . esc_url($l['apercu']) . '" style="display:block;margin:4px 0 12px;text-decoration:none;"><img src="' . esc_url($anim) . '" width="552" alt="La maquette préparée pour ' . esc_attr($nom) . ', qui défile" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(46,42,71,.16);"></a>' . ($video !== '' ? '<p style="margin:0 0 12px;font-size:15px;"><a href="' . esc_url($video) . '" style="color:#5b3fc4;font-weight:bold;text-decoration:none;">&#9654;&nbsp;Regarder la vidéo de la maquette</a></p>' : '') . $boutonApercu;
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
     $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
