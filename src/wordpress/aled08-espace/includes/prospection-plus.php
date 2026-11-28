@@ -106,7 +106,7 @@ function aled08e_mq_preparees() {
         $j = json_decode((string) @file_get_contents($f), true);
         $g = sanitize_title((string) ($j['groupe'] ?? ''));
         if ($g === '' || empty($j['mots']) || !is_file(aled08e_mq_dossier() . 'metiers/' . $g . '.html')) continue;
-        $l[$g] = ['nom' => (string) ($j['nom'] ?? $g), 'mots' => array_values((array) $j['mots']), 'photos' => array_keys((array) ($j['photos'] ?? []))];
+        $l[$g] = ['nom' => (string) ($j['nom'] ?? $g), 'mots' => array_values((array) $j['mots']), 'photos' => array_keys((array) ($j['photos'] ?? [])), 'v2' => (int) ($j['generation'] ?? 1) >= 2];
     }
     return $l;
 }
@@ -115,8 +115,10 @@ function aled08e_mq_url() { return plugins_url('maquettes/', dirname(__DIR__) . 
 function aled08e_mq_enregistrees() { $m = get_option('aled08_px_maquettes', []); return is_array($m) ? $m : []; }
 function aled08e_mq_toutes() {
     $out = [];
-    foreach (aled08e_mq_livrees() as $g => $m) if (is_file(aled08e_mq_dossier() . $m['fichier'])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => ''];
-    foreach (aled08e_mq_enregistrees() as $g => $m) $out[$g] = ['groupe' => $g, 'nom' => (string) $m['nom'], 'mots' => (array) $m['mots'], 'livree' => false, 'le' => (string) ($m['le'] ?? '')];
+    // la nouvelle génération (Alex, 28 novembre 2026 : « je veux du ouaou ») passe avant tout le reste
+    foreach (aled08e_mq_preparees() as $g => $m) if (!empty($m['v2'])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => '', 'preparee' => true, 'generation' => 2, 'video' => aled08e_mq_anim($g)];
+    foreach (aled08e_mq_livrees() as $g => $m) if (!isset($out[$g]) && is_file(aled08e_mq_dossier() . $m['fichier'])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => ''];
+    foreach (aled08e_mq_enregistrees() as $g => $m) if (!isset($out[$g])) $out[$g] = ['groupe' => $g, 'nom' => (string) $m['nom'], 'mots' => (array) $m['mots'], 'livree' => false, 'le' => (string) ($m['le'] ?? '')];
     foreach (aled08e_mq_preparees() as $g => $m) if (!isset($out[$g])) $out[$g] = ['groupe' => $g, 'nom' => $m['nom'], 'mots' => $m['mots'], 'livree' => true, 'le' => '', 'preparee' => true];
     return $out;
 }
@@ -131,8 +133,12 @@ function aled08e_mq_pour($metier) {
     }
     return '';
 }
+/* La vidéo de la maquette (une image animée qui défile, pour les mails) : option aled08_mq_anim { groupe: adresse } */
+function aled08e_mq_anim($g) { $m = get_option('aled08_mq_anim', []); return is_array($m) && !empty($m[$g]) ? esc_url_raw((string) $m[$g]) : ''; }
 function aled08e_mq_html_brut($g) {
     $e = aled08e_mq_enregistrees();
+    $pv = aled08e_mq_preparees();
+    if (!empty($pv[$g]['v2'])) unset($e[$g]); // la nouvelle génération remplace la maquette du Facteur
     if (isset($e[$g]['html'])) return (string) $e[$g]['html'];
     $p = aled08e_mq_preparees();
     if (isset($p[$g])) {

@@ -3,3 +3,6 @@ node_modules/
 *.log
 wp-export/
 src/i18n/a-traduire.json
+
+# les images animées des maquettes : refaites par scripts/maquettes-video.js, hébergées sur le site (option aled08_mq_anim)
+maquettes/video/

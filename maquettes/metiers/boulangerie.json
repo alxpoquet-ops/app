@@ -1,0 +1,18 @@
+{
+  "groupe": "boulangerie",
+  "nom": "Boulangeries, pâtisseries",
+  "generation": 2,
+  "signature": "un croissant qui se balade au défilement jusqu'à un sac en papier, farine qui tombe, vapeur du four",
+  "mots": [
+    "boulang",
+    "patiss",
+    "viennois",
+    "fournil"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/1387070/pexels-photo-1387070.jpeg",
+    "pain": "https://images.pexels.com/photos/1586947/pexels-photo-1586947.jpeg",
+    "petrin": "https://images.pexels.com/photos/3218467/pexels-photo-3218467.jpeg",
+    "croissant": "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg"
+  }
+}

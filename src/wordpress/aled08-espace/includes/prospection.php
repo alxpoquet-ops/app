@@ -704,6 +704,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en moins d’une semaine.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;width:100%;max-width:420px;">' . $bouton($l['apercu'], 'Voir la maquette de votre site', true) . '</table>' : '';
+    // la vidéo de la maquette (Alex, 28 novembre 2026 : « j'aime bien la vidéo, insère ça aux futurs mails ») : une image animée
+    // qui défile la page, cliquable vers la maquette à son nom
+    $mqG = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) ($p['metier'] ?? '')) : '';
+    $anim = $avecApercu && $mqG !== '' && function_exists('aled08e_mq_anim') ? aled08e_mq_anim($mqG) : '';
+    if ($anim !== '') $boutonApercu = '<a href="' . esc_url($l['apercu']) . '" style="display:block;margin:4px 0 12px;text-decoration:none;"><img src="' . esc_url($anim) . '" width="552" alt="La maquette préparée pour ' . esc_attr($nom) . ', qui défile" style="display:block;width:100%;max-width:552px;height:auto;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(46,42,71,.16);"></a>' . $boutonApercu;
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
     $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
@@ -715,11 +720,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         // grand ; jamais de prix barré ni de « au lieu de ».
         $dejaCode = $relance && empty($p['code_neuf']);
         $codeH = $cadre . ($dejaCode ? '<b>Votre offre personnelle est toujours valable</b>' : '<b>Offre de lancement, rien que pour ' . esc_html($nom !== '' ? $nom : 'vous') . '</b>')
-            . '<br><span style="font-size:14px;color:#2e2a47;">Pour nous faire connaître : <b>-' . (int) $r . '&nbsp;%</b> sur la création de votre site</span>'
+            . '<br><span style="font-size:14px;color:#2e2a47;">Pour nous faire connaître : <b>-' . (int) $r . '&nbsp;%</b> sur la création du site présenté dans ce mail, fait avec vos textes, vos photos et vos couleurs</span>'
             . '<br>' . $gros(aled08e_euro($prix['reduit']) . ' la création de votre site')
             . '<br><span style="font-size:14px;color:#2e2a47;">Votre code personnel : <b style="letter-spacing:.04em;">' . esc_html($code) . '</b> · possibilité de fractionner en <b>4 fois</b></span>'
             . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : 'un mois, ') . 'jusqu’au ' . esc_html($date) . '. Cette offre est réservée à ' . esc_html($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.</span></td></tr></table>';
-        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création de votre site, soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? '' : 'un mois, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
+        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création du site présenté dans ce mail (fait avec vos textes, vos photos et vos couleurs), soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? '' : 'un mois, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde. Alex, 26 novembre 2026 : on ne dit plus le prix d'après, et on
         // dit qu'on peut payer en 4 fois (« Possibilité de fractionner en 4 fois », sans parler de frais). Jamais « réduction » ni
@@ -1302,6 +1307,9 @@ add_action('aled08e_commande_recue', function ($cid, $cfg, $coord) {
     aled08e_px_set($id, 'commande_ref', $ref);
     aled08e_px_set($id, 'commande_le', time());
     aled08e_px_set($id, 'etat', 'commande');
+    // le site présenté dans le mail est le point de départ du vrai site (Alex, 28 novembre 2026)
+    $mqG = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) aled08e_px_meta($id, 'metier')) : '';
+    if ($mqG !== '') { update_post_meta((int) $cid, '_aled08_maquette_depart', $mqG); update_post_meta((int) $cid, '_aled08_maquette_prospect', $id); }
     aled08e_px_journal($id, 'A commandé : ' . $ref . (!empty($cfg['remise_sur']) ? ' (avec son code)' : ' (sans le code, même adresse e-mail)') . '.');
     aled08e_px_stat('commandes');
     if (function_exists('aled08e_cmd_journal')) aled08e_cmd_journal((int) $cid, 'Client venu de la prospection par e-mail (' . get_the_title($id) . ').');

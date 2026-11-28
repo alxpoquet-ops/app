@@ -710,7 +710,7 @@ def main():
     # les maquettes par métier pour la prospection (dossier maquettes/ : le HTML et ses photos), lues par includes/prospection-plus.php
     mq = os.path.join(edir, 'maquettes')
     if os.path.isdir(mq): shutil.rmtree(mq)
-    shutil.copytree(os.path.join(ROOT, 'maquettes'), mq, ignore=shutil.ignore_patterns('*.md'))
+    shutil.copytree(os.path.join(ROOT, 'maquettes'), mq, ignore=shutil.ignore_patterns('*.md', 'video', '*.png'))
     shutil.copy(os.path.join(ROOT, 'src', 'assets', 'js', 'qrcode.js'), os.path.join(edir, 'qrcode.js'))
     # styles de l'espace client : servis par le thème (assets/css/espace.css) ; copie de secours dans l'extension
     shutil.copy(os.path.join(DIST, 'assets', 'css', 'espace.css'), os.path.join(edir, 'espace.css'))
