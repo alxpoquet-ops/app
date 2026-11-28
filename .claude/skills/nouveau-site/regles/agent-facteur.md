@@ -17,7 +17,7 @@ Si `rien_a_faire` est vrai (prospection éteinte, hors des heures d'envoi, quota
 
 Pour chaque prospect de `a_verifier` :
 
-1. Ouvre `url_source_email` : l'adresse y est-elle bien, publiée par l'entreprise elle-même ? Si la page ne s'ouvre pas sans connexion, une recherche du nom et de « e-mail » qui montre l'adresse sur cette même source suffit.
+1. Ouvre `url_source_email` : l'adresse y est-elle bien **affichée** (visible à l'écran, pas seulement dans le code de la page), publiée par l'entreprise elle-même ? Le site le vérifie aussi à « retenir » et écarte sinon (Alex, 28 novembre 2026). Si la page ne s'ouvre pas sans connexion, une recherche du nom et de « e-mail » qui montre l'adresse sur cette même source suffit.
 2. Une recherche rapide, nom et ville : toujours pas de site (ou un site toujours cassé) ?
 3. Rien dans `prospection` ne l'exclut (chaîne, santé réglementée, administration…) ?
 

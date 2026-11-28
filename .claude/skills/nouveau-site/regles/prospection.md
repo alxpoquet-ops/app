@@ -198,6 +198,7 @@ Un prospect écarté s'efface après 180 jours, un prospect à qui l'on n'a jama
 
 - Écrire un mail eux-mêmes, en HTML ou avec un autre outil : seule la route envoie, avec le gabarit d'Alex.
 - Écrire à une adresse qui n'a pas de source publiée par l'entreprise.
+- Écrire à une adresse qui n'est que dans le code de sa page (données cachées, formulaire) : seule une adresse affichée au visiteur compte comme publiée (Alex, 28 novembre 2026).
 - Changer une option de la prospection (l'allumer, le quota) : c'est Alex.
 - Promettre un prix, une remise ou un délai que la route n'a pas mis dans le mail.
 - Répondre à un prospect en dehors de la route `repondre` (jamais depuis Gmail), ou sur un sujet qui n'est pas dans les faits du poste : c'est pour Alex.

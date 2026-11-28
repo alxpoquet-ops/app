@@ -293,6 +293,42 @@ function aled08e_px_email_refus($email, $p = []) {
     }
     return '';
 }
+/* L'e-mail est-il vraiment affiché sur sa page source ? (Alex, 28 novembre 2026 : une adresse seulement dans le code de la page,
+ * données JSON, Apidae, champ caché, n'est pas publiée. Une adresse protégée par Cloudflare s'affiche, elle, à l'écran.) true : affiché (texte ou lien mailto) ; false : absent
+ * du texte affiché ; null : on ne peut pas savoir (page illisible, PDF, réseau qui bloque les robots), et l'agent en répond. */
+function aled08e_px_email_affiche($email, $url) {
+    $email = strtolower(trim((string) $email));
+    $url = (string) $url;
+    if ($email === '' || $url === '') return null;
+    $cle = 'aled08_px_aff_' . md5($email . '|' . $url);
+    $c = get_transient($cle);
+    if ($c === 'oui' || $c === 'non') return $c === 'oui';
+    if (preg_match('/\.pdf($|\?)/i', $url)) return null;
+    $h = strtolower((string) wp_parse_url($url, PHP_URL_HOST));
+    if (preg_match('/(^|\.)(google\.[a-z.]+|goo\.gl|facebook\.com|instagram\.com|etsy\.com|linkedin\.com)$/', $h)) return null;
+    $r = wp_remote_get($url, ['timeout' => 15, 'redirection' => 3, 'user-agent' => 'Mozilla/5.0 (compatible; LesMinisMonstres/1.0)', 'limit_response_size' => 3000000]);
+    if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) !== 200) return null;
+    if (stripos((string) wp_remote_retrieve_header($r, 'content-type'), 'html') === false) return null;
+    $html = (string) wp_remote_retrieve_body($r);
+    if (strlen($html) < 500) return null;
+    $mailto = preg_match_all('/href\s*=\s*["\']mailto:([^"\'?]+)/i', $html, $m) ? array_map(function ($x) { return strtolower(rawurldecode(html_entity_decode($x))); }, $m[1]) : [];
+    // une adresse protégée par Cloudflare (data-cfemail) s'affiche bien à l'écran du visiteur : on la décode comme son navigateur
+    $html = preg_replace_callback('/<[^>]*data-cfemail="([0-9a-f]+)"[^>]*>.*?<\/[a-z]+>/is', function ($x) {
+        $k = hexdec(substr($x[1], 0, 2));
+        $o = '';
+        for ($i = 2; $i < strlen($x[1]); $i += 2) $o .= chr(hexdec(substr($x[1], $i, 2)) ^ $k);
+        return ' ' . esc_html($o) . ' ';
+    }, $html);
+    $vis = preg_replace('#<(script|style|template|noscript)\b.*?</\1>#is', ' ', $html);
+    $vis = preg_replace('#<!--.*?-->#s', ' ', $vis);
+    $vis = strtolower(html_entity_decode(wp_strip_all_tags($vis), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    $vis = preg_replace('/\s+/u', '', $vis);
+    $variantes = [$email, str_replace('@', '[at]', $email), str_replace('@', '(at)', $email), str_replace('@', '[arobase]', $email), str_replace('@', '(arobase)', $email)];
+    $ok = in_array($email, $mailto, true);
+    foreach ($variantes as $v) if (!$ok && strpos($vis, $v) !== false) $ok = true;
+    set_transient($cle, $ok ? 'oui' : 'non', DAY_IN_SECONDS);
+    return $ok;
+}
 function aled08e_px_url($v) {
     $v = trim((string) $v);
     if ($v === '' || !preg_match('#^https?://#i', $v)) return '';
@@ -495,6 +531,7 @@ function aled08e_px_ajouter($d) {
     if (preg_match('/(^|\.)allovoisins?\.(com|fr)$/', strtolower((string) wp_parse_url($p['url_source_email'], PHP_URL_HOST)))) return $refus('AlloVoisins cache les coordonnées de ses membres : l’e-mail doit venir d’une page où l’artisan le publie lui-même');
     $r = aled08e_px_email_refus($p['email'], $p);
     if ($r !== '') return $refus($r);
+    if (aled08e_px_email_affiche($p['email'], $p['url_source_email']) === false) return $refus('l’e-mail n’est pas affiché sur la page source : il n’est que dans le code de la page (données cachées, formulaire). Règle d’Alex : une adresse seulement dans le code n’est pas publiée, on ne l’utilise pas');
     if (aled08e_px_oppose($p['email'], $p['siren'])) return $refus('cette entreprise ou cette adresse a demandé à ne plus rien recevoir (liste d’opposition)');
     if (($x = aled08e_px_cherche('email', $p['email'])) || ($x = aled08e_px_cherche('siren', $p['siren']))) return $refus('déjà dans la liste (prospect ' . $x . ', ' . (aled08e_px_etats()[aled08e_px_meta($x, 'etat')] ?? '') . ')');
     if (get_user_by('email', $p['email'])) return $refus('cette adresse a déjà un compte chez nous (client ou ancien client)');
@@ -893,6 +930,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
     if ($faire === 'retenir') {
         if ($etat !== 'nouveau') return $err('Seul un prospect « nouveau » se retient (il est « ' . $etat . ' »).');
         if ($texte === '') return $err('Dites ce que vous avez revérifié (texte) : l’adresse est bien sur la source, et il n’y a pas de site.', 400);
+        if (aled08e_px_email_affiche($p['email'], $p['url_source_email']) === false) { aled08e_px_set($id, 'ecarte_raison', 'E-mail non affiché sur la page source (seulement dans le code).'); $set('ecarte'); return $err('L’e-mail n’est pas affiché sur la page source, seulement dans son code : le prospect est écarté (règle d’Alex).'); }
         if (aled08e_px_oppose($p['email'], $p['siren'])) { $set('desinscrit'); return $err('Ce prospect est sur la liste d’opposition : il est passé « desinscrit ».'); }
         aled08e_px_set($id, 'verification', $texte);
         aled08e_px_journal($id, 'Vérifié par le Facteur : ' . $texte);
