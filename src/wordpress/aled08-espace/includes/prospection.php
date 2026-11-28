@@ -94,6 +94,14 @@ function aled08e_px_fois_agence() {
     return ($bas >= 2 && $bas < $haut) ? $bas . ' à ' . $haut : (string) $haut;
 }
 /* Ce qui nous distingue, dit dans le mail (Alex, 25 novembre 2026) : c'est moins cher, il y a un suivi, tout appartient au client */
+/* Avec l'offre du mail (-70 %) : « 10 fois moins cher qu'une agence » (Alex, 28 novembre 2026), seulement si c'est vrai
+ * (prix d'entrée d'une agence ÷ prix avec le code ≥ 10) ; sinon le calcul habituel */
+function aled08e_px_fois_agence_offre() {
+    $min = (float) (aled08e_data()['marche']['agenceMin'] ?? 0);
+    $reduit = (float) aled08e_px_prix()['reduit'];
+    if (aled08e_px_remise() > 0 && $reduit > 0 && $min / $reduit >= 10) return '10';
+    return aled08e_px_fois_agence();
+}
 function aled08e_px_atouts() {
     $f = aled08e_px_fois_agence();
     return [
@@ -728,8 +736,8 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . '<br><span style="font-size:14px;color:#2e2a47;">Pour nous faire connaître : <b>-' . (int) $r . '&nbsp;%</b> sur la création ' . ($avecApercu ? 'du site présenté dans ce mail, fait avec vos textes, vos photos et vos couleurs' : 'de votre site') . '</span>'
             . '<br>' . $gros(aled08e_euro($prix['reduit']) . ' la création de votre site')
             . '<br><span style="font-size:14px;color:#2e2a47;">Votre code personnel : <b style="letter-spacing:.04em;">' . esc_html($code) . '</b> · possibilité de fractionner en <b>4 fois</b></span>'
-            . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : 'un mois, ') . 'jusqu’au ' . esc_html($date) . '. Cette offre est réservée à ' . esc_html($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.</span></td></tr></table>';
-        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création ' . ($avecApercu ? 'du site présenté dans ce mail (fait avec vos textes, vos photos et vos couleurs)' : 'de votre site') . ', soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? '' : 'un mois, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
+            . '<br><span style="font-size:13px;color:#6b5a1f;"><b>Valable ' . ($relance ? 'seulement ' : 'un mois seulement, ') . 'jusqu’au ' . esc_html($date) . '</b>' . '' . '. Cette offre est réservée à ' . esc_html($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.</span></td></tr></table>';
+        $codeT = ($dejaCode ? 'Votre offre personnelle est toujours valable' : 'Offre de lancement, rien que pour ' . ($nom !== '' ? $nom : 'vous')) . " : pour nous faire connaître, -" . $r . ' % sur la création ' . ($avecApercu ? 'du site présenté dans ce mail (fait avec vos textes, vos photos et vos couleurs)' : 'de votre site') . ', soit ' . aled08e_euro_txt($prix['reduit']) . " (possibilité de fractionner en 4 fois).\nVotre code personnel : " . $code . "\nValable " . ($relance ? 'seulement ' : 'un mois seulement, ') . "jusqu’au " . $date . '. Cette offre est réservée à ' . ($nom !== '' ? $nom : 'votre entreprise') . ' : elle n’est pas proposée sur notre site. À taper dans la case « Code promo » au moment de commander.';
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde. Alex, 26 novembre 2026 : on ne dit plus le prix d'après, et on
         // dit qu'on peut payer en 4 fois (« Possibilité de fractionner en 4 fois », sans parler de frais). Jamais « réduction » ni
@@ -795,7 +803,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             // la maquette du métier, juste sous la démo de l'espace client (Alex, 27 novembre 2026)
             . ($avecApercu ? $titre('Nous avons préparé votre site') . $P('Nous avons préparé ce site pour <b>' . esc_html($nom) . '</b>, parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Le voici en vidéo, en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’un aperçu : votre site sera modifiable à 100 %, selon vos goûts.', '0 0 10px') . $boutonApercu : '')
             . $domH
-            . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html(rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
+            . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html($avecCode ? aled08e_px_fois_agence_offre() . ' fois moins cher qu’une agence' : rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
             . $boutons
             . ($tel !== '' ? $P('Envie d’en parler&nbsp;? Appelez-nous ou laissez-nous un SMS au <a href="tel:' . esc_attr(preg_replace('/[^0-9+]/', '', $tel)) . '" style="color:#5b3fc4;font-weight:bold;text-decoration:none;white-space:nowrap;">' . esc_html($tel) . '</a>&nbsp;: on vous rappelle. Ou répondez simplement à ce mail.', '8px 0 6px')
                 : $P('Une question&nbsp;? Répondez simplement à ce mail&nbsp;: c’est nous qui vous lisons.', '8px 0 6px'));
@@ -835,7 +843,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . "L’HÉBERGEMENT AUSSI, SI VOUS VOULEZ\n" . aled08e_px_hebergement() . "\nVotre espace client : vos modifications, vos statistiques et vos tutos, au même endroit. Essayez la démo : " . $l['demo'] . "\n\n"
             . ($avecApercu ? "NOUS AVONS PRÉPARÉ VOTRE SITE\nNous avons préparé ce site pour " . $nom . ", parce que nous pensons qu’un site internet pourrait vraiment aider votre activité à se développer. Le voici en vidéo, en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’un aperçu : votre site sera modifiable à 100 %, selon vos goûts.\nLa vidéo : " . $l['apercu'] . "\n\n" : '')
             . ($domT !== '' ? $domT . "\n\n" : '')
-            . 'Une petite famille, de vrais prix : ' . rtrim(aled08e_px_atouts()[0][0], '.') . ", un vrai suivi, et tout vous appartient.\n\n"
+            . 'Une petite famille, de vrais prix : ' . ($avecCode ? aled08e_px_fois_agence_offre() . ' fois moins cher qu’une agence' : rtrim(aled08e_px_atouts()[0][0], '.')) . ", un vrai suivi, et tout vous appartient.\n\n"
             . 'Voir les sites déjà en ligne : ' . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
             . ($tel !== '' ? 'Envie d’en parler ? Appelez-nous ou laissez-nous un SMS au ' . $tel . ' : on vous rappelle. Ou répondez simplement à ce mail.' : 'Une question ? Répondez simplement à ce mail : c’est nous qui vous lisons.')
             . "\n\nÀ très vite,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;

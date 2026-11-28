@@ -50,16 +50,22 @@ const groupes = fs.readdirSync(MET).filter(f => f.endsWith('.json')).map(f => JS
     const v = await ctx.newPage();
     await v.goto('file://' + tmp, { waitUntil: 'networkidle' });
     await v.waitForTimeout(2100); // 1,2 s coupées au montage, puis l'accueil reste visible un instant
-    await v.evaluate(() => new Promise(fin => {
-      const H = document.documentElement.scrollHeight - innerHeight, duree = 7600, t0 = performance.now();
-      const doux = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-      const pas = t => { const k = Math.min(1, (t - t0) / duree); scrollTo(0, H * doux(k)); k < 1 ? requestAnimationFrame(pas) : fin(); };
-      requestAnimationFrame(pas);
-    }));
+    // le défilement, pas à pas depuis ici (l'animation de la page n'est pas filmée de façon fiable) : 8 s, départ et arrivée en douceur
+    const Hv = await v.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+    const doux = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    const etapes = 200, t0 = Date.now(), duree = 8000;
+    for (let i = 1; i <= etapes; i++) {
+      await v.evaluate(y => window.scrollTo(0, y), Math.round(Hv * doux(i / etapes)));
+      const reste = t0 + duree * i / etapes - Date.now();
+      if (reste > 0) await v.waitForTimeout(reste);
+    }
     await v.waitForTimeout(700);
     const brut = await v.video().path();
     await ctx.close();
-    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-ss', '1.2', '-i', brut, '-vf', 'fps=30,scale=960:-2:flags=lanczos', '-c:v', 'libx264', '-crf', '24', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', path.join(OUT, j.groupe + '.mp4')]);
+    // l'enregistrement dure plus que prévu (chaque pas prend du temps) : on le ramène à environ 10 secondes au montage
+    const duree0 = parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', brut]).toString()) - 1.2;
+    const vitesse = Math.max(0.2, Math.min(1, 10.5 / duree0));
+    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-ss', '1.2', '-i', brut, '-vf', 'setpts=' + vitesse.toFixed(4) + '*PTS,fps=30,scale=960:-2:flags=lanczos', '-c:v', 'libx264', '-crf', '24', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', path.join(OUT, j.groupe + '.mp4')]);
     fs.rmSync(vdir, { recursive: true, force: true });
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(tmp, { force: true });
