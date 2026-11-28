@@ -1,1 +1,20 @@
-{"groupe": "artiste-peintre", "nom": "Artistes peintres, illustrateurs, sculpteurs", "mots": ["aquarell", "artiste", "peinture sur", "illustrat", "sculpt", "toile"], "photos": {"accueil": "https://images.pexels.com/photos/3922244/pexels-photo-3922244.jpeg", "atelier": "https://images.pexels.com/photos/30682160/pexels-photo-30682160.jpeg", "detail": "https://images.pexels.com/photos/2900935/pexels-photo-2900935.jpeg"}}
+{
+  "groupe": "artiste-peintre",
+  "nom": "Artistes peintres, illustrateurs, sculpteurs",
+  "generation": 2,
+  "signature": "un pinceau qui descend au défilement en laissant une trace de peinture dont la couleur change, jusqu'à une palette",
+  "mots": [
+    "aquarell",
+    "artiste",
+    "peinture sur",
+    "illustrat",
+    "sculpt",
+    "toile"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/3922244/pexels-photo-3922244.jpeg",
+    "atelier": "https://images.pexels.com/photos/30682160/pexels-photo-30682160.jpeg",
+    "pinceaux": "https://images.pexels.com/photos/2900935/pexels-photo-2900935.jpeg",
+    "geste": "https://images.pexels.com/photos/7885473/pexels-photo-7885473.jpeg"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "groupe": "estheticienne-ongles",
+  "nom": "Esthéticiennes, prothésistes ongulaires",
+  "generation": 2,
+  "signature": "un flacon de vernis qui descend au défilement en traçant un trait de couleur, jusqu'à un ongle qui se vernit à l'arrivée ; paillettes qui scintillent, photo d'accueil aux bords qui respirent",
+  "mots": ["esthet", "ongl", "ongul", "nail", "maquill", "beaute"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/4677845/pexels-photo-4677845.jpeg",
+    "vernis": "https://images.pexels.com/photos/3631691/pexels-photo-3631691.jpeg",
+    "soin": "https://images.pexels.com/photos/6187305/pexels-photo-6187305.jpeg"
+  }
+}

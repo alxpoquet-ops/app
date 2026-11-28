@@ -1,6 +1,8 @@
 {
   "groupe": "couture-retouches",
   "nom": "Couturières, retouches, pressings, tapissiers",
+  "generation": 2,
+  "signature": "une aiguille qui coud une ligne de points en descendant au défilement, la bobine se déroule en haut et l'aiguille finit par coudre un bouton en bas ; photo dans un tambour à broder, mètre ruban qui défile, services suspendus à des cintres",
   "mots": ["coutur", "retouche", "pressing", "broderie", "tapissi", "mercerie"],
   "photos": {
     "accueil": "https://images.pexels.com/photos/37232390/pexels-photo-37232390.jpeg",

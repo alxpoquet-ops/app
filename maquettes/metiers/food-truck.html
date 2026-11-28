@@ -6,240 +6,364 @@
 <meta name="robots" content="noindex,nofollow">
 <title>{{ENTREPRISE}} : maquette d'exemple</title>
 <!--
-  Les Minis Monstres : maquette par métier, groupe « food-truck » (food trucks, friteries, snacks).
-  Faite une fois ; pour chaque prospect, seuls {{ENTREPRISE}}, {{VILLE}} et {{INITIALE}} sont remplis avec ses informations publiques.
-  Tout le reste est visiblement un exemple : ni prix, ni horaires, ni emplacements réels, rien d'affirmé sur l'entreprise.
-  Photos : Pexels (licence Pexels, libre d'utilisation, sans mention obligatoire). Pictos : dessinés pour Les Minis Monstres.
+  Les Minis Monstres : maquette par métier, food trucks, friteries, snacks (nouvelle génération, 28 novembre 2026).
+  Sa signature : un petit camion-restaurant qui roule d'emplacement en emplacement (les épingles) quand on fait défiler
+  la page, jusqu'à sa place tout en bas. Ambiance : la fumée du grill, une guirlande de guinguette qui scintille.
+  Tout est en CSS (aucun script). Sans « animation-timeline », le camion reste sagement en haut.
+  Remplie pour chaque prospect : {{ENTREPRISE}}, {{VILLE}}, {{INITIALE}}. Tout le reste est un exemple à adapter.
+  Photos : Pexels (licence libre). Dessins : faits pour Les Minis Monstres.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFF8EC;--card:#FFFFFF;--ink:#26190F;--muted:#5B4A3C;--rouge:#B3302A;--rouge-d:#7A1E19;--moutarde:#F4B41A;--line:#EEDDC4;--soft:#FDEBE6;--shadow:0 12px 32px rgba(38,25,15,.10)}
+:root{--creme:#FFF8EC;--carton:#F6E8CF;--carton2:#EBD6B0;--asphalte:#1E2227;--asphalte2:#2C3139;--moutarde:#F2B632;--moutarde-c:#FCE8B2;--ketchup:#D2412A;--ketchup-d:#A9301D;--cornichon:#5E7A2E;--texte:#22252A;--doux:#5E584F;--ligne:#E8D7B9;--bord:2.5px solid var(--asphalte);--decale:5px 5px 0 var(--asphalte)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{position:relative;margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-size:17px;line-height:1.6}
-h1,h2,h3{font-family:Fredoka,Nunito,sans-serif;font-weight:600;line-height:1.12;margin:0 0 12px}
-a{color:var(--rouge)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-/* le filigrane, sur toute la page, au-dessus du contenu mais sans gêner la lecture */
-.filigrane{position:absolute;top:0;left:0;right:0;bottom:0;z-index:90;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='300'%3E%3Ctext x='260' y='160' text-anchor='middle' transform='rotate(-24 260 150)' font-family='Arial,Helvetica,sans-serif' font-size='26' font-weight='700' fill='%23907A68' fill-opacity='0.2'%3EMAQUETTE D%E2%80%99EXEMPLE %C2%B7 LES MINIS MONSTRES%3C/text%3E%3C/svg%3E");background-repeat:repeat}
-.bandeau{background:#26190F;color:#fff;text-align:center;font-size:.9rem;font-weight:700;padding:9px 16px;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--creme);color:var(--texte);font-family:"Figtree",system-ui,sans-serif;font-size:17px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;color:var(--asphalte);line-height:1;margin:0 0 14px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(34px,4.6vw,56px)}
+h3{font-size:24px;letter-spacing:-.01em}
+p{margin:0 0 14px}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.exemple{display:inline-block;margin-left:8px;padding:3px 10px;border:2px solid var(--asphalte);border-radius:8px;background:var(--moutarde-c);color:var(--asphalte);font:800 10.5px/1.5 "Figtree",sans-serif;letter-spacing:.06em;text-transform:uppercase;vertical-align:middle;transform:rotate(-2deg)}
+.sticker{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:var(--bord);border-radius:999px;background:#fff;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px}
+.sticker i{width:10px;height:10px;border-radius:50%;background:var(--ketchup);animation:clignote 1.4s steps(2) infinite}
+@keyframes clignote{50%{opacity:.25}}
+
+/* ---------- maquette : bandeau et filigrane ---------- */
+.bandeau{margin:0;padding:9px 18px;background:var(--asphalte);color:#F3E8D2;font-size:13.5px;text-align:center}
 .bandeau b{color:var(--moutarde)}
-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-.head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
-.brand{display:flex;align-items:center;gap:10px;font-family:Fredoka,sans-serif;font-weight:600;font-size:1.25rem;color:var(--ink);text-decoration:none}
-.logo{width:40px;height:40px;border-radius:12px;background:var(--rouge);color:#fff;display:grid;place-items:center;font-family:Fredoka,sans-serif;font-weight:700;transform:rotate(-4deg)}
-nav.menu{display:flex;gap:4px}
-nav.menu a{color:var(--ink);text-decoration:none;font-weight:700;font-size:.96rem;padding:8px 11px;border-radius:9px}
-nav.menu a:hover{background:var(--soft);color:var(--rouge)}
-.tools{display:flex;align-items:center;gap:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 22px;border-radius:14px;background:var(--moutarde);color:#26190F;font-weight:800;text-decoration:none;border:0;font-size:1rem;white-space:nowrap}
-.btn svg{width:20px;height:20px}
-.btn.rouge{background:var(--rouge);color:#fff}
-.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
-.rond{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
-.rond svg{width:21px;height:21px}
-.burger{display:none}
-/* l'ouverture */
-.hero{position:relative;background:#1B120B;color:#fff;overflow:hidden}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;opacity:.75}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(27,18,11,.97) 0%,rgba(27,18,11,.8) 45%,rgba(27,18,11,.1) 100%)}
-.hero .wrap{position:relative;z-index:1;padding-top:88px;padding-bottom:88px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(244,180,26,.16);border:1px solid rgba(244,180,26,.5);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.92rem;color:#FFE3A1}
-.hero h1{font-size:clamp(2.2rem,5.4vw,3.7rem);max-width:14ch;margin:18px 0 14px}
-.hero h1 em{font-style:normal;color:var(--moutarde)}
-.hero p.lead{font-size:1.15rem;max-width:50ch;color:#F1E4D6;margin:0 0 26px}
-.hero .actions{display:flex;flex-wrap:wrap;gap:12px}
-.hero .btn.ghost{color:#fff;border-color:#fff}
-.puces{display:flex;flex-wrap:wrap;gap:10px 22px;margin:28px 0 0;padding:0;list-style:none}
-.puces li{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.96rem}
-.puces li svg{width:20px;height:20px;color:var(--moutarde)}
-/* les parties */
-section{padding:76px 0}
-section.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.kicker{color:var(--rouge);font-weight:800;text-transform:uppercase;letter-spacing:.09em;font-size:.82rem;margin:0 0 8px}
-h2{font-size:clamp(1.8rem,4vw,2.6rem)}
-.sous{color:var(--muted);max-width:60ch;margin:0 0 30px}
-.exemple{display:inline-block;background:#FFF0C9;color:#7A4B00;border:1px dashed #D9A42A;border-radius:999px;font-size:.78rem;font-weight:800;padding:3px 10px;margin-left:8px;vertical-align:middle;letter-spacing:0;text-transform:none;font-family:Nunito,sans-serif}
-.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.carte{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
-.carte .pic{width:56px;height:56px;border-radius:16px;background:var(--soft);color:var(--rouge);display:grid;place-items:center;margin-bottom:14px}
-.carte .pic svg{width:31px;height:31px}
-.carte h3{font-size:1.25rem}
-.carte p{margin:0;color:var(--muted)}
-.carte .prix{display:block;margin-top:12px;font-weight:800;color:var(--rouge-d);font-size:.92rem}
-.deux{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
-.photo{border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.liste{list-style:none;padding:0;margin:0}
-.liste li{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
-.liste li:last-child{border-bottom:0}
-.liste .ok{flex:none;width:32px;height:32px;border-radius:50%;background:var(--rouge);color:#fff;display:grid;place-items:center;font-weight:800;font-family:Fredoka,sans-serif}
-.liste .ok svg{width:17px;height:17px}
-.liste b{display:block}
-.semaine{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.jour{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-.jour .nom{display:inline-block;background:var(--rouge);color:#fff;font-family:Fredoka,sans-serif;font-weight:600;border-radius:8px;padding:2px 10px;margin-bottom:10px}
-.jour p{margin:0;font-weight:700}
-.jour small{display:block;color:var(--muted);font-size:.92rem;margin-top:4px}
-.jour.repos{background:#FBF4E8;box-shadow:none;border-style:dashed}
-.jour.repos .nom{background:#8A7563}
-.jour.events{background:var(--moutarde);border-color:var(--moutarde)}
-.jour.events .nom{background:#26190F}
-.jour.events small{color:#3D2A15}
-.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.avis .carte{border-style:dashed;box-shadow:none;background:#FFFCF6}
-.etoiles{color:#E0A10E;letter-spacing:2px;font-size:1.1rem}
-.contact{background:var(--rouge-d);color:#fff}
-.contact h2{color:#fff}
-.contact .sous{color:#F4D6CF}
-.contact .deux{align-items:start}
-.gros-tel{display:inline-flex;align-items:center;gap:12px;font-family:Fredoka,sans-serif;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:600;color:#fff;text-decoration:none;background:rgba(255,255,255,.1);border:2px dashed rgba(255,255,255,.5);border-radius:14px;padding:10px 18px}
-.gros-tel svg{width:28px;height:28px;color:var(--moutarde)}
-.form{background:#fff;color:var(--ink);border-radius:18px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
-.form label{display:block;font-weight:800;margin:0 0 6px}
-.form .champ{width:100%;min-height:48px;border:1px solid #B9A795;border-radius:10px;margin:0 0 14px;background:#FFFBF4}
-.form .champ.grand{min-height:110px}
-.form .btn{width:100%}
-footer{background:#1B120B;color:#CDBBA8;padding:40px 0 26px;font-size:.95rem}
-footer .bas{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
-footer b{color:#fff}
-@media (max-width:920px){nav.menu{display:none}.burger{display:grid}.grille,.avis,.semaine{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}}
-@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis{grid-template-columns:1fr}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
+.filigrane{position:fixed;inset:0;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.filigrane span{transform:rotate(-24deg);font:800 clamp(30px,6vw,74px)/1 "Figtree",sans-serif;letter-spacing:.08em;color:rgba(30,34,39,.06);white-space:nowrap}
+
+/* ---------- en-tête ---------- */
+.tete{position:sticky;top:0;z-index:50;background:var(--creme);border-bottom:var(--bord)}
+.tete .wrap{display:flex;align-items:center;gap:22px;height:76px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.plaque{width:50px;height:50px;flex:0 0 50px;border:var(--bord);border-radius:14px;background:var(--moutarde);display:grid;place-items:center;font:800 25px/1 "Bricolage Grotesque",sans-serif;color:var(--asphalte);box-shadow:3px 3px 0 var(--asphalte);transform:rotate(-4deg)}
+.logo b{font:800 22px/1.05 "Bricolage Grotesque",sans-serif;color:var(--asphalte);display:block}
+.logo small{display:block;font-size:12px;color:var(--doux);font-weight:600}
+.menu{display:flex;gap:6px;margin-left:auto}
+.menu a{text-decoration:none;font-weight:700;font-size:15px;padding:8px 14px;border-radius:999px;border:2px solid transparent;transition:border-color .2s,background .2s}
+.menu a:hover{border-color:var(--asphalte);background:#fff}
+.btn-appel{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;border:var(--bord);border-radius:12px;background:var(--ketchup);color:#fff;text-decoration:none;font-weight:800;font-size:15px;box-shadow:3px 3px 0 var(--asphalte);transition:transform .15s,box-shadow .15s}
+.btn-appel:hover{transform:translate(3px,3px);box-shadow:0 0 0 var(--asphalte)}
+.soleil{width:42px;height:42px;border-radius:50%;border:var(--bord);background:#fff;display:grid;place-items:center;color:var(--asphalte)}
+.burger{display:none;width:44px;height:44px;border:var(--bord);border-radius:12px;background:var(--moutarde);place-items:center}
+
+/* ---------- accueil ---------- */
+.accueil{position:relative;overflow:hidden;background:var(--carton);border-bottom:var(--bord)}
+.accueil::before{content:"";position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle,rgba(30,34,39,.12) 1.5px,transparent 2px);background-size:22px 22px}
+.guirlande{position:absolute;left:0;right:0;top:0;height:70px;z-index:1;pointer-events:none}
+.guirlande svg{width:100%;height:100%}
+.guirlande circle{animation:ampoule 2.4s ease-in-out infinite}
+.guirlande circle:nth-of-type(3n){animation-delay:.8s}.guirlande circle:nth-of-type(3n+1){animation-delay:1.6s}
+@keyframes ampoule{0%,100%{opacity:1}50%{opacity:.35}}
+.accueil .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-top:84px;padding-bottom:90px}
+.accueil h1{font-size:clamp(46px,6.4vw,86px);letter-spacing:-.035em}
+.accueil h1 mark{background:none;color:var(--ketchup);position:relative;white-space:nowrap}
+.accueil h1 mark::after{content:"";position:absolute;left:-4px;right:-4px;bottom:.06em;height:.26em;background:var(--moutarde);z-index:-1;transform:skew(-8deg) rotate(-1deg)}
+.chapeau{font-size:19px;color:var(--doux);max-width:520px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px 22px;margin:30px 0 32px}
+/* bouton « klaxon » : décalé, il s'enfonce au survol */
+.btn-klaxon{display:inline-flex;align-items:center;gap:12px;padding:16px 26px;border:var(--bord);border-radius:16px;background:var(--moutarde);color:var(--asphalte);text-decoration:none;font-weight:800;font-size:17px;box-shadow:var(--decale);transition:transform .15s,box-shadow .15s}
+.btn-klaxon:hover{transform:translate(5px,5px);box-shadow:0 0 0 var(--asphalte)}
+.btn-klaxon svg{transition:transform .3s}
+.btn-klaxon:hover svg{transform:rotate(-12deg) scale(1.1)}
+/* bouton pastille : contour, avec pictogramme rond */
+.btn-pastille{display:inline-flex;align-items:center;gap:12px;padding:6px 20px 6px 6px;border:var(--bord);border-radius:999px;background:#fff;text-decoration:none;font-weight:700;transition:background .2s}
+.btn-pastille span{width:38px;height:38px;border-radius:50%;background:var(--asphalte);display:grid;place-items:center;transition:transform .3s}
+.btn-pastille:hover{background:var(--moutarde-c)}
+.btn-pastille:hover span{transform:rotate(360deg)}
+.infos{display:flex;flex-wrap:wrap;gap:10px}
+.infos span{padding:7px 14px;border:2px dashed var(--asphalte);border-radius:10px;font-size:14px;font-weight:600;background:rgba(255,255,255,.55)}
+
+.comptoir{position:relative;justify-self:center;width:min(470px,100%)}
+.hublot{position:relative;border:var(--bord);border-radius:30px;overflow:hidden;aspect-ratio:1/1.05;box-shadow:10px 10px 0 var(--asphalte);background:var(--asphalte)}
+.hublot img{width:100%;height:100%;object-fit:cover}
+.store{position:absolute;left:-14px;right:-14px;top:-30px;height:56px;z-index:2;border:var(--bord);border-radius:12px 12px 0 0;background:repeating-linear-gradient(90deg,var(--ketchup) 0 34px,#fff 34px 68px);transform-origin:top;animation:store 4s ease-in-out infinite}
+.store::after{content:"";position:absolute;left:-2px;right:-2px;bottom:-16px;height:16px;background:radial-gradient(circle at 17px 0,var(--ketchup) 15px,transparent 16px) 0 0/68px 16px,radial-gradient(circle at 51px 0,#fff 15px,transparent 16px) 0 0/68px 16px;border-bottom:0}
+@keyframes store{50%{transform:skewX(-1.5deg)}}
+.fumee{position:absolute;left:50%;top:-140px;width:200px;height:120px;transform:translateX(-50%);pointer-events:none}
+.fumee span{position:absolute;bottom:0;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 0 2px rgba(30,34,39,.08);opacity:0;animation:fumee 4.5s ease-out infinite}
+.fumee span:nth-child(1){left:40px}.fumee span:nth-child(2){left:86px;animation-delay:1.5s;width:30px;height:30px}.fumee span:nth-child(3){left:128px;animation-delay:3s}
+@keyframes fumee{0%{opacity:0;transform:translateY(30px) scale(.4)}25%{opacity:.9}100%{opacity:0;transform:translateY(-70px) translateX(18px) scale(1.5)}}
+.bulle{position:absolute;right:-26px;bottom:52px;z-index:3;max-width:190px;background:#fff;border:var(--bord);border-radius:18px;padding:12px 16px;box-shadow:var(--decale);font-size:14px;line-height:1.35;transform:rotate(4deg)}
+.bulle b{display:block;font:800 18px "Bricolage Grotesque",sans-serif;color:var(--ketchup)}
+.rond-chaud{position:absolute;left:-40px;top:70px;z-index:3;width:116px;height:116px;border-radius:50%;background:var(--ketchup);border:var(--bord);display:grid;place-items:center;text-align:center;color:#fff;font:800 15px/1.05 "Bricolage Grotesque",sans-serif;box-shadow:4px 4px 0 var(--asphalte);transform:rotate(-12deg)}
+.rond-chaud::before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px dashed rgba(255,255,255,.6);animation:tourne 18s linear infinite}
+@keyframes tourne{to{transform:rotate(360deg)}}
+
+/* ---------- le camion qui roule (signature) ---------- */
+.balade{position:fixed;right:16px;top:116px;bottom:92px;width:74px;z-index:45;pointer-events:none}
+.balade .route{position:absolute;left:31px;top:4px;bottom:40px;width:12px;border-radius:6px;background:rgba(30,34,39,.13)}
+.balade .route::after{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:repeating-linear-gradient(180deg,rgba(242,182,50,.95) 0 8px,transparent 8px 16px)}
+.balade .epingle{position:absolute;left:28px;width:18px;height:24px}
+.balade .camion{position:absolute;left:0;top:0;width:74px;height:50px;filter:drop-shadow(0 5px 5px rgba(30,34,39,.25))}
+.camion .roue{transform-box:fill-box;transform-origin:center;animation:roue 1s linear infinite}
+@keyframes roue{to{transform:rotate(360deg)}}
+.camion .pot{animation:pot 1.2s ease-out infinite}
+@keyframes pot{0%{opacity:.8;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(-10px,-6px) scale(1.4)}}
+.balade .place{position:absolute;left:12px;bottom:-12px;width:50px;height:52px}
+@supports (animation-timeline: scroll()){
+ .balade .camion{animation:balade linear both;animation-timeline:scroll(root)}
+ @media (max-width:960px){.balade .camion{animation-name:balade-tel}}
+ @keyframes balade-tel{0%{left:0;transform:translateY(0)}25%{transform:translateY(-2px)}50%{transform:translateY(1px)}75%{transform:translateY(-2px)}100%{left:calc(100% - 96px);transform:translateY(0)}}
+ @keyframes balade{0%{top:0;transform:rotate(0)}12%{transform:rotate(-4deg)}24%{transform:rotate(2deg)}25%{transform:rotate(0)}37%{transform:rotate(-4deg)}50%{transform:rotate(2deg)}62%{transform:rotate(-4deg)}75%{transform:rotate(2deg)}88%{transform:rotate(-3deg)}100%{top:calc(100% - 100px);transform:rotate(0)}}
+ .monte{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 75%}
+ @keyframes monte{from{opacity:0;transform:translateY(40px) rotate(-1.5deg)}to{opacity:1;transform:none}}
+ .pop{animation:pop linear both;animation-timeline:view();animation-range:entry 10% entry 90%}
+ @keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+}
+
+/* ---------- le menu ---------- */
+.section{padding:96px 0}
+.tete-section{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:44px}
+.tete-section p{max-width:440px;color:var(--doux);margin:0}
+.menu-grille{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.plat{position:relative;background:#fff;border:var(--bord);border-radius:22px;padding:26px 24px 24px;box-shadow:var(--decale);transition:transform .2s,box-shadow .2s}
+.plat:hover{transform:translate(-3px,-3px) rotate(-1deg);box-shadow:8px 8px 0 var(--asphalte)}
+.plat:nth-child(2){background:var(--moutarde-c)}.plat:nth-child(3){background:#FBE0D8}.plat:nth-child(4){background:#E5EDD5}
+.plat .ico{width:62px;height:62px;margin-bottom:16px}
+.plat p{color:var(--doux);font-size:15.5px;margin:0}
+.plat .prix{position:absolute;right:16px;top:16px;font-size:12px;font-weight:800;padding:3px 9px;border-radius:8px;border:2px solid var(--asphalte);background:#fff}
+.bandes{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;margin-top:26px}
+.bande-photo{position:relative;border:var(--bord);border-radius:22px;overflow:hidden;min-height:300px;box-shadow:var(--decale)}
+.bande-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bande-photo b{position:absolute;left:20px;bottom:20px;background:var(--creme);border:var(--bord);border-radius:12px;padding:8px 14px;font:800 18px "Bricolage Grotesque",sans-serif}
+.bande-texte{background:var(--asphalte);color:#E7DECF;border:var(--bord);border-radius:22px;padding:32px;box-shadow:5px 5px 0 var(--ketchup)}
+.bande-texte h3{color:#fff;font-size:30px}
+/* bouton coupon : bord pointillé et encoches */
+.btn-coupon{display:inline-flex;align-items:center;gap:10px;margin-top:10px;padding:13px 24px;background:radial-gradient(circle at 0 50%,var(--asphalte) 9px,transparent 10px),radial-gradient(circle at 100% 50%,var(--asphalte) 9px,transparent 10px),var(--moutarde);color:var(--asphalte);font-weight:800;text-decoration:none;border-radius:6px;outline:2px dashed var(--asphalte);outline-offset:-7px;transition:transform .2s}
+.btn-coupon:hover{transform:rotate(-2deg) scale(1.04)}
+
+/* ---------- la tournée ---------- */
+.tournee{background:var(--asphalte);color:#E7DECF;position:relative;overflow:hidden;border-top:var(--bord);border-bottom:var(--bord)}
+.tournee::before{content:"";position:absolute;left:0;right:0;top:50%;height:14px;background:rgba(255,255,255,.05);transform:rotate(-3deg)}
+.tournee .wrap{position:relative}
+.tournee h2{color:#fff}
+.tournee .tete-section p{color:#BDB3A3}
+.semaine{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+.jour{background:var(--asphalte2);border:2px solid rgba(255,255,255,.14);border-radius:18px;padding:18px 14px;text-align:center;transition:transform .25s,border-color .25s}
+.jour:hover{transform:translateY(-6px);border-color:var(--moutarde)}
+.jour b{display:block;font:800 19px "Bricolage Grotesque",sans-serif;color:#fff;margin-bottom:10px}
+.jour svg{margin:0 auto 10px}
+.jour span{display:block;font-size:13.5px;line-height:1.35;color:#CFC5B4}
+.jour small{display:block;margin-top:8px;font-size:12px;color:var(--moutarde);font-weight:700}
+.jour.repos{background:transparent;border-style:dashed}
+.jour.repos svg{opacity:.5}
+
+/* ---------- privatiser ---------- */
+.prive{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
+.polaroid{position:relative;background:#fff;border:var(--bord);border-radius:10px;padding:14px 14px 54px;box-shadow:var(--decale);transform:rotate(-3deg);max-width:440px}
+.polaroid img{width:100%;aspect-ratio:4/4.4;object-fit:cover;border-radius:4px}
+.polaroid span{position:absolute;left:0;right:0;bottom:14px;text-align:center;font:800 18px "Bricolage Grotesque",sans-serif}
+.polaroid::before{content:"";position:absolute;left:50%;top:-16px;width:110px;height:30px;background:rgba(242,182,50,.75);transform:translateX(-50%) rotate(3deg)}
+.occasions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 28px}
+.occasions span{padding:9px 16px;border:var(--bord);border-radius:999px;background:#fff;font-weight:700;font-size:15px;transition:background .2s,transform .2s}
+.occasions span:hover{background:var(--moutarde);transform:rotate(-3deg)}
+/* lien surligné : le surlignage monte */
+.btn-surligne{font-weight:800;text-decoration:none;font-size:17px;background:linear-gradient(var(--moutarde),var(--moutarde)) 0 100%/100% 8px no-repeat;padding:0 2px;transition:background-size .25s}
+.btn-surligne:hover{background-size:100% 100%}
+
+/* ---------- commander ---------- */
+.commander{background:var(--carton)}
+.etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:e}
+.etape{position:relative;padding:30px 26px 26px;border:var(--bord);border-radius:22px;background:var(--creme);counter-increment:e}
+.etape::before{content:counter(e);position:absolute;top:-24px;left:22px;width:48px;height:48px;border-radius:50%;border:var(--bord);background:var(--ketchup);color:#fff;display:grid;place-items:center;font:800 22px "Bricolage Grotesque",sans-serif}
+.etape h3{margin-top:12px}
+.etape p{color:var(--doux);margin:0}
+
+/* ---------- avis ---------- */
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.avis-carte{background:#fff;border:2.5px dashed var(--carton2);border-radius:22px;padding:28px;color:var(--doux);font-size:15.5px}
+.avis-carte .etoiles{color:var(--moutarde);letter-spacing:4px;margin-bottom:10px;font-size:18px;-webkit-text-stroke:1px var(--asphalte)}
+.avis-carte .vide{height:10px;border-radius:6px;background:var(--carton);margin:8px 0}
+.avis-carte .vide.court{width:55%}
+
+/* ---------- contact ---------- */
+.contact-grille{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.carte-ville{position:relative;min-height:360px;border:var(--bord);border-radius:22px;overflow:hidden;box-shadow:var(--decale);background:
+ linear-gradient(90deg,transparent 30%,#E3D2B3 30% 34%,transparent 34%),linear-gradient(90deg,transparent 70%,#E3D2B3 70% 73%,transparent 73%),linear-gradient(0deg,transparent 40%,#E3D2B3 40% 44%,transparent 44%),#F3E7D1}
+.carte-ville .pin{position:absolute;width:30px;height:38px;animation:saute 2.2s ease-in-out infinite}
+.carte-ville .pin:nth-child(2){animation-delay:.6s}.carte-ville .pin:nth-child(3){animation-delay:1.2s}
+@keyframes saute{50%{transform:translateY(-8px)}}
+.carte-ville .lieu{position:absolute;left:20px;bottom:20px;right:20px;background:#fff;border:var(--bord);border-radius:14px;padding:12px 16px;font-size:15px}
+.contact{background:#fff;border:var(--bord);border-radius:22px;padding:30px;box-shadow:var(--decale)}
+.champ{border:2px solid var(--asphalte);border-radius:12px;padding:12px 16px;margin-bottom:12px;color:#8E857A;font-size:15px;background:var(--creme)}
+.champ.grand{height:92px}
+.btn-plein{display:flex;justify-content:center;align-items:center;gap:10px;padding:15px;border:var(--bord);border-radius:14px;background:var(--ketchup);color:#fff;font-weight:800;text-decoration:none;box-shadow:4px 4px 0 var(--asphalte);transition:transform .15s,box-shadow .15s}
+.btn-plein:hover{transform:translate(4px,4px);box-shadow:0 0 0 var(--asphalte)}
+
+/* ---------- pied ---------- */
+.pied{background:var(--asphalte);color:#CFC5B4;padding:58px 0 110px;font-size:15px;border-top:var(--bord);position:relative}
+.pied::before{content:"";position:absolute;left:0;right:0;top:-2px;height:10px;background:repeating-linear-gradient(90deg,var(--moutarde) 0 30px,var(--asphalte) 30px 60px)}
+.pied .wrap{display:flex;flex-wrap:wrap;gap:28px 60px;justify-content:space-between;padding-right:110px}
+.pied b{color:#fff;font:800 24px "Bricolage Grotesque",sans-serif}
+
+/* ---------- téléphone ---------- */
+@media (max-width:1100px){.semaine{grid-template-columns:repeat(4,1fr)}.menu-grille{grid-template-columns:1fr 1fr}}
+@media (max-width:960px){
+ .menu,.btn-appel span.txt{display:none}.burger{display:grid}
+ .accueil .wrap,.prive,.contact-grille,.bandes{grid-template-columns:1fr}
+ .comptoir{margin-top:46px;width:min(420px,90%)}.rond-chaud{left:-20px;width:96px;height:96px;font-size:13px}.bulle{right:-12px}
+ .etapes,.avis{grid-template-columns:1fr}.etape{margin-top:20px}
+ .tete-section{flex-direction:column;align-items:flex-start}
+ .tete .wrap{height:66px;gap:10px}.plaque{width:40px;height:40px;flex:0 0 40px;font-size:20px;border-radius:11px}.logo{min-width:0}.logo>span:last-child{min-width:0}.logo b{font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}.logo small{display:none}.btn-appel{padding:9px 11px}.soleil{width:38px;height:38px}
+ .balade{left:10px;right:10px;top:72px;bottom:auto;width:auto;height:36px}
+ .balade .route{left:6px;right:36px;top:24px;bottom:auto;width:auto;height:8px}
+ .balade .route::after{left:6px;right:6px;top:3px;bottom:auto;width:auto;height:2px;background:repeating-linear-gradient(90deg,rgba(242,182,50,.95) 0 8px,transparent 8px 16px)}
+ .balade .epingle{top:2px;width:14px;height:18px}
+ .balade .epingle.e1{left:25%!important}.balade .epingle.e2{left:50%!important}.balade .epingle.e3{left:75%!important}
+ .balade .camion{width:52px;height:35px;top:0}.balade .place{left:auto;right:0;bottom:auto;top:-2px;width:34px;height:36px}
+ .polaroid{margin:0 auto}
+ .pied .wrap{padding-right:28px}
+}
+@media (max-width:560px){.bandeau{font-size:12px;padding:7px 12px}.wrap{padding:0 18px}.section{padding:70px 0}.menu-grille{grid-template-columns:1fr}.semaine{grid-template-columns:1fr 1fr}.pied .wrap{padding-right:18px}.btn-klaxon{font-size:16px;padding:15px 20px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="filigrane" aria-hidden="true"></div>
 <p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+<div class="filigrane" aria-hidden="true"><span>MAQUETTE D’EXEMPLE · LES MINIS MONSTRES</span></div>
 
-<header>
-  <div class="wrap head">
-    <a class="brand" href="#"><span class="logo">{{INITIALE}}</span><span>{{ENTREPRISE}}</span></a>
-    <nav class="menu" aria-label="Menu"><a href="#carte">La carte</a><a href="#ou">Où nous trouver</a><a href="#commander">Commander</a><a href="#avis">Avis</a><a href="#contact">Contact</a></nav>
-    <div class="tools">
-      <a class="btn rouge" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg><span>Appeler</span></a>
-      <span class="rond" aria-label="Clair ou sombre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></span>
-      <span class="rond burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
-    </div>
-  </div>
+<!-- la signature : le camion qui roule d'emplacement en emplacement jusqu'à sa place -->
+<div class="balade" aria-hidden="true">
+ <div class="route"></div>
+ <svg class="epingle e1" style="top:25%" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+ <svg class="epingle e2" style="top:50%" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+ <svg class="epingle e3" style="top:75%" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+ <svg class="place" viewBox="0 0 50 52"><path d="M4 18h42v4H4z" fill="#1E2227"/><path d="M4 6h42l-3 12H7z" fill="#D2412A" stroke="#1E2227" stroke-width="2" stroke-linejoin="round"/><path d="M14 6l-2 12M25 6v12M36 6l2 12" stroke="#fff" stroke-width="4"/><path d="M8 22v26M42 22v26" stroke="#1E2227" stroke-width="2.5"/><rect x="5" y="44" width="40" height="6" rx="2" fill="#F2B632" stroke="#1E2227" stroke-width="2"/><circle cx="25" cy="31" r="7" fill="#F2B632" stroke="#1E2227" stroke-width="2"/><path d="M22 31l2 2 4-4" stroke="#1E2227" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+ <svg class="camion" viewBox="0 0 74 50"><g class="pot"><circle cx="5" cy="36" r="4" fill="#fff" stroke="#1E2227" stroke-width="1"/></g><path d="M9 10h40v28H9z" fill="#F2B632" stroke="#1E2227" stroke-width="2.4" stroke-linejoin="round"/><path d="M49 18h11l8 9v11H49z" fill="#D2412A" stroke="#1E2227" stroke-width="2.4" stroke-linejoin="round"/><path d="M52 21h7l5 6H52z" fill="#CFE6EE" stroke="#1E2227" stroke-width="1.8" stroke-linejoin="round"/><rect x="15" y="15" width="26" height="12" rx="2" fill="#2C3139" stroke="#1E2227" stroke-width="2"/><path d="M12 15h32" stroke="#1E2227" stroke-width="2"/><path d="M11 9l2-5h32l2 5" fill="#fff" stroke="#1E2227" stroke-width="2" stroke-linejoin="round"/><path d="M18 4l-1 5M25 4v5M32 4v5M39 4l1 5" stroke="#D2412A" stroke-width="3"/><path d="M17 23c3-4 7-4 10 0M28 22h8" stroke="#F2B632" stroke-width="2" stroke-linecap="round"/><g class="roue"><circle cx="21" cy="40" r="6.5" fill="#1E2227"/><circle cx="21" cy="40" r="2.6" fill="#E8D7B9"/><path d="M21 35v10M16 40h10" stroke="#5E584F" stroke-width="1.2"/></g><g class="roue"><circle cx="58" cy="40" r="6.5" fill="#1E2227"/><circle cx="58" cy="40" r="2.6" fill="#E8D7B9"/><path d="M58 35v10M53 40h10" stroke="#5E584F" stroke-width="1.2"/></g></svg>
+</div>
+
+<header class="tete">
+ <div class="wrap">
+  <a class="logo" href="#"><span class="plaque">{{INITIALE}}</span><span><b>{{ENTREPRISE}}</b><small>Cuisine de rue · {{VILLE}}</small></span></a>
+  <nav class="menu"><a href="#menu">Le menu</a><a href="#tournee">Où nous trouver</a><a href="#privatiser">Privatiser</a><a href="#contact">Contact</a></nav>
+  <a class="btn-appel" href="#contact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="txt">Votre numéro</span></a>
+  <span class="soleil" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+  <span class="burger" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E2227" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+ </div>
 </header>
 
-<section class="hero" style="padding:0">
-  <img src="{{PHOTO:accueil}}" alt="">
-  <div class="wrap">
-    <span class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Cuisine de rue à {{VILLE}} et autour</span>
-    <h1>Du bon, du chaud, <em>à emporter</em></h1>
-    <p class="lead">Frites, burgers, kebabs ou vos propres spécialités : une phrase d’accroche qui vous ressemble et qui donne faim, écrite avec vous.</p>
-    <div class="actions"><a class="btn" href="#ou"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Où nous trouver cette semaine</a><a class="btn ghost" href="#contact">Appeler pour commander</a></div>
-    <ul class="puces">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Votre spécialité ici</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Fait maison, produits d’ici : seulement si c’est vrai</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{VILLE}} et alentours</li>
-    </ul>
+<section class="accueil">
+ <div class="guirlande" aria-hidden="true"><svg viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0 8Q150 60 300 12T600 12T900 12T1200 8" stroke="#1E2227" stroke-width="2" fill="none"/><circle cx="60" cy="30" r="7" fill="#F2B632"/><circle cx="150" cy="40" r="7" fill="#D2412A"/><circle cx="240" cy="26" r="7" fill="#F2B632"/><circle cx="360" cy="32" r="7" fill="#fff"/><circle cx="450" cy="40" r="7" fill="#F2B632"/><circle cx="540" cy="26" r="7" fill="#D2412A"/><circle cx="660" cy="32" r="7" fill="#F2B632"/><circle cx="750" cy="40" r="7" fill="#fff"/><circle cx="840" cy="26" r="7" fill="#F2B632"/><circle cx="960" cy="32" r="7" fill="#D2412A"/><circle cx="1050" cy="40" r="7" fill="#F2B632"/><circle cx="1140" cy="24" r="7" fill="#fff"/></svg></div>
+ <div class="wrap">
+  <div>
+   <span class="sticker"><i></i>Cuisine de rue · {{VILLE}}</span>
+   <h1>Le bon goût, <mark>sur roues</mark>, près de chez vous</h1>
+   <p class="chapeau">Une phrase d’accueil qui vous ressemble : votre spécialité, votre façon de cuisiner, ce qui fait revenir vos habitués. Nous l’écrirons avec vous. <span class="exemple">exemple</span></p>
+   <div class="actions">
+    <a class="btn-klaxon" href="#tournee"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Où êtes-vous aujourd’hui ?</a>
+    <a class="btn-pastille" href="#menu"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2B632" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>Voir le menu</a>
+   </div>
+   <div class="infos"><span>Vos jours de passage</span><span>Vos horaires</span><span>Sur place ou à emporter</span></div>
   </div>
+  <div class="comptoir">
+   <div class="fumee" aria-hidden="true"><span></span><span></span><span></span></div>
+   <div class="store" aria-hidden="true"></div>
+   <div class="hublot"><img src="{{PHOTO:accueil}}" alt="Un burger et des frites posés sur une planche en bois"></div>
+   <div class="rond-chaud" aria-hidden="true">Tout<br>chaud,<br>tout de<br>suite</div>
+   <div class="bulle"><b>Votre spécialité</b>en quelques mots</div>
+  </div>
+ </div>
 </section>
 
-<section id="carte">
-  <div class="wrap">
-    <p class="kicker">La carte <span class="exemple">exemples à adapter</span></p>
-    <h2>Ce qu’on vous prépare</h2>
-    <p class="sous">Chaque carte devient un de vos plats, avec vos mots et vos photos. Vos prix s’ajoutent quand vous le voulez, et se changent en un instant.</p>
-    <div class="grille">
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 10h13l-1.6 10.5H7.1Z"/><path d="M8 10 7 3.5M11 10l-.3-7M13.5 10l.5-6.5M16 10l1.3-5.5"/></svg></div><h3>Les frites</h3><p>La pomme de terre, la cuisson, les sauces : ce qui fait vos frites.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5a8 6 0 0 1 16 0Z"/><path d="M3.5 13.5h17"/><path d="M4.5 16.5h15a0 0 0 0 1 0 0 3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3Z"/><path d="M9 7.5h.01M12.5 6.5h.01M15 8h.01"/></svg></div><h3>Les burgers</h3><p>Le pain, la viande, les recettes du moment ou de toujours.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20.5 3.5 7.5c3-3 14-3 17 0L18 20.5Z"/><path d="M5 11c2.5 1.5 11.5 1.5 14 0"/><path d="M9 15h.01M13 16h.01M15.5 14.5h.01"/></svg></div><h3>Kebabs et sandwichs</h3><p>Galette ou pain, garnitures, ce que vous proposez au choix.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 11h18M12 11v8"/></svg></div><h3>Les menus</h3><p>Plat, accompagnement, boisson : vos formules, si vous en faites.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11a4 4 0 1 1 8 0"/><path d="M7.5 11h9L12 21.5Z"/></svg></div><h3>Les douceurs</h3><p>Gaufres, crêpes, glaces : ce qui termine bien le repas.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11l-1.4 13H7.9Z"/><path d="M5.5 7.5h13M12 7.5 14 2.5"/></svg></div><h3>Les boissons</h3><p>Fraîches ou chaudes, la liste de ce que vous servez.</p></div>
-    </div>
+<section class="section" id="menu">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="sticker"><i></i>Le menu</span><h2>Ce qui sort de notre camion <span class="exemple">exemples à adapter</span></h2></div><p>Chaque carte devient une de vos recettes, avec vos photos et vos mots. Les prix s’ajoutent si vous le souhaitez.</p></div>
+  <div class="menu-grille">
+   <article class="plat pop"><span class="prix">votre prix</span><svg class="ico" viewBox="0 0 64 64"><path d="M10 30c0-12 10-18 22-18s22 6 22 18z" fill="#F2B632" stroke="#1E2227" stroke-width="2.5" stroke-linejoin="round"/><path d="M8 36h48" stroke="#5E7A2E" stroke-width="5" stroke-linecap="round"/><rect x="9" y="39" width="46" height="8" rx="4" fill="#7A3B1E" stroke="#1E2227" stroke-width="2.5"/><path d="M10 50h44c0 5-4 7-8 7H18c-4 0-8-2-8-7z" fill="#F2B632" stroke="#1E2227" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 20l1 1M32 17l1 1M42 21l1 1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg><h3>Les burgers</h3><p>Votre pain, votre viande, vos sauces : la recette qui fait votre réputation.</p></article>
+   <article class="plat pop"><span class="prix">votre prix</span><svg class="ico" viewBox="0 0 64 64"><path d="M20 18l3 18M28 12l1 24M36 14l-1 22M44 18l-3 18" stroke="#E8A21A" stroke-width="5" stroke-linecap="round"/><path d="M14 30h36l-5 28H19z" fill="#D2412A" stroke="#1E2227" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 40h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><h3>Les frites</h3><p>Fraîches, croustillantes, avec vos sauces maison si vous en faites.</p></article>
+   <article class="plat pop"><span class="prix">votre prix</span><svg class="ico" viewBox="0 0 64 64"><path d="M12 22h40l-6 30H18z" fill="#fff" stroke="#1E2227" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 22c3-8 33-8 36 0" fill="#E8C68A" stroke="#1E2227" stroke-width="2.5"/><path d="M20 30c4 4 8 4 12 0s8-4 12 0" stroke="#5E7A2E" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M22 40h20" stroke="#D2412A" stroke-width="3" stroke-linecap="round"/></svg><h3>Les wraps et salades</h3><p>Pour ceux qui veulent manger léger, ou végétarien.</p></article>
+   <article class="plat pop"><span class="prix">votre prix</span><svg class="ico" viewBox="0 0 64 64"><path d="M18 20h28l-3 36H21z" fill="#fff" stroke="#1E2227" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 14h32v6H16z" fill="#5E7A2E" stroke="#1E2227" stroke-width="2.5"/><path d="M34 14l6-10" stroke="#1E2227" stroke-width="2.5" stroke-linecap="round"/><path d="M20 32h24" stroke="#F2B632" stroke-width="8"/></svg><h3>Boissons et douceurs</h3><p>Vos boissons fraîches, vos desserts, vos petits plus.</p></article>
   </div>
+  <div class="bandes">
+   <div class="bande-photo monte"><img src="{{PHOTO:cuisine}}" alt="Des steaks hachés qui grillent sur la plaque, flammes dessous"><b>Cuit devant vous</b></div>
+   <div class="bande-texte monte"><h3>La formule du jour</h3><p>Votre formule, votre plat du moment, votre recette de saison : une case simple que vous changez quand vous voulez. <span class="exemple">exemple</span></p><a class="btn-coupon" href="#contact">Commander</a></div>
+  </div>
+ </div>
 </section>
 
-<section id="pourquoi" class="alt">
-  <div class="wrap deux">
-    <div class="photo"><img src="{{PHOTO:cuisine}}" alt=""></div>
-    <div>
-      <p class="kicker">Pourquoi nous <span class="exemple">à compléter avec vous</span></p>
-      <h2>Ce qui fait revenir vos clients</h2>
-      <ul class="liste">
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Vos produits</b>D’où viennent la viande, le pain, les pommes de terre : seulement ce qui est vrai.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre façon de cuisiner</b>Ce qui est préparé sur place, vos recettes, vos sauces.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Le plat du moment</b>Une recette de saison, une nouveauté à mettre en avant.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Pour vos fêtes</b>Mariages, anniversaires, fêtes de village : si vous vous déplacez pour les événements.</span></li>
-      </ul>
-    </div>
+<section class="section tournee" id="tournee">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="sticker" style="background:var(--moutarde)"><i></i>La tournée</span><h2>Cette semaine, on est où ? <span class="exemple">vos vrais emplacements ici</span></h2></div><p>Votre planning de la semaine, simple à mettre à jour depuis votre téléphone : vos clients savent toujours où vous trouver.</p></div>
+  <div class="semaine">
+   <div class="jour pop"><b>Lundi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Votre emplacement</span><small>vos horaires</small></div>
+   <div class="jour pop"><b>Mardi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#F2B632"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Votre emplacement</span><small>vos horaires</small></div>
+   <div class="jour pop"><b>Mercredi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Votre emplacement</span><small>vos horaires</small></div>
+   <div class="jour pop"><b>Jeudi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#F2B632"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Votre emplacement</span><small>vos horaires</small></div>
+   <div class="jour pop"><b>Vendredi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Votre emplacement</span><small>vos horaires</small></div>
+   <div class="jour pop"><b>Samedi</b><svg width="22" height="28" viewBox="0 0 18 24"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#F2B632"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg><span>Marché, fête, événement</span><small>vos horaires</small></div>
+   <div class="jour repos pop"><b>Dimanche</b><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2B632" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span>Repos, ou votre emplacement</span><small>à vous de dire</small></div>
   </div>
+ </div>
 </section>
 
-<section id="ou">
-  <div class="wrap">
-    <p class="kicker">Où nous trouver <span class="exemple">emplacements d’exemple</span></p>
-    <h2>Cette semaine, on est là</h2>
-    <p class="sous">Vos emplacements et vos horaires, jour par jour, à mettre à jour selon vos tournées. Vos clients savent où vous trouver, sans avoir à demander.</p>
-    <div class="semaine">
-      <div class="jour"><span class="nom">Lundi</span><p>Place du marché, {{VILLE}}</p><small>Vos horaires</small></div>
-      <div class="jour"><span class="nom">Mardi</span><p>Parking de la salle des fêtes</p><small>Commune voisine · vos horaires</small></div>
-      <div class="jour"><span class="nom">Mercredi</span><p>Devant la mairie</p><small>Commune voisine · vos horaires</small></div>
-      <div class="jour"><span class="nom">Jeudi</span><p>Zone d’activités, {{VILLE}}</p><small>Vos horaires</small></div>
-      <div class="jour"><span class="nom">Vendredi</span><p>Place de l’église</p><small>Commune voisine · vos horaires</small></div>
-      <div class="jour"><span class="nom">Samedi</span><p>Marché, {{VILLE}}</p><small>Vos horaires</small></div>
-      <div class="jour repos"><span class="nom">Dimanche</span><p>Votre jour de repos ?</p><small>À vous de dire</small></div>
-      <div class="jour events"><span class="nom">Sur demande</span><p>Fêtes et événements</p><small>Si vous vous déplacez : demandez-nous</small></div>
-    </div>
+<section class="section" id="privatiser">
+ <div class="wrap prive">
+  <div class="polaroid monte"><img src="{{PHOTO:frites}}" alt="Un cornet de frites garnies, servi dans un cornet en papier"><span>Votre camion, à votre fête</span></div>
+  <div class="monte">
+   <span class="sticker"><i></i>Privatiser le camion</span>
+   <h2>On vient à vous, pour vos grands jours <span class="exemple">si vous le proposez</span></h2>
+   <p>Mariages, anniversaires, fêtes de village, repas d’entreprise : présentez comment vous travaillez, ce que vous servez, pour combien de personnes.</p>
+   <div class="occasions"><span>Mariages</span><span>Anniversaires</span><span>Entreprises</span><span>Fêtes et marchés</span><span>Associations</span></div>
+   <a class="btn-surligne" href="#contact">Demander une date →</a>
   </div>
+ </div>
 </section>
 
-<section id="commander" class="alt">
-  <div class="wrap deux">
-    <div>
-      <p class="kicker">Commander</p>
-      <h2>Commandez, on prépare</h2>
-      <p class="sous">Trois étapes, à ajuster à votre façon de faire.</p>
-      <ul class="liste">
-        <li><span class="ok">1</span><span><b>Vous choisissez</b>Sur la carte, ici ou au camion.</span></li>
-        <li><span class="ok">2</span><span><b>Vous appelez pour commander</b>Ou vous passez directement : comme vous le proposez.</span></li>
-        <li><span class="ok">3</span><span><b>Vous récupérez votre commande</b>Chaude, à l’heure convenue, à l’emplacement du jour.</span></li>
-      </ul>
-      <p style="margin-top:22px"><a class="btn rouge" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Appeler pour commander</a></p>
-    </div>
-    <div class="photo"><img src="{{PHOTO:frites}}" alt=""></div>
+<section class="section commander">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="sticker"><i></i>Commander</span><h2>Moins d’attente, plus de goût <span class="exemple">exemple</span></h2></div><p>Trois étapes simples, comme vous les pratiquez.</p></div>
+  <div class="etapes">
+   <div class="etape monte"><h3>Vous appelez ou passez</h3><p>Par téléphone, par message, ou directement au camion.</p></div>
+   <div class="etape monte"><h3>Nous cuisinons</h3><p>Votre commande se prépare, chaude et minute.</p></div>
+   <div class="etape monte"><h3>Vous récupérez</h3><p>À l’heure dite, sur place ou à emporter.</p></div>
   </div>
+ </div>
 </section>
 
-<section id="avis">
-  <div class="wrap">
-    <p class="kicker">Avis <span class="exemple">vos vrais avis Google ici</span></p>
-    <h2>Ce que disent vos clients</h2>
-    <p class="sous">Jamais de faux avis : cette partie reprend seulement ceux que vos clients ont laissés.</p>
-    <div class="avis">
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-    </div>
+<section class="section">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="sticker"><i></i>Ils en parlent</span><h2>Vos vrais avis Google ici</h2></div><p>Les avis de vos clients s’afficheront ici, tels qu’ils les ont écrits.</p></div>
+  <div class="avis">
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
   </div>
+ </div>
 </section>
 
-<section id="contact" class="contact">
-  <div class="wrap deux">
-    <div>
-      <p class="kicker" style="color:var(--moutarde)">Contact</p>
-      <h2>Une commande, une fête à prévoir ?</h2>
-      <p class="sous">Appelez, ou laissez un message : il arrive directement dans votre boîte e-mail.</p>
-      <a class="gros-tel" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Votre numéro</a>
-      <p style="margin-top:22px;color:#F4D6CF"><b style="color:#fff">{{ENTREPRISE}}</b><br>{{VILLE}} et alentours<br>Vos horaires</p>
-    </div>
-    <div class="form" aria-label="Formulaire de contact (exemple)">
-      <label>Votre nom</label><div class="champ"></div>
-      <label>Votre téléphone ou e-mail</label><div class="champ"></div>
-      <label>Votre demande (commande, événement…)</label><div class="champ grand"></div>
-      <span class="btn">Envoyer</span>
-    </div>
+<section class="section" id="contact" style="padding-top:20px">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="sticker"><i></i>Contact</span><h2>À {{VILLE}} et dans les environs</h2></div></div>
+  <div class="contact-grille">
+   <div class="carte-ville monte">
+    <svg class="pin" style="left:24%;top:24%" viewBox="0 0 18 24" aria-hidden="true"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+    <svg class="pin" style="left:62%;top:18%" viewBox="0 0 18 24" aria-hidden="true"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#F2B632" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+    <svg class="pin" style="left:44%;top:46%" viewBox="0 0 18 24" aria-hidden="true"><path d="M9 23S1 14 1 8.5a8 8 0 0 1 16 0C17 14 9 23 9 23z" fill="#D2412A" stroke="#1E2227" stroke-width="1.6"/><circle cx="9" cy="8.5" r="3" fill="#fff"/></svg>
+    <div class="lieu"><b>{{ENTREPRISE}}</b><br>Vos emplacements autour de {{VILLE}}</div>
+   </div>
+   <div class="contact monte">
+    <h3 style="font-size:28px">Une question, une commande ?</h3>
+    <p style="color:var(--doux);font-size:15.5px">Votre numéro · vos horaires de passage</p>
+    <div class="champ">Votre nom</div><div class="champ">Votre téléphone ou votre e-mail</div><div class="champ grand">Votre message, votre commande ou votre date</div>
+    <a class="btn-plein" href="#contact">Envoyer <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+   </div>
   </div>
+ </div>
 </section>
 
-<footer>
-  <div class="wrap bas"><span><b>{{ENTREPRISE}}</b> · Cuisine de rue à {{VILLE}}</span><span>Mentions légales · Confidentialité</span><span>Maquette d’exemple : Les Minis Monstres</span></div>
+<footer class="pied">
+ <div class="wrap">
+  <div><b>{{ENTREPRISE}}</b><br>Cuisine de rue à {{VILLE}}</div>
+  <div>Vos emplacements<br>Votre numéro</div>
+  <div>Mentions légales · Confidentialité<br><span style="opacity:.7">Site réalisé par Les Minis Monstres</span></div>
+ </div>
 </footer>
 </body>
 </html>

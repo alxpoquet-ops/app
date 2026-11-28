@@ -1,6 +1,8 @@
 {
   "groupe": "commerce-boutique",
   "nom": "Boutiques et commerces",
+  "generation": 2,
+  "signature": "une étiquette de boutique qui se balance au bout de sa ficelle en descendant jusqu'au sac de shopping, bandeau de vitrine qui défile, reflet qui glisse sur la vitrine",
   "mots": [
     "boutique",
     "magasin",
@@ -14,6 +16,7 @@
   "photos": {
     "accueil": "https://images.pexels.com/photos/5490970/pexels-photo-5490970.jpeg",
     "rayons": "https://images.pexels.com/photos/13385627/pexels-photo-13385627.jpeg",
-    "cadeau": "https://images.pexels.com/photos/1693650/pexels-photo-1693650.jpeg"
+    "cadeau": "https://images.pexels.com/photos/1693650/pexels-photo-1693650.jpeg",
+    "mode": "https://images.pexels.com/photos/8386651/pexels-photo-8386651.jpeg"
   }
 }

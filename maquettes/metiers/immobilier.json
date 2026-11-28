@@ -1,10 +1,17 @@
 {
   "groupe": "immobilier",
   "nom": "Agences immobilières indépendantes",
-  "mots": ["immobil", "agence immo", "gestion locative"],
+  "generation": 2,
+  "signature": "une clé qui descend au défilement jusqu'à une maison dont la porte s'ouvre, sur un plan d'architecte qui se dessine",
+  "mots": [
+    "immobil",
+    "agence immo",
+    "gestion locative"
+  ],
   "photos": {
     "accueil": "https://images.pexels.com/photos/34681428/pexels-photo-34681428.jpeg",
     "interieur": "https://images.pexels.com/photos/8146158/pexels-photo-8146158.jpeg",
-    "cle": "https://images.pexels.com/photos/101808/pexels-photo-101808.jpeg"
+    "cle": "https://images.pexels.com/photos/101808/pexels-photo-101808.jpeg",
+    "sejour": "https://images.pexels.com/photos/2030037/pexels-photo-2030037.jpeg"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "groupe": "coiffure",
+  "nom": "Coiffeurs, barbiers, coiffure à domicile",
+  "generation": 2,
+  "signature": "une paire de ciseaux qui coupe en descendant au défilement, de petites mèches qui tombent, jusqu'au miroir du salon ; un reflet de miroir passe sur la photo d'accueil",
+  "mots": ["coiff", "barbier"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/2799609/pexels-photo-2799609.jpeg",
+    "outils": "https://images.pexels.com/photos/7465903/pexels-photo-7465903.jpeg",
+    "coupe": "https://images.pexels.com/photos/6487878/pexels-photo-6487878.jpeg",
+    "salon": "https://images.pexels.com/photos/1895701/pexels-photo-1895701.jpeg"
+  }
+}

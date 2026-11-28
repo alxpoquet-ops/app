@@ -1,0 +1,19 @@
+{
+  "groupe": "location-vacances",
+  "nom": "Appartements et chalets de vacances, meublés de tourisme",
+  "generation": 2,
+  "signature": "une petite valise qui roule au défilement jusqu'à un chalet dont la cheminée fume, avec des flocons qui tombent et un soleil qui tourne",
+  "mots": [
+    "location de vacances",
+    "chalet",
+    "meuble de tourisme",
+    "appartement de vacances",
+    "location appartement"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/7746945/pexels-photo-7746945.jpeg",
+    "salon": "https://images.pexels.com/photos/30231966/pexels-photo-30231966.jpeg",
+    "appartement": "https://images.pexels.com/photos/11167661/pexels-photo-11167661.jpeg",
+    "montagne": "https://images.pexels.com/photos/35814411/pexels-photo-35814411.jpeg"
+  }
+}

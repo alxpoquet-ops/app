@@ -1,0 +1,19 @@
+{
+  "groupe": "garage",
+  "nom": "Garages, mécanique, lavage auto",
+  "generation": 2,
+  "signature": "une petite voiture qui roule sur une route en pointillés au défilement jusqu'au pont élévateur qui la soulève, voyants du tableau de bord qui clignotent, bulles de lavage",
+  "mots": [
+    "garage",
+    "mecani",
+    "carross",
+    "lavage",
+    "automobile",
+    "pneu"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/4315574/pexels-photo-4315574.jpeg",
+    "pneu": "https://images.pexels.com/photos/41253544/pexels-photo-41253544.jpeg",
+    "lavage": "https://images.pexels.com/photos/4870724/pexels-photo-4870724.jpeg"
+  }
+}

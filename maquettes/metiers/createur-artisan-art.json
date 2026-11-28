@@ -1,0 +1,22 @@
+{
+  "groupe": "createur-artisan-art",
+  "nom": "Créateurs, artisans d’art",
+  "generation": 2,
+  "signature": "un papillon qui volette au défilement jusqu'à un vase en céramique, avec d'autres papillons et un collier de perles qui se balance",
+  "mots": [
+    "resine",
+    "bijou",
+    "ceramist",
+    "ceramiq",
+    "gravure",
+    "cartonnage",
+    "createur",
+    "creatrice"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/29286722/pexels-photo-29286722.jpeg",
+    "tour": "https://images.pexels.com/photos/6611314/pexels-photo-6611314.jpeg",
+    "bijou": "https://images.pexels.com/photos/10474291/pexels-photo-10474291.jpeg",
+    "resine": "https://images.pexels.com/photos/7256634/pexels-photo-7256634.jpeg"
+  }
+}

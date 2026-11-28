@@ -1,0 +1,19 @@
+{
+  "groupe": "paysagiste",
+  "nom": "Paysagistes, jardiniers",
+  "generation": 2,
+  "signature": "une feuille qui virevolte au défilement jusqu'à un petit arbre qui pousse en même temps, aigrettes qui s'envolent, brins d'herbe qui ondulent",
+  "mots": [
+    "paysag",
+    "jardin",
+    "espaces verts",
+    "elagu"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/12792322/pexels-photo-12792322.jpeg",
+    "taille": "https://images.pexels.com/photos/38936347/pexels-photo-38936347.jpeg",
+    "jardin": "https://images.pexels.com/photos/7174111/pexels-photo-7174111.jpeg",
+    "massif": "https://images.pexels.com/photos/9678161/pexels-photo-9678161.jpeg",
+    "haie": "https://images.pexels.com/photos/38936351/pexels-photo-38936351.jpeg"
+  }
+}

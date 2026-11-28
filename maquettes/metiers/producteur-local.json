@@ -1,0 +1,24 @@
+{
+  "groupe": "producteur-local",
+  "nom": "Producteurs locaux, fermes, artisans du goût",
+  "generation": 2,
+  "signature": "une abeille qui butine de fleur en fleur au défilement jusqu'au pot de miel, pollen qui flotte, herbes qui ondulent au vent",
+  "mots": [
+    "maraich",
+    "apicult",
+    "miel",
+    "eleveu",
+    "oeuf",
+    "legume",
+    "fromag",
+    "biscuit",
+    "confitur",
+    "ferme"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/1458694/pexels-photo-1458694.jpeg",
+    "legumes": "https://images.pexels.com/photos/1300972/pexels-photo-1300972.jpeg",
+    "miel": "https://images.pexels.com/photos/13246534/pexels-photo-13246534.jpeg",
+    "oeufs": "https://images.pexels.com/photos/31037330/pexels-photo-31037330.jpeg"
+  }
+}

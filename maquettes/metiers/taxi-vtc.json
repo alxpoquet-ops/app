@@ -1,6 +1,8 @@
 {
   "groupe": "taxi-vtc",
   "nom": "Taxis, VTC, chauffeurs",
+  "generation": 2,
+  "signature": "une voiture au lumineux allumé qui file sur une route de nuit au défilement jusqu'au drapeau d'arrivée, lumières de la ville qui scintillent, traits de phares",
   "mots": [
     "taxi",
     "vtc",
@@ -8,8 +10,9 @@
     "chauffeur vtc"
   ],
   "photos": {
-    "accueil": "https://images.pexels.com/photos/37100902/pexels-photo-37100902.jpeg",
-    "volant": "https://images.pexels.com/photos/9354560/pexels-photo-9354560.jpeg",
-    "portiere": "https://images.pexels.com/photos/14541142/pexels-photo-14541142.jpeg"
+    "accueil": "https://images.pexels.com/photos/67088/pexels-photo-67088.jpeg",
+    "route": "https://images.pexels.com/photos/37100902/pexels-photo-37100902.jpeg",
+    "portiere": "https://images.pexels.com/photos/14541142/pexels-photo-14541142.jpeg",
+    "volant": "https://images.pexels.com/photos/9354560/pexels-photo-9354560.jpeg"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "groupe": "restaurant",
+  "nom": "Restaurants, cafés",
+  "generation": 2,
+  "signature": "une fourchette qui descend en tournoyant le long de la page jusqu'à une assiette dressée, vapeur qui monte du plat, flamme de bougie qui vacille",
+  "mots": [
+    "restaura",
+    "brasserie",
+    "bistro",
+    "pizzer",
+    "creperie",
+    "cafe"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg",
+    "salle": "https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg",
+    "cuisine": "https://images.pexels.com/photos/3338497/pexels-photo-3338497.jpeg",
+    "plat": "https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg"
+  }
+}

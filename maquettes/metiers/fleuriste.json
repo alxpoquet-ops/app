@@ -1,1 +1,16 @@
-{"groupe": "fleuriste", "nom": "Fleuristes", "mots": ["fleur", "florist"], "photos": {"accueil": "https://images.pexels.com/photos/947914/pexels-photo-947914.jpeg", "atelier": "https://images.pexels.com/photos/5566818/pexels-photo-5566818.jpeg", "detail": "https://images.pexels.com/photos/20155213/pexels-photo-20155213.jpeg"}}
+{
+  "groupe": "fleuriste",
+  "nom": "Fleuristes",
+  "generation": 2,
+  "signature": "un pétale qui tombe en virevoltant au défilement jusqu'à un bouton de fleur qui s'ouvre en bas de page, pétales qui tombent sur l'accueil, feuillage qui se balance",
+  "mots": [
+    "fleur",
+    "florist"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/25945747/pexels-photo-25945747.jpeg",
+    "boutique": "https://images.pexels.com/photos/947914/pexels-photo-947914.jpeg",
+    "atelier": "https://images.pexels.com/photos/5566818/pexels-photo-5566818.jpeg",
+    "bouquet": "https://images.pexels.com/photos/20155213/pexels-photo-20155213.jpeg"
+  }
+}

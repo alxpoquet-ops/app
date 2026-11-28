@@ -1,6 +1,8 @@
 {
   "groupe": "gite-chambre-hotes",
   "nom": "Gîtes, chambres d’hôtes, locations de vacances",
+  "generation": 2,
+  "signature": "une petite lanterne qui descend le chemin au défilement jusqu'à la porte d'une maison qui s'éclaire, avec des lucioles le soir",
   "mots": [
     "gite",
     "chambre d hote",
@@ -12,6 +14,7 @@
   "photos": {
     "accueil": "https://images.pexels.com/photos/18414268/pexels-photo-18414268.jpeg",
     "chambre": "https://images.pexels.com/photos/14465274/pexels-photo-14465274.jpeg",
-    "alentours": "https://images.pexels.com/photos/31290935/pexels-photo-31290935.jpeg"
+    "alentours": "https://images.pexels.com/photos/31290935/pexels-photo-31290935.jpeg",
+    "table": "https://images.pexels.com/photos/13916176/pexels-photo-13916176.jpeg"
   }
 }

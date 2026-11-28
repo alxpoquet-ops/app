@@ -1,0 +1,12 @@
+{
+  "groupe": "ebeniste-menuisier",
+  "nom": "Ébénistes, menuisiers, meubles",
+  "generation": 2,
+  "signature": "un petit rabot qui glisse le long d'une planche au défilement, le bois devient clair derrière lui, son copeau s'enroule en descendant et la planche finit en petite chaise ; poussière de bois dans un rayon de lumière, mètre pliant qui se déplie",
+  "mots": ["ebenist", "menuis", "meuble", "mobilier", "patine"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/7109999/pexels-photo-7109999.jpeg",
+    "assemblage": "https://images.pexels.com/photos/7109996/pexels-photo-7109996.jpeg",
+    "meuble": "https://images.pexels.com/photos/11643074/pexels-photo-11643074.jpeg"
+  }
+}

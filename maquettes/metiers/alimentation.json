@@ -1,0 +1,22 @@
+{
+  "groupe": "alimentation",
+  "nom": "Commerces de bouche : épiceries, boucheries, charcuteries, traiteurs, cavistes",
+  "generation": 2,
+  "signature": "un panier en osier qui descend le long de la page et se remplit (fromage, bouteille, saucisson, tomate) jusqu'au comptoir, store rayé qui ondule, ardoise à la craie",
+  "mots": [
+    "epicer",
+    "boucher",
+    "charcut",
+    "traiteur",
+    "cavist",
+    "alimentation",
+    "primeur",
+    "fromager"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/12455049/pexels-photo-12455049.jpeg",
+    "fromage": "https://images.pexels.com/photos/821365/pexels-photo-821365.jpeg",
+    "viande": "https://images.pexels.com/photos/618775/pexels-photo-618775.jpeg",
+    "primeur": "https://images.pexels.com/photos/2255935/pexels-photo-2255935.jpeg"
+  }
+}

@@ -1,1 +1,16 @@
-{"groupe": "photographe", "nom": "Photographes, vidéastes", "mots": ["photograph", "videast", "video"], "photos": {"accueil": "https://images.pexels.com/photos/134469/pexels-photo-134469.jpeg", "atelier": "https://images.pexels.com/photos/11234300/pexels-photo-11234300.jpeg", "detail": "https://images.pexels.com/photos/2278256/pexels-photo-2278256.jpeg"}}
+{
+  "groupe": "photographe",
+  "nom": "Photographes, vidéastes",
+  "generation": 2,
+  "signature": "un diaphragme qui s'ouvre en descendant au défilement jusqu'à une pile de tirages, avec un flash à l'arrivée et des tirages qui se posent",
+  "mots": [
+    "photograph",
+    "videast",
+    "video"
+  ],
+  "photos": {
+    "studio": "https://images.pexels.com/photos/134469/pexels-photo-134469.jpeg",
+    "atelier": "https://images.pexels.com/photos/11234300/pexels-photo-11234300.jpeg",
+    "tirages": "https://images.pexels.com/photos/7015073/pexels-photo-7015073.jpeg"
+  }
+}

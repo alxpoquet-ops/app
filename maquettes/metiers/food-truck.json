@@ -1,6 +1,8 @@
 {
   "groupe": "food-truck",
   "nom": "Food trucks, friteries, snacks",
+  "generation": 2,
+  "signature": "un petit camion-restaurant qui roule d'emplacement en emplacement (épingles) au défilement jusqu'à sa place sous la guirlande, fumée de cuisson, guirlande guinguette qui scintille",
   "mots": [
     "food truck",
     "foodtruck",
