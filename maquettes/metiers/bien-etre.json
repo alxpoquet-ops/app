@@ -1,6 +1,8 @@
 {
   "groupe": "bien-etre",
   "nom": "Bien-être : massages, réflexologie, naturopathie",
+  "generation": 2,
+  "signature": "une petite bougie dont la flamme ondule, qui descend au défilement jusqu'à une pile de galets ; des ronds dans l'eau sur l'accueil, une fumée d'encens légère",
   "mots": [
     "massage",
     "reflexo",
@@ -17,6 +19,7 @@
   "photos": {
     "accueil": "https://images.pexels.com/photos/35884499/pexels-photo-35884499.jpeg",
     "detente": "https://images.pexels.com/photos/6560266/pexels-photo-6560266.jpeg",
-    "reflexo": "https://images.pexels.com/photos/6628700/pexels-photo-6628700.jpeg"
+    "reflexo": "https://images.pexels.com/photos/6628700/pexels-photo-6628700.jpeg",
+    "galets": "https://images.pexels.com/photos/31390599/pexels-photo-31390599.jpeg"
   }
 }

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ENTREPRISE}} : maquette d'exemple</title>
+<!--
+  Les Minis Monstres : maquette par métier, commerces de bouche (épiceries, boucheries, charcuteries, traiteurs,
+  cavistes, primeurs, fromagers ; nouvelle génération, 28 novembre 2026).
+  Sa signature : un panier en osier qui descend le long de la page quand on la fait défiler et se remplit en route
+  (fromage, bouteille, saucisson, tomate) jusqu'au comptoir. Ambiance : l'aiguille de la balance qui oscille,
+  l'ardoise écrite à la craie. Tout est en CSS (aucun script). Sans « animation-timeline », le panier reste en haut, déjà plein.
+  Remplie pour chaque prospect : {{ENTREPRISE}}, {{VILLE}}, {{INITIALE}}. Tout le reste est un exemple à adapter.
+  Photos : Pexels (licence libre). Dessins : faits pour Les Minis Monstres.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--craie:#FAF7F0;--kraft:#EFE4CF;--kraft2:#E0CFAE;--marine:#1E2D44;--marine-d:#16223A;--bouteille:#2F5A45;--bouteille-c:#DCE7DC;--cuivre:#B4602F;--cuivre-d:#924A21;--or:#C99A4B;--texte:#1F2632;--doux:#58606B;--ligne:#E3D8C4;--ombre:0 20px 44px rgba(30,45,68,.14)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--craie);color:var(--texte);font-family:"Outfit",system-ui,sans-serif;font-size:17px;line-height:1.65;overflow-x:hidden}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;color:var(--marine);line-height:1.08;margin:0 0 14px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(32px,4.2vw,50px)}
+h3{font-size:24px}
+p{margin:0 0 14px}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.exemple{display:inline-block;margin-left:8px;padding:2px 10px 2px 16px;background:var(--kraft);color:#6B4A1C;font:600 11px/1.6 "Outfit",sans-serif;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;clip-path:polygon(8px 0,100% 0,100% 100%,8px 100%,0 50%);position:relative}
+.surtitre{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cuivre);margin-bottom:10px}
+.surtitre svg{flex:0 0 auto}
+
+/* ---------- maquette : bandeau et filigrane ---------- */
+.bandeau{margin:0;padding:9px 18px;background:var(--marine);color:#EDE6D8;font-size:13.5px;text-align:center}
+.bandeau b{color:#F1D9A6}
+.filigrane{position:fixed;inset:0;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.filigrane span{transform:rotate(-24deg);font:800 clamp(30px,6vw,74px)/1 "Outfit",sans-serif;letter-spacing:.08em;color:rgba(30,45,68,.065);white-space:nowrap}
+
+/* ---------- en-tête ---------- */
+.tete{position:sticky;top:0;z-index:50;background:rgba(250,247,240,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.tete::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:4px;background:repeating-linear-gradient(90deg,var(--bouteille) 0 26px,var(--craie) 26px 52px);opacity:.85}
+.tete .wrap{display:flex;align-items:center;gap:22px;height:76px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.ecusson{width:48px;height:52px;flex:0 0 48px;background:var(--marine);color:#F1D9A6;display:grid;place-items:center;font:700 22px/1 "Fraunces",serif;border-radius:6px 6px 24px 24px;box-shadow:inset 0 0 0 3px var(--marine),inset 0 0 0 4.5px rgba(241,217,166,.5)}
+.logo b{font:700 21px/1.1 "Fraunces",serif;color:var(--marine);display:block}
+.logo small{display:block;font-size:12px;color:var(--doux);letter-spacing:.1em;text-transform:uppercase}
+.menu{display:flex;gap:26px;margin-left:auto}
+.menu a{text-decoration:none;font-weight:500;font-size:15.5px;position:relative}
+.menu a:hover{color:var(--cuivre)}
+.btn-appel{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;border-radius:8px;background:var(--bouteille);color:#fff;text-decoration:none;font-weight:600;font-size:15px;transition:background .2s}
+.btn-appel:hover{background:var(--marine)}
+.soleil{width:40px;height:40px;border-radius:8px;border:1px solid var(--ligne);display:grid;place-items:center;color:var(--cuivre)}
+.burger{display:none;width:42px;height:42px;border-radius:8px;background:var(--kraft);place-items:center}
+
+/* ---------- accueil ---------- */
+.accueil{position:relative;overflow:hidden;background:linear-gradient(115deg,var(--craie) 0 55%,var(--kraft) 55%)}
+.accueil .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding-top:74px;padding-bottom:90px;position:relative}
+.accueil h1{font-size:clamp(44px,5.8vw,76px);font-weight:700}
+.accueil h1 em{font-style:italic;font-weight:500;color:var(--cuivre)}
+.chapeau{font-size:19px;color:var(--doux);max-width:520px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px;margin:30px 0 30px}
+/* bouton carré : le pictogramme s'élargit */
+.btn-carre{display:inline-flex;align-items:stretch;background:var(--marine);color:#fff;text-decoration:none;font-weight:600;border-radius:4px;overflow:hidden;box-shadow:0 10px 22px rgba(30,45,68,.25)}
+.btn-carre span{padding:16px 22px}
+.btn-carre i{display:grid;place-items:center;width:54px;background:var(--cuivre);transition:width .3s}
+.btn-carre:hover i{width:72px}
+/* lien vague : soulignement ondulé qui glisse */
+.btn-vague{display:inline-block;font-weight:600;text-decoration:none;color:var(--marine);padding-bottom:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='6' viewBox='0 0 20 6'%3E%3Cpath d='M0 3q5-4 10 0t10 0' fill='none' stroke='%23B4602F' stroke-width='2'/%3E%3C/svg%3E") 0 100%/20px 6px repeat-x;transition:background-position .6s}
+.btn-vague:hover{background-position:40px 100%}
+.rayons-mini{display:flex;flex-wrap:wrap;gap:8px}
+.rayons-mini span{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;background:#fff;border:1px solid var(--ligne);font-size:14px;color:var(--doux)}
+.rayons-mini span::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--bouteille);transform:rotate(45deg)}
+
+.etal{position:relative;justify-self:center;width:min(460px,100%)}
+.etal .photo{border-radius:200px 200px 10px 10px;overflow:hidden;aspect-ratio:4/5;box-shadow:var(--ombre);outline:1.5px solid var(--or);outline-offset:10px}
+.etal .photo img{width:100%;height:100%;object-fit:cover}
+.balance{position:absolute;left:-60px;bottom:30px;width:150px;filter:drop-shadow(0 14px 18px rgba(30,45,68,.2))}
+.aiguille{transform-origin:75px 78px;animation:pese 3.4s ease-in-out infinite}
+@keyframes pese{0%,100%{transform:rotate(-38deg)}45%{transform:rotate(22deg)}60%{transform:rotate(8deg)}75%{transform:rotate(14deg)}}
+.carte-ardoise{position:absolute;right:-30px;top:44px;background:var(--bouteille);color:#F3EFE4;padding:14px 18px;border-radius:6px;border:5px solid #8A6236;box-shadow:var(--ombre);transform:rotate(3deg);font-size:14px;line-height:1.35;max-width:190px}
+.carte-ardoise b{display:block;font:italic 500 19px "Fraunces",serif;color:#fff}
+
+/* ---------- le panier qui se remplit (signature) ---------- */
+.balade{position:fixed;right:18px;top:116px;bottom:92px;width:66px;z-index:45;pointer-events:none}
+.balade::before{content:"";position:absolute;left:32px;top:8px;bottom:44px;width:2px;background:repeating-linear-gradient(180deg,rgba(180,96,47,.4) 0 6px,transparent 6px 10px,rgba(180,96,47,.4) 10px 12px,transparent 12px 18px)}
+.balade .panier{position:absolute;left:3px;top:0;width:60px;height:56px;filter:drop-shadow(0 6px 6px rgba(30,45,68,.22));transform-origin:50% 0}
+.balade .comptoir{position:absolute;left:0;bottom:-12px;width:66px;height:52px}
+@supports (animation-timeline: scroll()){
+ .balade .panier{animation:balade linear both;animation-timeline:scroll(root)}
+ .panier .p1,.panier .p2,.panier .p3,.panier .p4{animation:linear both;animation-timeline:scroll(root)}
+ .panier .p1{animation-name:dedans1}.panier .p2{animation-name:dedans2}.panier .p3{animation-name:dedans3}.panier .p4{animation-name:dedans4}
+ @keyframes dedans1{0%,14%{opacity:0;transform:translateY(-14px)}22%,100%{opacity:1;transform:none}}
+ @keyframes dedans2{0%,36%{opacity:0;transform:translateY(-14px)}44%,100%{opacity:1;transform:none}}
+ @keyframes dedans3{0%,58%{opacity:0;transform:translateY(-14px)}66%,100%{opacity:1;transform:none}}
+ @keyframes dedans4{0%,78%{opacity:0;transform:translateY(-14px)}86%,100%{opacity:1;transform:none}}
+ @media (max-width:960px){.balade .panier{animation-name:balade-tel}}
+ @keyframes balade-tel{0%{left:0;transform:rotate(-6deg)}25%{transform:rotate(6deg)}50%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}100%{left:calc(100% - 80px);transform:rotate(0)}}
+ @keyframes balade{0%{top:0;transform:rotate(-8deg)}15%{transform:rotate(8deg)}30%{transform:rotate(-7deg)}45%{transform:rotate(7deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(5deg)}90%{transform:rotate(-3deg)}100%{top:calc(100% - 108px);transform:rotate(0)}}
+ .monte{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 80%}
+ @keyframes monte{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+ .craie path{stroke-dasharray:600;animation:ecrit linear both;animation-timeline:view();animation-range:entry 20% cover 45%}
+ @keyframes ecrit{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+}
+
+/* ---------- nos rayons ---------- */
+.section{padding:96px 0}
+.tete-section{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:44px}
+.tete-section p{max-width:450px;color:var(--doux);margin:0}
+.rayons{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.rayon{position:relative;background:#fff;border:1px solid var(--ligne);border-radius:10px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.rayon:hover{transform:translateY(-6px);box-shadow:var(--ombre)}
+.rayon .vue{aspect-ratio:16/10;overflow:hidden;position:relative;background:var(--kraft)}
+.rayon .vue img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.rayon:hover .vue img{transform:scale(1.07)}
+.rayon .vue.dessin{display:grid;place-items:center;background:repeating-linear-gradient(45deg,var(--kraft) 0 12px,#F3EBDC 12px 24px)}
+.rayon .corps{padding:22px 24px 24px}
+.rayon .corps p{color:var(--doux);font-size:15.5px;margin:0}
+.rayon .num{position:absolute;left:14px;top:14px;background:var(--craie);color:var(--marine);font:700 13px "Outfit",sans-serif;padding:4px 10px;border-radius:4px;letter-spacing:.06em}
+
+/* ---------- l'ardoise ---------- */
+.ardoise-section{position:relative;padding:96px 0;background:var(--bouteille);color:#EDEAE0;overflow:hidden}
+.ardoise-section::before{content:"";position:absolute;inset:0;opacity:.35;background:radial-gradient(400px 200px at 20% 20%,rgba(255,255,255,.12),transparent 70%),radial-gradient(500px 220px at 80% 90%,rgba(0,0,0,.25),transparent 70%)}
+.ardoise-section .wrap{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
+.ardoise-section h2{color:#fff}
+.ardoise-section .surtitre{color:#F1D9A6}
+.tableau{position:relative;background:#263A31;border:14px solid #8A6236;border-radius:8px;padding:34px 34px 28px;box-shadow:0 24px 50px rgba(0,0,0,.3),inset 0 0 40px rgba(0,0,0,.35)}
+.tableau h3{font:italic 500 32px "Fraunces",serif;color:#fff;margin-bottom:6px}
+.craie{display:block;width:180px;height:16px;margin-bottom:16px}
+.ligne-craie{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1.5px dashed rgba(255,255,255,.25);font-size:17px}
+.ligne-craie span:last-child{color:#F1D9A6;font-style:italic;white-space:nowrap}
+.tableau .poussiere{position:absolute;left:24px;bottom:-14px;width:70px;height:8px;border-radius:4px;background:#F3EFE4;transform:rotate(-4deg)}
+/* bouton étiquette kraft, avec son œillet */
+.btn-etiquette{position:relative;display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:13px 24px 13px 38px;background:var(--kraft);color:var(--marine);font-weight:700;text-decoration:none;clip-path:polygon(18px 0,100% 0,100% 100%,18px 100%,0 50%);transition:transform .25s,background .25s}
+.btn-etiquette::before{content:"";position:absolute;left:16px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:var(--bouteille);box-shadow:inset 0 0 0 2px #8A6236}
+.btn-etiquette:hover{background:#F1D9A6;transform:rotate(-3deg)}
+
+/* ---------- la maison ---------- */
+.maison{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.mosaique{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:200px 200px;gap:14px}
+.mosaique div{border-radius:10px;overflow:hidden}
+.mosaique div:first-child{grid-row:span 2}
+.mosaique img{width:100%;height:100%;object-fit:cover}
+.mosaique .tampon-rond{display:grid;place-items:center;background:var(--marine);color:#F1D9A6;text-align:center;font:italic 500 21px/1.15 "Fraunces",serif;padding:20px}
+.engagements{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 26px}
+.engagements div{padding:18px;border-radius:10px;background:#fff;border:1px solid var(--ligne)}
+.engagements b{display:block;color:var(--marine);margin:8px 0 2px}
+.engagements p{margin:0;font-size:15px;color:var(--doux)}
+
+/* ---------- commandes ---------- */
+.commandes{background:var(--kraft)}
+.frise{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative}
+.frise::before{content:"";position:absolute;left:12%;right:12%;top:36px;border-top:2px dashed var(--cuivre)}
+.pas{text-align:center;padding:0 26px;position:relative}
+.pas i{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 18px;border-radius:50%;background:var(--craie);border:2px solid var(--cuivre);font:italic 700 26px "Fraunces",serif;color:var(--cuivre)}
+.pas p{color:var(--doux)}
+.cadeaux{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px}
+.cadeaux span{padding:10px 18px;border-radius:6px;background:var(--craie);border:1px solid var(--kraft2);font-weight:500}
+
+/* ---------- avis ---------- */
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.avis-carte{background:#fff;border:1px solid var(--ligne);border-left:4px solid var(--or);border-radius:8px;padding:28px;color:var(--doux);font-size:15.5px}
+.avis-carte .etoiles{color:var(--or);letter-spacing:4px;margin-bottom:10px}
+.avis-carte .vide{height:10px;border-radius:3px;background:var(--kraft);margin:8px 0}
+.avis-carte .vide.court{width:60%}
+
+/* ---------- venir ---------- */
+.venir{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.devanture{position:relative;border-radius:10px;overflow:hidden;min-height:380px;background:
+ linear-gradient(90deg,transparent 44%,#E4D8C0 44% 48%,transparent 48%),linear-gradient(0deg,transparent 52%,#E4D8C0 52% 56%,transparent 56%),linear-gradient(28deg,transparent 64%,#ECE2CF 64% 67%,transparent 67%),#F3ECDF;border:1px solid var(--ligne)}
+.devanture .boutique-dessin{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:120px;animation:flotte 3s ease-in-out infinite}
+@keyframes flotte{50%{transform:translate(-50%,-56%)}}
+.devanture .lieu{position:absolute;left:22px;right:22px;bottom:22px;background:#fff;border-radius:8px;padding:14px 18px;box-shadow:var(--ombre);font-size:15px}
+.contact{background:#fff;border:1px solid var(--ligne);border-radius:10px;padding:32px}
+.horaires{display:grid;grid-template-columns:1fr auto;gap:8px 18px;margin:14px 0 22px;font-size:15.5px}
+.horaires span:nth-child(even){color:var(--doux)}
+.champ{border:1.5px solid var(--ligne);border-radius:6px;padding:12px 16px;margin-bottom:12px;color:#8C8A86;font-size:15px;background:var(--craie)}
+.champ.grand{height:92px}
+.btn-plein{display:block;text-align:center;padding:15px;border-radius:6px;background:var(--cuivre);color:#fff;font-weight:700;text-decoration:none;transition:background .25s,letter-spacing .25s}
+.btn-plein:hover{background:var(--cuivre-d);letter-spacing:.04em}
+
+/* ---------- pied ---------- */
+.pied{background:var(--marine);color:#C9CFD8;padding:58px 0 110px;font-size:15px;position:relative}
+.pied::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(90deg,var(--bouteille) 0 26px,var(--craie) 26px 52px)}
+.pied .wrap{display:flex;flex-wrap:wrap;gap:28px 60px;justify-content:space-between;padding-right:100px}
+.pied b{color:#fff;font:700 22px "Fraunces",serif}
+
+/* ---------- téléphone ---------- */
+@media (max-width:960px){
+ .menu,.btn-appel span.txt{display:none}.burger{display:grid}
+ .accueil{background:var(--craie)}
+ .accueil .wrap,.maison,.venir,.ardoise-section .wrap{grid-template-columns:1fr}
+ .etal{margin-top:30px;width:min(420px,86%)}.balance{left:-26px;width:116px}.carte-ardoise{right:-16px}
+ .rayons{grid-template-columns:1fr 1fr}
+ .frise,.avis{grid-template-columns:1fr}.frise::before{display:none}.pas{margin-bottom:30px}
+ .tete-section{flex-direction:column;align-items:flex-start}
+ .tete .wrap{height:66px;gap:10px}.ecusson{width:40px;height:44px;flex:0 0 40px;font-size:18px}.logo{min-width:0}.logo>span:last-child{min-width:0}.logo b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}.logo small{display:none}.btn-appel{padding:10px 12px}.soleil{width:36px;height:36px}
+ .balade{left:10px;right:10px;top:74px;bottom:auto;width:auto;height:38px}
+ .balade::before{left:6px;right:46px;top:24px;bottom:auto;width:auto;height:2px;background:repeating-linear-gradient(90deg,rgba(180,96,47,.4) 0 6px,transparent 6px 10px)}
+ .balade .panier{width:40px;height:38px;top:0}.balade .comptoir{left:auto;right:0;bottom:auto;top:0;width:44px;height:36px}
+ .pied .wrap{padding-right:28px}
+}
+@media (max-width:560px){.bandeau{font-size:12px;padding:7px 12px}.wrap{padding:0 18px}.section,.ardoise-section{padding:70px 0}.rayons,.engagements{grid-template-columns:1fr}.mosaique{grid-template-rows:160px 160px}.mosaique .tampon-rond{font-size:16px;padding:12px}.tableau{padding:26px 20px 22px;border-width:10px}.ligne-craie{font-size:15.5px}.pied .wrap{padding-right:18px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+<div class="filigrane" aria-hidden="true"><span>MAQUETTE D’EXEMPLE · LES MINIS MONSTRES</span></div>
+
+<!-- la signature : le panier qui descend et se remplit jusqu'au comptoir -->
+<div class="balade" aria-hidden="true">
+ <svg class="panier" viewBox="0 0 60 56"><path d="M14 24C14 8 46 8 46 24" fill="none" stroke="#8A6236" stroke-width="3.2" stroke-linecap="round"/>
+  <g class="p1"><path d="M12 28l14-10 4 10z" fill="#F2CF6B" stroke="#A9801F" stroke-width="1.4" stroke-linejoin="round"/><circle cx="20" cy="25" r="1.4" fill="#D9AE3C"/></g>
+  <g class="p2"><rect x="31" y="6" width="7" height="22" rx="2.5" fill="#2F5A45" stroke="#1E2D44" stroke-width="1.2"/><rect x="32.5" y="2" width="4" height="6" rx="1" fill="#8B2635"/><rect x="31.8" y="15" width="5.4" height="6" fill="#EFE4CF"/></g>
+  <g class="p3"><path d="M40 27c0-7 6-10 10-9 2 1 1 4-1 5-3 1-5 3-5 5z" fill="#9B3A2A" stroke="#6A2418" stroke-width="1.2"/><circle cx="46" cy="21" r=".9" fill="#F3E3D3"/><circle cx="43" cy="24" r=".9" fill="#F3E3D3"/></g>
+  <g class="p4"><circle cx="24" cy="24" r="6" fill="#D2412A" stroke="#9A2A18" stroke-width="1.2"/><path d="M22 18.5l2 1.5 2-1.5" stroke="#3F7A3A" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>
+  <path d="M5 27h50l-5 25H10z" fill="#C8955A" stroke="#8A6236" stroke-width="2" stroke-linejoin="round"/><path d="M8 34h44M9 41h42M11 47h38" stroke="#A8743C" stroke-width="1.6"/><path d="M17 28l-2 23M26 28l-1 23M35 28v23M44 28l2 23" stroke="#A8743C" stroke-width="1.4"/><path d="M4 26h52v4H4z" fill="#B5814A" stroke="#8A6236" stroke-width="1.6"/></svg>
+ <svg class="comptoir" viewBox="0 0 66 52"><path d="M4 4h58v10H4z" fill="#2F5A45"/><path d="M4 4h10v10H4zM24 4h10v10H24zM44 4h10v10H44z" fill="#FAF7F0"/><path d="M4 14q5 6 10 0t10 0 10 0 10 0 10 0 8 0" fill="#2F5A45"/><rect x="8" y="22" width="50" height="26" rx="2" fill="#EFE4CF" stroke="#1E2D44" stroke-width="2"/><path d="M8 32h50" stroke="#1E2D44" stroke-width="2"/><rect x="14" y="36" width="12" height="8" rx="1" fill="#C99A4B"/><rect x="40" y="36" width="12" height="8" rx="1" fill="#C99A4B"/></svg>
+</div>
+
+<header class="tete">
+ <div class="wrap">
+  <a class="logo" href="#"><span class="ecusson">{{INITIALE}}</span><span><b>{{ENTREPRISE}}</b><small>Commerce de bouche · {{VILLE}}</small></span></a>
+  <nav class="menu"><a href="#rayons">Nos rayons</a><a href="#arrivage">L’arrivage</a><a href="#commandes">Commandes</a><a href="#venir">Nous trouver</a></nav>
+  <a class="btn-appel" href="#venir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="txt">Votre numéro</span></a>
+  <span class="soleil" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+  <span class="burger" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E2D44" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>
+ </div>
+</header>
+
+<section class="accueil">
+ <div class="wrap">
+  <div>
+   <span class="surtitre"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B4602F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.5 11h-15zM8 9l4-6 4 6"/></svg>Commerce de bouche · {{VILLE}}</span>
+   <h1>Les bonnes choses, <em>choisies pour vous</em></h1>
+   <p class="chapeau">Une phrase d’accueil qui vous ressemble : vos produits, vos producteurs, ce qui fait que vos clients poussent votre porte. Nous l’écrirons avec vous. <span class="exemple">exemple</span></p>
+   <div class="actions">
+    <a class="btn-carre" href="#rayons"><span>Découvrir nos rayons</span><i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+    <a class="btn-vague" href="#venir">Venir à la boutique</a>
+   </div>
+   <div class="rayons-mini"><span>Vos spécialités</span><span>Vos horaires</span><span>Vos plateaux et paniers</span></div>
+  </div>
+  <div class="etal">
+   <div class="photo"><img src="{{PHOTO:accueil}}" alt="Saucissons et charcuteries suspendus dans une épicerie fine éclairée"></div>
+   <svg class="balance" viewBox="0 0 150 150" aria-hidden="true"><rect x="20" y="118" width="110" height="22" rx="6" fill="#1E2D44"/><path d="M30 118l8-20h74l8 20z" fill="#2B3E5C"/><circle cx="75" cy="78" r="50" fill="#FAF7F0" stroke="#1E2D44" stroke-width="7"/><path d="M35 78a40 40 0 0 1 80 0" fill="none" stroke="#E3D8C4" stroke-width="8"/><g stroke="#1E2D44" stroke-width="2.4" stroke-linecap="round"><path d="M75 34v8M44 47l5 5M106 47l-5 5M33 78h8M117 78h-8"/></g><g stroke="#B4602F" stroke-width="1.6" stroke-linecap="round" opacity=".7"><path d="M58 38l2 5M92 38l-2 5M38 61l5 2M112 61l-5 2"/></g><path class="aiguille" d="M75 78L75 40" stroke="#B4602F" stroke-width="3.4" stroke-linecap="round"/><circle cx="75" cy="78" r="6" fill="#1E2D44"/></svg>
+   <div class="carte-ardoise"><b>L’arrivage du jour</b>Vos nouveautés, écrites comme sur l’ardoise.</div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="rayons">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Nos rayons</span><h2>Tout ce qu’on trouve chez nous <span class="exemple">exemples à adapter</span></h2></div><p>Chaque carte devient un de vos rayons, avec vos photos et vos mots : on garde ceux qui vous ressemblent.</p></div>
+  <div class="rayons">
+   <article class="rayon monte"><div class="vue"><img src="{{PHOTO:fromage}}" alt="Un morceau de fromage à trous et du pain sur une planche"><span class="num">01</span></div><div class="corps"><h3>La crèmerie</h3><p>Vos fromages, vos affinages, vos produits laitiers de la région.</p></div></article>
+   <article class="rayon monte"><div class="vue"><img src="{{PHOTO:viande}}" alt="Une belle pièce de bœuf crue sur une planche à découper"><span class="num">02</span></div><div class="corps"><h3>La boucherie, la charcuterie</h3><p>Vos viandes, vos découpes, vos terrines et salaisons.</p></div></article>
+   <article class="rayon monte"><div class="vue"><img src="{{PHOTO:primeur}}" alt="Un étal de légumes frais, tomates, choux et oignons"><span class="num">03</span></div><div class="corps"><h3>Les fruits et légumes</h3><p>Ce qui arrive de saison, et d’où ça vient.</p></div></article>
+   <article class="rayon monte"><div class="vue dessin"><svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="#1E2D44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16h14v40H14zM16 16v-6h10v6" fill="#FAF7F0"/><path d="M17 28h8v10h-8z" fill="#C99A4B"/><path d="M36 22h16v34H36z" fill="#FAF7F0"/><path d="M38 22l2-8h8l2 8" fill="#FAF7F0"/><path d="M39 32h10v8H39z" fill="#2F5A45"/></svg><span class="num">04</span></div><div class="corps"><h3>L’épicerie fine</h3><p>Conserves, huiles, condiments, douceurs : vos trouvailles.</p></div></article>
+   <article class="rayon monte"><div class="vue dessin"><svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="#1E2D44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6h8v10c0 3 4 5 4 12v28H18V28c0-7 4-9 4-12z" fill="#2F5A45"/><path d="M19 34h14v12H19z" fill="#EFE4CF"/><path d="M42 30h14l-2 12a5 5 0 0 1-10 0z" fill="#FAF7F0"/><path d="M43 34h12" stroke="#8B2635" stroke-width="5"/><path d="M49 47v9M44 56h10"/></svg><span class="num">05</span></div><div class="corps"><h3>La cave</h3><p>Vos vins, vos bières, vos conseils d’accord avec les plats.</p></div></article>
+   <article class="rayon monte"><div class="vue dessin"><svg width="96" height="96" viewBox="0 0 64 64" fill="none" stroke="#1E2D44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="32" cy="40" rx="24" ry="10" fill="#FAF7F0"/><path d="M14 38c4-10 32-10 36 0" fill="#C99A4B"/><circle cx="24" cy="34" r="4" fill="#D2412A"/><circle cx="34" cy="31" r="4" fill="#2F5A45"/><circle cx="42" cy="35" r="3.5" fill="#F2CF6B"/><path d="M32 12v8M26 14l2 6M38 14l-2 6" stroke="#B4602F"/></svg><span class="num">06</span></div><div class="corps"><h3>Le traiteur</h3><p>Plats cuisinés, buffets, plateaux : si vous en proposez.</p></div></article>
+  </div>
+ </div>
+</section>
+
+<section class="ardoise-section" id="arrivage">
+ <div class="wrap">
+  <div class="monte">
+   <span class="surtitre">L’arrivage</span>
+   <h2>Cette semaine sur l’étal <span class="exemple">vos vrais produits ici</span></h2>
+   <p style="color:#D4DDD5">Une ardoise que vous mettez à jour depuis votre téléphone : vos clients savent ce qui vient d’arriver avant même de passer.</p>
+   <a class="btn-etiquette" href="#commandes">Mettre de côté</a>
+  </div>
+  <div class="tableau monte">
+   <h3>L’arrivage du jour</h3>
+   <svg class="craie" viewBox="0 0 180 16" aria-hidden="true"><path d="M3 10C40 3 80 14 118 7s46 2 59-2" stroke="#F3EFE4" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/></svg>
+   <div class="ligne-craie"><span>Votre produit du moment</span><span>votre prix</span></div>
+   <div class="ligne-craie"><span>Le fromage de la semaine</span><span>votre prix</span></div>
+   <div class="ligne-craie"><span>La pièce du boucher</span><span>votre prix</span></div>
+   <div class="ligne-craie"><span>La bouteille coup de cœur</span><span>votre prix</span></div>
+   <span class="poussiere" aria-hidden="true"></span>
+  </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="wrap maison">
+  <div class="mosaique monte"><div><img src="{{PHOTO:etal}}" alt="Fromages, saucissons et bouteilles sur un étal en bois"></div><div class="tampon-rond">Vos producteurs, vos fournisseurs</div><div class="tampon-rond" style="background:var(--cuivre);color:#fff">Vos conseils au comptoir</div></div>
+  <div class="monte">
+   <span class="surtitre">La maison</span>
+   <h2>Le goût, ça se choisit <span class="exemple">à compléter avec vous</span></h2>
+   <p>Racontez votre métier : comment vous choisissez vos produits, les fermes et les maisons avec qui vous travaillez, vos conseils au comptoir. Nous l’écrirons avec vos mots.</p>
+   <div class="engagements">
+    <div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F5A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><b>D’où ça vient</b><p>Vos producteurs, si vous voulez les présenter.</p></div>
+    <div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F5A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>Vos conseils</b><p>Accords, cuissons, conservation.</p></div>
+    <div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F5A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>Vos saisons</b><p>Ce qui change au fil de l’année.</p></div>
+    <div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2F5A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><b>Votre équipe</b><p>Avec vos photos, si vous le souhaitez.</p></div>
+   </div>
+   <a class="btn-vague" href="#commandes">Commander pour une occasion</a>
+  </div>
+ </div>
+</section>
+
+<section class="section commandes" id="commandes">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Commandes</span><h2>Un repas, une fête, un cadeau ? <span class="exemple">exemple</span></h2></div><p>Plateaux, paniers garnis, commandes pour les fêtes : trois étapes simples, comme vous les pratiquez.</p></div>
+  <div class="frise">
+   <div class="pas monte"><i>1</i><h3>Vous nous dites</h3><p>Ce que vous souhaitez, pour combien de personnes, pour quand.</p></div>
+   <div class="pas monte"><i>2</i><h3>Nous préparons</h3><p>Avec le délai et les détails que vous pratiquez.</p></div>
+   <div class="pas monte"><i>3</i><h3>Vous passez le prendre</h3><p>Le jour convenu, à la boutique, ou livré si vous le proposez.</p></div>
+  </div>
+  <div class="cadeaux monte"><span>Plateaux</span><span>Paniers garnis</span><span>Commandes des fêtes</span><span>Coffrets cadeaux</span><span>Buffets</span></div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Ils en parlent</span><h2>Vos vrais avis Google ici</h2></div><p>Les avis de vos clients s’afficheront ici, tels qu’ils les ont écrits.</p></div>
+  <div class="avis">
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="venir" style="padding-top:20px">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Nous trouver</span><h2>Au cœur de {{VILLE}}</h2></div></div>
+  <div class="venir">
+   <div class="devanture monte"><svg class="boutique-dessin" viewBox="0 0 120 110" aria-hidden="true"><path d="M10 40h100v62H10z" fill="#FAF7F0" stroke="#1E2D44" stroke-width="3"/><path d="M6 14h108v20H6z" fill="#2F5A45" stroke="#1E2D44" stroke-width="3"/><path d="M6 34q9 10 18 0t18 0 18 0 18 0 18 0 18 0" fill="#2F5A45" stroke="#1E2D44" stroke-width="3"/><path d="M24 14v20M42 14v20M60 14v20M78 14v20M96 14v20" stroke="#FAF7F0" stroke-width="7"/><rect x="20" y="56" width="36" height="28" fill="#DCE7DC" stroke="#1E2D44" stroke-width="3"/><rect x="66" y="56" width="32" height="46" fill="#C99A4B" stroke="#1E2D44" stroke-width="3"/><circle cx="91" cy="80" r="2.5" fill="#1E2D44"/></svg><div class="lieu"><b>{{ENTREPRISE}}</b><br>Votre adresse · {{VILLE}}</div></div>
+   <div class="contact monte">
+    <h3 style="font-size:26px">Horaires et contact</h3>
+    <div class="horaires"><span>Du mardi au samedi</span><span>vos horaires</span><span>Le dimanche matin</span><span>vos horaires</span><span>Le lundi</span><span>vos horaires</span></div>
+    <div class="champ">Votre nom</div><div class="champ">Votre téléphone ou votre e-mail</div><div class="champ grand">Votre message ou votre commande</div>
+    <a class="btn-plein" href="#venir">Envoyer</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+<footer class="pied">
+ <div class="wrap">
+  <div><b>{{ENTREPRISE}}</b><br>Commerce de bouche à {{VILLE}}</div>
+  <div>Votre adresse<br>Votre numéro</div>
+  <div>Mentions légales · Confidentialité<br><span style="opacity:.7">Site réalisé par Les Minis Monstres</span></div>
+ </div>
+</footer>
+</body>
+</html>

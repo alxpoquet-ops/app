@@ -1,0 +1,18 @@
+{
+  "groupe": "macon",
+  "nom": "Maçons, terrassiers",
+  "generation": 2,
+  "signature": "une brique qui descend le long du fil à plomb au défilement et vient compléter un petit mur, bulle du niveau qui cherche l'équilibre, poussière du chantier qui flotte, fil à plomb qui se balance",
+  "mots": [
+    "macon",
+    "terrass",
+    "gros oeuvre",
+    "gros-oeuvre"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/39325792/pexels-photo-39325792.jpeg",
+    "mur": "https://images.pexels.com/photos/19688828/pexels-photo-19688828.jpeg",
+    "fondation": "https://images.pexels.com/photos/26107204/pexels-photo-26107204.jpeg",
+    "pave": "https://images.pexels.com/photos/4509092/pexels-photo-4509092.jpeg"
+  }
+}

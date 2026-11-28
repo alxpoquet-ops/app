@@ -1,0 +1,12 @@
+{
+  "groupe": "hypnotherapeute",
+  "nom": "Hypnothérapeutes, thérapies brèves",
+  "generation": 2,
+  "signature": "une petite lune qui descend au défilement à travers des nuages jusqu'à un lac où elle se reflète ; ciel de nuit étoilé, nuages qui passent, spirale très lente derrière la photo",
+  "mots": ["hypno", "therapie breve"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/11142284/pexels-photo-11142284.jpeg",
+    "cabinet": "https://images.pexels.com/photos/28461036/pexels-photo-28461036.jpeg",
+    "calme": "https://images.pexels.com/photos/2382941/pexels-photo-2382941.jpeg"
+  }
+}

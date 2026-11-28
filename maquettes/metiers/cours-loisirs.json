@@ -1,10 +1,13 @@
 {
   "groupe": "cours-loisirs",
   "nom": "Cours et loisirs : musique, danse, soutien scolaire",
+  "generation": 2,
+  "signature": "une petite note de musique qui sautille de ligne en ligne sur une portée au défilement, jusqu'à une étoile qui s'allume en bas ; notes qui s'envolent de l'accueil, mot surligné au feutre, page de cahier, emploi du temps à remplir",
   "mots": ["cours", "musique", "danse", "soutien scolaire", "professeur", "ecole de"],
   "photos": {
     "accueil": "https://images.pexels.com/photos/8520479/pexels-photo-8520479.jpeg",
-    "atelier": "https://images.pexels.com/photos/3901639/pexels-photo-3901639.jpeg",
-    "detail": "https://images.pexels.com/photos/5905851/pexels-photo-5905851.jpeg"
+    "danse": "https://images.pexels.com/photos/3901639/pexels-photo-3901639.jpeg",
+    "devoirs": "https://images.pexels.com/photos/5905851/pexels-photo-5905851.jpeg",
+    "guitare": "https://images.pexels.com/photos/7521075/pexels-photo-7521075.jpeg"
   }
 }

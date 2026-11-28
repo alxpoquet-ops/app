@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ENTREPRISE}} : maquette d'exemple</title>
+<!--
+  Les Minis Monstres : maquette par métier, hypnose et approches brèves (nouvelle génération, 28 novembre 2026).
+  Sa signature : une petite lune qui descend doucement à travers les nuages quand on fait défiler la page, jusqu'à
+  un lac où elle se reflète. Ambiance : un ciel de nuit aux étoiles qui scintillent, des nuages qui passent et une
+  spirale très lente derrière la photo d'accueil. Tout est en CSS (aucun script). Sans « animation-timeline », la lune
+  reste sagement en haut. Aucune promesse de soin. Remplie pour chaque prospect : {{ENTREPRISE}}, {{VILLE}}, {{INITIALE}}.
+  Photos : Pexels (licence libre). Dessins : faits pour Les Minis Monstres.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brume:#F1EFF6;--brume2:#E4E1EE;--nuit:#1C1F3B;--nuit2:#262A4E;--indigo:#3A4080;--ardoise:#6B76A6;--lune:#E9D6A2;--lune-f:#C8AE6A;--aurore:#D7A39C;--texte:#23263F;--doux:#5D6080;--ligne:#DEDAEA;--ombre:0 22px 50px rgba(28,31,59,.16)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--brume);color:var(--texte);font-family:"Epilogue",system-ui,sans-serif;font-size:17px;line-height:1.7;overflow-x:hidden}
+h1,h2,h3{font-family:"Instrument Serif",Georgia,serif;color:var(--nuit);line-height:1.05;margin:0 0 14px;font-weight:400}
+h2{font-size:clamp(36px,4.6vw,58px)}
+h3{font-size:28px}
+p{margin:0 0 14px}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+.exemple{display:inline-block;margin-left:8px;padding:2px 11px;border-radius:999px;border:1px dashed var(--ardoise);color:var(--indigo);font:600 10.5px/1.6 "Epilogue",sans-serif;letter-spacing:.1em;text-transform:uppercase;vertical-align:middle;background:rgba(255,255,255,.5)}
+.surtitre{display:inline-flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--indigo)}
+.surtitre::before{content:"";width:14px;height:14px;border-radius:50%;box-shadow:inset -4px -1px 0 0 currentColor}
+.avertissement{font-size:14.5px;color:var(--doux);font-style:italic}
+
+/* ---------- maquette : bandeau et filigrane ---------- */
+.bandeau{margin:0;padding:9px 18px;background:#13152B;color:#DCDDF0;font-size:13.5px;text-align:center}
+.bandeau b{color:var(--lune)}
+.filigrane{position:fixed;inset:0;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.filigrane span{transform:rotate(-24deg);font:700 clamp(30px,6vw,74px)/1 "Epilogue",sans-serif;letter-spacing:.08em;color:rgba(58,64,128,.07);white-space:nowrap}
+
+/* ---------- en-tête ---------- */
+.tete{position:sticky;top:0;z-index:50;background:rgba(28,31,59,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(233,214,162,.15);color:#E6E6F3}
+.tete .wrap{display:flex;align-items:center;gap:22px;height:76px}
+.logo{min-width:0;display:flex;align-items:center;gap:12px;text-decoration:none}
+.astre{position:relative;width:46px;height:46px;border-radius:50%;border:1px solid rgba(233,214,162,.5);display:grid;place-items:center;font:italic 400 25px/1 "Instrument Serif",serif;color:var(--lune)}
+.astre::after{content:"";position:absolute;right:-3px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--lune);box-shadow:0 0 10px var(--lune)}
+.logo b{font:400 24px/1.05 "Instrument Serif",serif;color:#fff}
+.logo b{display:block;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo small{display:block;font-size:11.5px;color:#A9ACCB;letter-spacing:.14em;text-transform:uppercase}
+.menu{display:flex;gap:28px;margin-left:auto}
+.menu a{white-space:nowrap;text-decoration:none;font-size:15px;color:#D4D5E8;transition:color .25s}
+.menu a:hover{color:var(--lune)}
+.btn-appel{white-space:nowrap;flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;background:var(--lune);color:var(--nuit);text-decoration:none;font-weight:600;font-size:14.5px;transition:box-shadow .3s}
+.btn-appel:hover{box-shadow:0 0 0 6px rgba(233,214,162,.2)}
+.soleil{width:40px;height:40px;border-radius:50%;border:1px solid rgba(233,214,162,.35);display:grid;place-items:center;color:var(--lune)}
+.burger{display:none;width:42px;height:42px;border-radius:50%;border:1px solid rgba(233,214,162,.35);place-items:center}
+
+/* ---------- accueil : la nuit ---------- */
+.accueil{position:relative;overflow:hidden;background:radial-gradient(900px 500px at 75% 110%,#4A4E8E 0,transparent 60%),linear-gradient(180deg,#14162D 0,var(--nuit) 45%,#2B2F5C 100%);color:#D9DAEE}
+.accueil .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;padding-top:76px;padding-bottom:110px}
+.accueil h1{color:#fff;font-size:clamp(48px,6.2vw,86px);letter-spacing:-.01em}
+.accueil h1 em{color:var(--lune)}
+.accueil .surtitre{color:var(--lune)}
+.chapeau{font-size:19px;color:#C4C6E0;max-width:520px}
+.accueil .exemple{border-color:rgba(233,214,162,.6);color:var(--lune);background:transparent}
+.accueil .avertissement{color:#A9ACCB}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px 26px;margin:30px 0 26px}
+.btn-lune{display:inline-flex;align-items:center;gap:14px;padding:15px 28px 15px 16px;border-radius:999px;background:#fff;color:var(--nuit);text-decoration:none;font-weight:600;transition:box-shadow .35s,transform .35s}
+.btn-lune i{width:30px;height:30px;border-radius:50%;background:var(--nuit);box-shadow:inset 9px -2px 0 0 var(--lune);transition:box-shadow .6s}
+.btn-lune:hover{box-shadow:0 0 0 8px rgba(233,214,162,.18),0 0 40px rgba(233,214,162,.35);transform:translateY(-2px)}
+.btn-lune:hover i{box-shadow:inset 0 0 0 15px var(--lune)}
+.btn-halo{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:14px;border:1px solid rgba(233,214,162,.45);color:#E6E6F3;text-decoration:none;font-weight:500;transition:border-color .3s,box-shadow .3s,color .3s}
+.btn-halo:hover{border-color:var(--lune);color:var(--lune);box-shadow:0 0 22px rgba(233,214,162,.25),inset 0 0 18px rgba(233,214,162,.1)}
+/* étoiles et nuages */
+.etoiles-ciel{position:absolute;inset:0;pointer-events:none}
+.etoiles-ciel i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:brille 3.4s ease-in-out infinite}
+@keyframes brille{0%,100%{opacity:.15}50%{opacity:1;box-shadow:0 0 6px #fff}}
+.nuage{position:absolute;pointer-events:none;opacity:.16;animation:derive linear infinite}
+@keyframes derive{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+.hublot{position:relative;justify-self:center;width:min(440px,100%);aspect-ratio:1}
+.hublot .spirale{position:absolute;inset:-14%;width:128%;height:128%;animation:tourne 60s linear infinite;opacity:.5}
+@keyframes tourne{to{transform:rotate(360deg)}}
+.hublot .rond{position:absolute;inset:10%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px rgba(233,214,162,.4),0 0 0 14px rgba(255,255,255,.04),0 30px 60px rgba(0,0,0,.4)}
+.hublot .rond img{width:100%;height:100%;object-fit:cover}
+.hublot .respire{position:absolute;left:-6%;bottom:6%;background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px 18px;display:flex;align-items:center;gap:14px;color:#fff;font-size:14.5px}
+.hublot .respire span{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,var(--lune),rgba(233,214,162,.1));animation:souffle 8s ease-in-out infinite}
+@keyframes souffle{0%,100%{transform:scale(.6);opacity:.6}50%{transform:scale(1.2);opacity:1}}
+
+/* ---------- la lune qui descend à travers les nuages (signature) ---------- */
+.balade{position:fixed;right:20px;top:120px;bottom:96px;width:60px;z-index:45;pointer-events:none}
+.balade::before{content:"";position:absolute;left:29px;top:10px;bottom:44px;width:1px;background:linear-gradient(rgba(58,64,128,.05),rgba(58,64,128,.35),rgba(58,64,128,.05))}
+.balade .lune{position:absolute;left:8px;top:0;width:44px;height:44px;filter:drop-shadow(0 0 10px rgba(233,214,162,.8))}
+.balade .nuage-p{position:absolute;width:56px;height:26px;left:2px;z-index:2;filter:drop-shadow(0 3px 4px rgba(28,31,59,.12))}
+.balade .nuage-p.n1{top:24%;animation:flotte 7s ease-in-out infinite}
+.balade .nuage-p.n2{top:52%;left:-2px;animation:flotte 9s ease-in-out infinite reverse}
+.balade .nuage-p.n3{top:76%;animation:flotte 8s ease-in-out infinite}
+@keyframes flotte{50%{transform:translateX(6px)}}
+.balade .lac{position:absolute;left:0;bottom:-8px;width:60px;height:40px}
+.lac .reflet{animation:reflet 3s ease-in-out infinite}
+@keyframes reflet{50%{opacity:.4;transform:scaleX(.8)}}
+.lac .reflet{transform-origin:30px 22px}
+@supports (animation-timeline: scroll()){
+ .balade .lune{animation:balade linear both;animation-timeline:scroll(root)}
+ @media (max-width:960px){.balade .lune{animation-name:balade-tel}.balade{animation:parait linear both;animation-timeline:scroll(root);animation-range:0 140px}}
+ @keyframes parait{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+ @keyframes balade-tel{0%{left:0;transform:rotate(-20deg)}100%{left:calc(100% - 62px);transform:rotate(40deg)}}
+ @keyframes balade{0%{top:0;transform:rotate(-30deg)}50%{transform:translateX(-6px) rotate(0)}100%{top:calc(100% - 86px);transform:rotate(30deg)}}
+ .monte{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 85%}
+ @keyframes monte{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+ .brume{animation:brume linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+ @keyframes brume{from{opacity:0;filter:blur(10px)}to{opacity:1;filter:none}}
+}
+
+/* ---------- pourquoi venir ---------- */
+.section{padding:104px 0}
+.tete-section{max-width:680px;margin-bottom:46px}
+.tete-section p{color:var(--doux);margin:0}
+.motifs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.motif{position:relative;padding:30px;border-radius:26px;background:#fff;border:1px solid var(--ligne);overflow:hidden;transition:transform .4s,box-shadow .4s}
+.motif::after{content:"";position:absolute;right:-40px;bottom:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(107,118,166,.14),transparent 70%);transition:transform .6s}
+.motif:hover{transform:translateY(-6px);box-shadow:var(--ombre)}
+.motif:hover::after{transform:scale(2.2)}
+.motif svg{margin-bottom:16px}
+.motif h3{font-size:27px;margin-bottom:6px}
+.motif p{color:var(--doux);font-size:15.5px;margin:0}
+.motif.grand{grid-row:span 2;background:var(--nuit2);border-color:var(--nuit2);color:#C4C6E0;display:flex;flex-direction:column;justify-content:flex-end;min-height:300px}
+.motif.grand h3{color:#fff;font-size:34px}
+.motif.grand p{color:#C4C6E0}
+.motif.grand .spirale-p{position:absolute;right:-30px;top:-30px;width:220px;height:220px;animation:tourne 40s linear infinite;opacity:.6}
+.note-honnete{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px 30px;align-items:center;justify-content:space-between;padding:20px 26px;border-radius:20px;background:var(--brume2)}
+.note-honnete p{margin:0}
+.btn-trait{display:inline-flex;align-items:center;gap:14px;text-decoration:none;font-weight:600;color:var(--indigo)}
+.btn-trait i{position:relative;display:block;width:46px;height:1.5px;background:currentColor;transition:width .4s}
+.btn-trait i::after{content:"";position:absolute;right:-1px;top:-4px;width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;background:var(--brume2)}
+.btn-trait:hover i{width:70px}
+
+/* ---------- une séance : les phases de la lune ---------- */
+.seance{background:linear-gradient(180deg,var(--brume) 0,#E7E4F1 100%)}
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;position:relative}
+.phases::before{content:"";position:absolute;left:8%;right:8%;top:34px;border-top:1px dashed var(--ardoise);opacity:.5}
+.phase{position:relative;text-align:center;padding:0 6px}
+.phase .astre-p{width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:var(--nuit);border:1px solid var(--ardoise);position:relative;overflow:hidden}
+.phase .astre-p::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--lune)}
+.phase:nth-child(1) .astre-p::after{transform:translateX(78%)}
+.phase:nth-child(2) .astre-p::after{transform:translateX(50%)}
+.phase:nth-child(3) .astre-p::after{transform:translateX(22%)}
+.phase:nth-child(4) .astre-p::after{transform:none;box-shadow:0 0 20px var(--lune)}
+.phase h3{font-size:26px}
+.phase p{color:var(--doux);font-size:15.5px;margin:0}
+.phase small{display:block;margin-bottom:6px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ardoise)}
+
+/* ---------- le cabinet ---------- */
+.cabinet{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.cabinet .photos{position:relative;height:540px}
+.cabinet .photos .p1{position:absolute;left:0;top:0;width:74%;height:84%;border-radius:999px 999px 26px 26px;overflow:hidden;box-shadow:var(--ombre)}
+.cabinet .photos .p2{position:absolute;right:0;bottom:0;width:46%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:8px solid var(--brume);box-shadow:var(--ombre)}
+.cabinet .photos img{width:100%;height:100%;object-fit:cover}
+.citation{margin:24px 0 30px;padding:22px 26px;border-left:2px solid var(--lune-f);background:#fff;border-radius:0 20px 20px 0;font:italic 400 24px/1.35 "Instrument Serif",serif;color:var(--nuit)}
+.btn-contour{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;border:1.5px solid var(--nuit);color:var(--nuit);text-decoration:none;font-weight:600;transition:background .3s,color .3s}
+.btn-contour:hover{background:var(--nuit);color:var(--lune)}
+
+/* ---------- questions ---------- */
+.questions{max-width:820px;margin:0 auto}
+.questions details{border-bottom:1px solid var(--ligne);padding:6px 0}
+.questions summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;font:400 25px/1.2 "Instrument Serif",serif;color:var(--nuit)}
+.questions summary::-webkit-details-marker{display:none}
+.questions summary::after{content:"+";flex:0 0 38px;height:38px;border-radius:50%;border:1px solid var(--ardoise);display:grid;place-items:center;font:400 22px/1 "Epilogue",sans-serif;color:var(--indigo);transition:transform .35s,background .3s}
+.questions details[open] summary::after{transform:rotate(45deg);background:var(--lune)}
+.questions details p{color:var(--doux);margin:0 0 18px;max-width:680px}
+
+/* ---------- avis ---------- */
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.avis-carte{background:#fff;border:1px dashed var(--brume2);border-radius:26px;padding:28px;color:var(--doux);font-size:15.5px}
+.avis-carte .etoiles{color:var(--lune-f);letter-spacing:4px;margin-bottom:10px}
+.avis-carte .vide{height:10px;border-radius:6px;background:var(--brume2);margin:8px 0}
+.avis-carte .vide.court{width:60%}
+
+/* ---------- contact ---------- */
+.contact-zone{background:var(--nuit);color:#C4C6E0;position:relative;overflow:hidden}
+.contact-zone .etoiles-ciel i{animation-duration:4.4s}
+.contact-zone .wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.contact-zone h2{color:#fff}
+.lieux{display:grid;gap:14px;margin:24px 0}
+.lieu{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.lieu b{color:#fff;display:block}
+.horaires{display:grid;grid-template-columns:1fr auto;gap:8px 18px;font-size:15.5px}
+.horaires span:nth-child(even){color:var(--lune);font-style:italic}
+.formulaire{background:var(--brume);color:var(--texte);border-radius:28px;padding:34px}
+.champ{border:1.5px solid var(--ligne);border-radius:14px;padding:13px 18px;margin-bottom:12px;color:#9497B0;font-size:15px;background:#fff}
+.champ.grand{height:96px}
+.btn-plein{display:block;text-align:center;padding:15px;border-radius:14px;background:var(--indigo);color:#fff;font-weight:600;text-decoration:none;transition:background .3s}
+.btn-plein:hover{background:var(--nuit)}
+
+/* ---------- pied ---------- */
+.pied{background:#13152B;color:#A9ACCB;padding:56px 0 110px;font-size:15px}
+.pied .wrap{display:flex;flex-wrap:wrap;gap:28px 60px;justify-content:space-between}
+.pied b{color:#fff;font:400 26px "Instrument Serif",serif}
+
+/* ---------- téléphone ---------- */
+@media (max-width:960px){
+ .menu,.btn-appel span.txt{display:none}.burger{display:grid}
+ .accueil .wrap,.cabinet,.contact-zone .wrap{grid-template-columns:1fr}
+ .hublot{width:min(340px,84%);margin:10px auto 0}.hublot .respire{left:-4%}
+ .motifs{grid-template-columns:1fr 1fr}.motif.grand{grid-column:span 2;grid-row:auto}
+ .phases{grid-template-columns:1fr 1fr;row-gap:40px}.phases::before{display:none}.avis{grid-template-columns:1fr}
+ .cabinet .photos{height:440px}
+ .tete .wrap{height:66px;gap:10px}.astre{width:40px;height:40px;font-size:21px;flex:0 0 40px}.logo{min-width:0}.logo b{font-size:20px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}.logo small{display:none}.btn-appel{padding:10px 13px}.soleil{width:36px;height:36px}
+ .balade{left:10px;right:10px;top:72px;bottom:auto;width:auto;height:38px;background:linear-gradient(90deg,rgba(28,31,59,.92),rgba(58,64,128,.92));border-radius:20px;box-shadow:0 4px 14px rgba(28,31,59,.2)}
+ .balade::before{left:16px;right:50px;top:19px;bottom:auto;width:auto;height:1px;background:rgba(233,214,162,.35)}
+ .balade .lune{width:30px;height:30px;top:4px}
+ .balade .nuage-p{width:34px;height:16px;top:11px}.balade .nuage-p.n1{left:24%;top:11px}.balade .nuage-p.n2{left:50%;top:11px}.balade .nuage-p.n3{left:72%;top:11px}
+ .balade .lac{left:auto;right:6px;bottom:auto;top:5px;width:40px;height:28px}
+}
+@media (max-width:560px){.bandeau{font-size:12px;padding:7px 12px}.wrap{padding:0 18px}.section{padding:72px 0}.motifs{grid-template-columns:1fr}.motif.grand{grid-column:auto}.formulaire{padding:26px 20px}.cabinet .photos{height:360px}.questions summary{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+<div class="filigrane" aria-hidden="true"><span>MAQUETTE D’EXEMPLE · LES MINIS MONSTRES</span></div>
+
+<!-- la signature : la petite lune descend à travers les nuages jusqu'au lac où elle se reflète -->
+<div class="balade" aria-hidden="true">
+ <svg class="lune" viewBox="0 0 44 44"><path d="M30 6a18 18 0 1 0 8 26A15 15 0 0 1 30 6z" fill="#E9D6A2" stroke="#C8AE6A" stroke-width="1.2"/><circle cx="16" cy="20" r="2.4" fill="#D9C186"/><circle cx="21" cy="31" r="1.7" fill="#D9C186"/><circle cx="12" cy="28" r="1.2" fill="#D9C186"/></svg>
+ <svg class="nuage-p n1" viewBox="0 0 56 26"><path d="M10 24a8 8 0 0 1 0-16 11 11 0 0 1 20-4 9 9 0 0 1 16 6 7 7 0 0 1 0 14z" fill="#fff" stroke="#DEDAEA"/></svg>
+ <svg class="nuage-p n2" viewBox="0 0 56 26"><path d="M10 24a8 8 0 0 1 0-16 11 11 0 0 1 20-4 9 9 0 0 1 16 6 7 7 0 0 1 0 14z" fill="#F1EFF6" stroke="#DEDAEA"/></svg>
+ <svg class="nuage-p n3" viewBox="0 0 56 26"><path d="M10 24a8 8 0 0 1 0-16 11 11 0 0 1 20-4 9 9 0 0 1 16 6 7 7 0 0 1 0 14z" fill="#fff" stroke="#DEDAEA"/></svg>
+ <svg class="lac" viewBox="0 0 60 40"><ellipse cx="30" cy="24" rx="28" ry="12" fill="#3A4080"/><ellipse cx="30" cy="24" rx="22" ry="8" fill="#262A4E"/><g class="reflet"><path d="M24 21h12M26 25h8M28 29h4" stroke="#E9D6A2" stroke-width="2" stroke-linecap="round"/></g><path d="M4 12c3-4 6-4 9 0M47 12c3-4 6-4 9 0" stroke="#6B76A6" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+</div>
+
+<header class="tete">
+ <div class="wrap">
+  <a class="logo" href="#"><span class="astre">{{INITIALE}}</span><span><b>{{ENTREPRISE}}</b><small>Hypnose · {{VILLE}}</small></span></a>
+  <nav class="menu"><a href="#accompagner">Accompagnement</a><a href="#seance">Une séance</a><a href="#cabinet">Le cabinet</a><a href="#questions">Questions</a></nav>
+  <a class="btn-appel" href="#contact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="txt">Votre numéro</span></a>
+  <span class="soleil" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></span>
+  <span class="burger" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E9D6A2" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M7 12h13M4 17h16"/></svg></span>
+ </div>
+</header>
+
+<section class="accueil">
+ <div class="etoiles-ciel" aria-hidden="true"><i style="left:6%;top:14%"></i><i style="left:14%;top:52%;animation-delay:1s"></i><i style="left:27%;top:9%;animation-delay:2s"></i><i style="left:38%;top:80%;animation-delay:.5s"></i><i style="left:47%;top:22%;animation-delay:1.6s;width:2px;height:2px"></i><i style="left:56%;top:6%;animation-delay:2.6s"></i><i style="left:66%;top:88%;animation-delay:1.2s;width:2px;height:2px"></i><i style="left:78%;top:12%;animation-delay:.8s"></i><i style="left:88%;top:44%;animation-delay:2.2s;width:2px;height:2px"></i><i style="left:95%;top:70%;animation-delay:3s"></i><i style="left:33%;top:40%;animation-delay:2.9s;width:2px;height:2px"></i></div>
+ <svg class="nuage" style="top:16%;width:220px;animation-duration:70s" viewBox="0 0 56 26" aria-hidden="true"><path d="M10 24a8 8 0 0 1 0-16 11 11 0 0 1 20-4 9 9 0 0 1 16 6 7 7 0 0 1 0 14z" fill="#fff"/></svg>
+ <svg class="nuage" style="top:64%;width:160px;animation-duration:90s;animation-delay:-40s" viewBox="0 0 56 26" aria-hidden="true"><path d="M10 24a8 8 0 0 1 0-16 11 11 0 0 1 20-4 9 9 0 0 1 16 6 7 7 0 0 1 0 14z" fill="#fff"/></svg>
+ <div class="wrap">
+  <div>
+   <span class="surtitre">Hypnose à {{VILLE}}</span>
+   <h1>Retrouver un peu de <em>calme intérieur</em>, à votre rythme</h1>
+   <p class="chapeau">Une phrase d’accueil qui vous ressemble : votre façon d’accompagner, votre écoute, ce que vous proposez. Nous l’écrirons avec vous. <span class="exemple">exemple</span></p>
+   <div class="actions">
+    <a class="btn-lune" href="#contact"><i></i>Prendre rendez-vous</a>
+    <a class="btn-halo" href="#seance">Comment se passe une séance</a>
+   </div>
+   <p class="avertissement">Ces pratiques ne remplacent pas un avis médical.</p>
+  </div>
+  <div class="hublot">
+   <svg class="spirale" viewBox="0 0 200 200" aria-hidden="true"><path d="M100 100m0-4a4 4 0 0 1 4 4 8 8 0 0 1-8 8 12 12 0 0 1-12-12 16 16 0 0 1 16-16 20 20 0 0 1 20 20 24 24 0 0 1-24 24 28 28 0 0 1-28-28 32 32 0 0 1 32-32 36 36 0 0 1 36 36 40 40 0 0 1-40 40 44 44 0 0 1-44-44 48 48 0 0 1 48-48 52 52 0 0 1 52 52 56 56 0 0 1-56 56 60 60 0 0 1-60-60 64 64 0 0 1 64-64 68 68 0 0 1 68 68" fill="none" stroke="#E9D6A2" stroke-width=".7" stroke-linecap="round"/></svg>
+   <div class="rond"><img src="{{PHOTO:accueil}}" alt="Un arbre seul au bord d’un lac calme, dans la brume du matin"></div>
+   <div class="respire" aria-hidden="true"><span></span>Inspirez… expirez…</div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="accompagner">
+ <div class="wrap">
+  <div class="tete-section monte"><span class="surtitre">Ce que j’accompagne</span><h2>Les raisons de venir me voir <span class="exemple">exemples à adapter</span></h2><p>Chaque carte reprend un sujet que vous accompagnez, avec vos mots. Nous ne gardons que ce que vous proposez vraiment.</p></div>
+  <div class="motifs">
+   <article class="motif grand monte"><svg class="spirale-p" viewBox="0 0 200 200" aria-hidden="true"><path d="M100 100m0-4a4 4 0 0 1 4 4 8 8 0 0 1-8 8 12 12 0 0 1-12-12 16 16 0 0 1 16-16 20 20 0 0 1 20 20 24 24 0 0 1-24 24 28 28 0 0 1-28-28 32 32 0 0 1 32-32 36 36 0 0 1 36 36 40 40 0 0 1-40 40 44 44 0 0 1-44-44 48 48 0 0 1 48-48" fill="none" stroke="#E9D6A2" stroke-width="1" stroke-linecap="round"/></svg><h3>Le stress du quotidien</h3><p>Apprendre à relâcher la pression, retrouver des moments de calme.</p></article>
+   <article class="motif monte"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#3A4080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 35V14M20 14c-6 0-10-4-10-10 6 0 10 4 10 10zM20 20c0-6 4-10 10-10 0 6-4 10-10 10z"/></svg><h3>La confiance en soi</h3><p>Oser, s’affirmer, se sentir plus à l’aise.</p></article>
+   <article class="motif monte"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#3A4080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M28 24a10 10 0 1 1-12-14 8 8 0 0 0 12 14z"/><path d="M30 6v4M28 8h4"/></svg><h3>Le sommeil</h3><p>Des clés pour se détendre avant la nuit.</p></article>
+   <article class="motif monte"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#3A4080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30h24M12 30V18M20 30V10M28 30V22"/></svg><h3>Un examen, une prise de parole</h3><p>Se préparer sereinement à un moment important.</p></article>
+   <article class="motif monte"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#3A4080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20a10 10 0 0 1 18-6M30 20a10 10 0 0 1-18 6"/><path d="M28 8v6h-6M12 32v-6h6"/></svg><h3>Une habitude à changer</h3><p>Un comportement qui ne vous convient plus.</p></article>
+  </div>
+  <div class="note-honnete monte"><p class="avertissement">Ces pratiques ne remplacent pas un avis médical. Chaque accompagnement est personnel, sans promesse de résultat.</p><a class="btn-trait" href="#seance">Voir le déroulé <i></i></a></div>
+ </div>
+</section>
+
+<section class="section seance" id="seance">
+ <div class="wrap">
+  <div class="tete-section monte"><span class="surtitre">Une séance</span><h2>Comment ça se passe, pas à pas <span class="exemple">à compléter avec vous</span></h2><p>Rassurer avant la première séance, c’est déjà beaucoup. Racontez simplement votre façon de faire.</p></div>
+  <div class="phases">
+   <div class="phase monte"><div class="astre-p"></div><small>Étape un</small><h3>Le premier contact</h3><p>Par téléphone : vous expliquez ce qui vous amène, on voit si l’hypnose peut convenir.</p></div>
+   <div class="phase monte"><div class="astre-p"></div><small>Étape deux</small><h3>L’échange</h3><p>Au début de la séance, on prend le temps de parler de vous et de votre objectif.</p></div>
+   <div class="phase monte"><div class="astre-p"></div><small>Étape trois</small><h3>L’hypnose</h3><p>Installé confortablement, vous vous laissez guider par la voix. Vous restez acteur.</p></div>
+   <div class="phase monte"><div class="astre-p"></div><small>Étape quatre</small><h3>Le retour</h3><p>On échange sur ce que vous avez ressenti, et sur la suite si besoin.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="cabinet">
+ <div class="wrap cabinet">
+  <div class="photos brume">
+   <div class="p1"><img src="{{PHOTO:cabinet}}" alt="Un fauteuil confortable près d’une fenêtre, entouré de plantes vertes"></div>
+   <div class="p2"><img src="{{PHOTO:calme}}" alt="Un lac calme dans la brume, avec des arbres qui s’y reflètent"></div>
+  </div>
+  <div class="monte">
+   <span class="surtitre">Le cabinet</span>
+   <h2>Un lieu calme pour se poser <span class="exemple">à compléter avec vous</span></h2>
+   <p>Présentez votre parcours, vos formations, ce qui vous a mené vers l’hypnose, et votre cabinet. Si vous proposez des séances en visio ou à domicile, nous l’écrivons ici.</p>
+   <div class="citation">Votre phrase, celle qui résume votre façon d’accompagner.</div>
+   <a class="btn-contour" href="#contact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Venir au cabinet</a>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="questions" style="padding-top:20px">
+ <div class="wrap">
+  <div class="tete-section monte" style="margin-left:auto;margin-right:auto;text-align:center"><span class="surtitre">Vos questions</span><h2>Ce qu’on me demande souvent <span class="exemple">exemples</span></h2><p>Les questions de vos futurs clients, avec vos réponses. Cliquez pour ouvrir.</p></div>
+  <div class="questions monte">
+   <details open><summary>Est-ce que je vais perdre le contrôle ?</summary><p>Votre réponse, avec vos mots : ce que vit la personne pendant la séance, ce qu’elle entend, ce qu’elle garde.</p></details>
+   <details><summary>Combien de séances faut-il prévoir ?</summary><p>Votre réponse : cela dépend de chacun, et vous l’expliquez à votre façon.</p></details>
+   <details><summary>Combien coûte une séance ?</summary><p>Votre tarif et la durée d’une séance, si vous souhaitez les afficher.</p></details>
+   <details><summary>Proposez-vous des séances en visio ?</summary><p>Votre réponse, si vous le proposez.</p></details>
+  </div>
+ </div>
+</section>
+
+<section class="section" style="padding-top:20px">
+ <div class="wrap">
+  <div class="tete-section monte"><span class="surtitre">Ils en parlent</span><h2>Vos vrais avis Google ici</h2><p>Les avis des personnes accompagnées s’afficheront ici, tels qu’elles les ont écrits.</p></div>
+  <div class="avis">
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section contact-zone" id="contact">
+ <div class="etoiles-ciel" aria-hidden="true"><i style="left:4%;top:10%"></i><i style="left:22%;top:86%;animation-delay:1s"></i><i style="left:48%;top:6%;animation-delay:2s"></i><i style="left:70%;top:92%;animation-delay:.6s"></i><i style="left:93%;top:16%;animation-delay:1.8s"></i></div>
+ <div class="wrap">
+  <div class="monte">
+   <span class="surtitre" style="color:var(--lune)">Prendre rendez-vous</span>
+   <h2>Faire un premier pas</h2>
+   <div class="lieux">
+    <div class="lieu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9D6A2" stroke-width="1.8"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div><b>Au cabinet</b>Votre adresse · {{VILLE}}</div></div>
+    <div class="lieu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9D6A2" stroke-width="1.8"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg><div><b>En visio</b>Si vous le proposez</div></div>
+   </div>
+   <div class="horaires"><span>Du lundi au vendredi</span><span>vos horaires</span><span>Le samedi</span><span>vos horaires</span></div>
+  </div>
+  <div class="formulaire monte">
+   <h3>Écrivez-moi</h3>
+   <div class="champ">Votre prénom</div><div class="champ">Votre téléphone ou votre e-mail</div><div class="champ grand">Ce qui vous amène, en quelques mots</div>
+   <a class="btn-plein" href="#contact">Envoyer</a>
+  </div>
+ </div>
+</section>
+
+<footer class="pied">
+ <div class="wrap">
+  <div><b>{{ENTREPRISE}}</b><br>Hypnose à {{VILLE}}<br><span style="font-size:13.5px;opacity:.8">Ces pratiques ne remplacent pas un avis médical.</span></div>
+  <div>Votre adresse<br>Votre numéro</div>
+  <div>Mentions légales · Confidentialité<br><span style="opacity:.7">Site réalisé par Les Minis Monstres</span></div>
+ </div>
+</footer>
+</body>
+</html>

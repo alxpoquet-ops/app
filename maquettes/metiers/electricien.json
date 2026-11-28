@@ -1,0 +1,15 @@
+{
+  "groupe": "electricien",
+  "nom": "Électriciens",
+  "generation": 2,
+  "signature": "une étincelle qui court le long d'un fil au défilement jusqu'à une ampoule qui s'allume, courant qui circule dans les pistes du schéma, néon qui grésille, bandeau de services qui défile",
+  "mots": [
+    "electric"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/5691588/pexels-photo-5691588.jpeg",
+    "boite": "https://images.pexels.com/photos/8488059/pexels-photo-8488059.jpeg",
+    "eclairage": "https://images.pexels.com/photos/1073054/pexels-photo-1073054.jpeg",
+    "fils": "https://images.pexels.com/photos/7285965/pexels-photo-7285965.jpeg"
+  }
+}

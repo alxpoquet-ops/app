@@ -6,230 +6,338 @@
 <meta name="robots" content="noindex,nofollow">
 <title>{{ENTREPRISE}} : maquette d'exemple</title>
 <!--
-  Les Minis Monstres : maquette par métier, bien-être (massages, réflexologie, naturopathie…).
-  Faite une fois ; pour chaque prospect, seuls {{ENTREPRISE}}, {{VILLE}} et {{INITIALE}} sont remplis avec ses informations publiques.
-  Tout le reste est visiblement un exemple : rien n'est affirmé sur l'entreprise. Aucune promesse de soin.
-  Photos : Pexels (licence Pexels, libre d'utilisation, sans mention obligatoire). Pictos : dessinés pour Les Minis Monstres.
+  Les Minis Monstres : maquette par métier, bien-être (massages, réflexologie, naturopathie…), nouvelle génération,
+  28 novembre 2026. Sa signature : une petite bougie dont la flamme ondule, qui descend doucement le long de la page
+  quand on la fait défiler, jusqu'à une pile de galets. Ambiance : des ronds dans l'eau qui s'élargissent sur
+  l'accueil, une fumée d'encens très légère. Tout est en CSS (aucun script). Sans « animation-timeline », la bougie
+  reste sagement en haut. Aucune promesse de soin. Remplie pour chaque prospect : {{ENTREPRISE}}, {{VILLE}}, {{INITIALE}}.
+  Photos : Pexels (licence libre). Dessins : faits pour Les Minis Monstres.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7F4EE;--card:#FFFFFF;--ink:#26332B;--muted:#56625A;--main:#4E6B57;--main-d:#2E4637;--accent:#A5563E;--line:#E3DDD1;--soft:#EBF0E9;--shadow:0 12px 32px rgba(38,51,43,.10)}
+:root{--sable:#F5F0E8;--lin:#EAE2D5;--lin2:#DCD0BE;--foret:#2C473D;--foret-f:#1F332C;--eucalyptus:#5E7F70;--sauge:#A9BCAF;--sauge-c:#DDE6DE;--argile:#B0704F;--argile-f:#93593B;--texte:#26332E;--doux:#5E6B65;--ligne:#E1D8C9;--ombre:0 20px 46px rgba(31,51,44,.14)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{position:relative;margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito Sans",system-ui,sans-serif;font-size:17px;line-height:1.65}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.14;margin:0 0 12px;letter-spacing:-.005em}
-a{color:var(--main)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-/* le filigrane, sur toute la page, au-dessus du contenu mais sans gêner la lecture */
-.filigrane{position:absolute;top:0;left:0;right:0;bottom:0;z-index:90;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='300'%3E%3Ctext x='260' y='160' text-anchor='middle' transform='rotate(-24 260 150)' font-family='Arial,Helvetica,sans-serif' font-size='26' font-weight='700' fill='%237A8CA0' fill-opacity='0.2'%3EMAQUETTE D%E2%80%99EXEMPLE %C2%B7 LES MINIS MONSTRES%3C/text%3E%3C/svg%3E");background-repeat:repeat}
-.bandeau{background:#26332B;color:#fff;text-align:center;font-size:.9rem;font-weight:600;padding:9px 16px}
-.bandeau b{color:#F2C9A8}
-header{position:sticky;top:0;z-index:50;background:rgba(255,253,249,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-.head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
-.brand{display:flex;align-items:center;gap:10px;font-family:Fraunces,Georgia,serif;font-weight:700;font-size:1.25rem;color:var(--ink);text-decoration:none}
-.logo{width:38px;height:38px;border-radius:50%;background:var(--main);color:#fff;display:grid;place-items:center;font-family:Fraunces,Georgia,serif;font-weight:700}
-nav.menu{display:flex;gap:4px}
-nav.menu a{color:var(--ink);text-decoration:none;font-weight:700;font-size:.95rem;padding:8px 11px;border-radius:999px}
-nav.menu a:hover{background:var(--soft);color:var(--main-d)}
-.tools{display:flex;align-items:center;gap:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 24px;border-radius:999px;background:var(--accent);color:#fff;font-weight:800;text-decoration:none;border:0;font-size:1rem;white-space:nowrap}
-.btn svg{width:20px;height:20px}
-.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
-.rond{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
-.rond svg{width:21px;height:21px}
-.burger{display:none}
-/* l'ouverture */
-.hero{position:relative;background:#22342A;color:#fff;overflow:hidden}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(30,48,38,.95) 0%,rgba(30,48,38,.78) 50%,rgba(30,48,38,.2) 100%)}
-.hero .wrap{position:relative;z-index:1;padding-top:88px;padding-bottom:88px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.9rem}
-.hero h1{font-size:clamp(2.1rem,5.2vw,3.5rem);max-width:16ch;margin:18px 0 14px}
-.hero p.lead{font-size:1.15rem;max-width:52ch;color:#E3ECE5;margin:0 0 26px}
-.hero .actions{display:flex;flex-wrap:wrap;gap:12px}
-.hero .btn.ghost{color:#fff;border-color:#fff}
-.puces{display:flex;flex-wrap:wrap;gap:10px 18px;margin:28px 0 0;padding:0;list-style:none}
-.puces li{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem}
-.puces li svg{width:20px;height:20px;color:#F2C9A8}
-/* les parties */
-section{padding:76px 0}
-section.alt{background:#FFFDF9;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.kicker{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;margin:0 0 8px}
-h2{font-size:clamp(1.7rem,4vw,2.5rem)}
-.sous{color:var(--muted);max-width:60ch;margin:0 0 30px}
-.exemple{display:inline-block;background:#FBEDE6;color:#8A3E28;border:1px dashed #D99A82;border-radius:999px;font-size:.78rem;font-weight:800;padding:3px 10px;margin-left:8px;vertical-align:middle;letter-spacing:0;text-transform:none}
-.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.carte{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:var(--shadow)}
-.carte .pic{width:56px;height:56px;border-radius:50%;background:var(--soft);color:var(--main);display:grid;place-items:center;margin-bottom:14px}
-.carte .pic svg{width:30px;height:30px}
-.carte h3{font-size:1.25rem}
-.carte p{margin:0;color:var(--muted)}
-.deux{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
-.photo{border-radius:28px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.liste{list-style:none;padding:0;margin:0}
-.liste li{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
-.liste li:last-child{border-bottom:0}
-.liste .ok{flex:none;width:30px;height:30px;border-radius:50%;background:var(--main);color:#fff;display:grid;place-items:center}
-.liste .ok svg{width:17px;height:17px}
-.liste b{display:block}
-.etapes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:e}
-.etape{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 20px;position:relative}
-.etape::before{counter-increment:e;content:counter(e);position:absolute;top:-16px;left:20px;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:grid;place-items:center;font-family:Fraunces,Georgia,serif}
-.etape h3{font-size:1.12rem;margin-top:10px}
-.etape p{margin:0;color:var(--muted);font-size:.96rem}
-.note{display:flex;gap:12px;align-items:flex-start;margin-top:28px;background:var(--soft);border:1px solid #CFDCCF;border-radius:16px;padding:14px 18px;color:var(--main-d);font-weight:700;max-width:760px}
-.note svg{flex:none;width:22px;height:22px;margin-top:2px}
-.zone{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.zone span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:700}
-.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.avis .carte{border-style:dashed;box-shadow:none;background:#FFFDF9}
-.etoiles{color:#D4A12A;letter-spacing:2px;font-size:1.1rem}
-.contact{background:var(--main-d);color:#fff}
-.contact h2{color:#fff}
-.contact .sous{color:#D3E0D6}
-.contact .deux{align-items:start}
-.gros-tel{display:inline-flex;align-items:center;gap:12px;font-family:Fraunces,Georgia,serif;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;color:#fff;text-decoration:none;background:rgba(255,255,255,.1);border:2px dashed rgba(255,255,255,.45);border-radius:999px;padding:10px 22px}
-.gros-tel svg{width:28px;height:28px;color:#F2C9A8}
-.form{background:#fff;color:var(--ink);border-radius:22px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
-.form label{display:block;font-weight:800;margin:0 0 6px}
-.form .champ{width:100%;min-height:48px;border:1px solid #A9B6AC;border-radius:12px;margin:0 0 14px;background:#F9FAF7}
-.form .champ.grand{min-height:110px}
-.form .btn{width:100%}
-footer{background:#1E2B23;color:#B9C6BD;padding:40px 0 26px;font-size:.95rem}
-footer .bas{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
-footer b{color:#fff}
-@media (max-width:920px){nav.menu{display:none}.burger{display:grid}.grille,.avis{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}.etapes{grid-template-columns:1fr 1fr;row-gap:30px}}
-@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis,.etapes{grid-template-columns:1fr}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--sable);color:var(--texte);font-family:"Outfit",system-ui,sans-serif;font-size:17.5px;line-height:1.7;font-weight:400;overflow-x:hidden}
+h1,h2,h3{font-family:"Lora",Georgia,serif;color:var(--foret);line-height:1.15;margin:0 0 14px;font-weight:500}
+h2{font-size:clamp(30px,4vw,46px)}
+h3{font-size:24px}
+p{margin:0 0 14px}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+.exemple{display:inline-block;margin-left:8px;padding:2px 11px;border-radius:999px;background:var(--sauge-c);color:var(--foret);font:500 11px/1.6 "Outfit",sans-serif;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle}
+.surtitre{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--eucalyptus)}
+.surtitre::before{content:"";width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;box-shadow:inset 0 0 0 4px var(--sable),inset 0 0 0 8px currentColor}
+.avertissement{font-size:14px;color:var(--doux);font-style:italic;display:flex;gap:10px;align-items:center}
+.avertissement::before{content:"";flex:0 0 18px;height:18px;border-radius:50%;border:1.5px solid var(--eucalyptus);background:radial-gradient(circle,var(--eucalyptus) 0 2px,transparent 3px)}
+
+/* ---------- maquette : bandeau et filigrane ---------- */
+.bandeau{margin:0;padding:9px 18px;background:var(--foret-f);color:#E3EAE4;font-size:13.5px;text-align:center}
+.bandeau b{color:#F1D7C5}
+.filigrane{position:fixed;inset:0;z-index:30;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.filigrane span{transform:rotate(-24deg);font:600 clamp(30px,6vw,74px)/1 "Outfit",sans-serif;letter-spacing:.1em;color:rgba(44,71,61,.065);white-space:nowrap}
+
+/* ---------- en-tête ---------- */
+.tete{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--ligne)}
+.tete .wrap{display:flex;align-items:center;gap:22px;height:76px}
+.logo{min-width:0;display:flex;align-items:center;gap:12px;text-decoration:none}
+.galet-logo{width:50px;height:42px;border-radius:52% 48% 46% 54% / 60% 58% 42% 40%;background:var(--foret);color:var(--sable);display:grid;place-items:center;font:italic 500 21px/1 "Lora",serif}
+.logo b{font:500 21px/1.1 "Lora",serif;color:var(--foret)}
+.logo small{display:block;font-size:12px;color:var(--doux);letter-spacing:.12em;text-transform:uppercase}
+.menu{display:flex;gap:28px;margin-left:auto}
+.menu a{white-space:nowrap;text-decoration:none;font-size:15.5px;position:relative}
+.menu a::after{content:"";position:absolute;left:50%;bottom:-8px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--argile);transform:scale(0);transition:transform .3s}
+.menu a:hover::after{transform:scale(1)}
+.btn-appel{white-space:nowrap;flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;border:1.5px solid var(--foret);color:var(--foret);text-decoration:none;font-weight:500;font-size:15px;transition:background .25s,color .25s}
+.btn-appel:hover{background:var(--foret);color:#fff}
+.soleil{width:40px;height:40px;border-radius:50%;background:var(--lin);display:grid;place-items:center;color:var(--foret)}
+.burger{display:none;width:42px;height:42px;border-radius:50%;background:var(--lin);place-items:center}
+
+/* ---------- accueil : grande photo, ronds dans l'eau ---------- */
+.accueil{position:relative;min-height:640px;display:flex;align-items:center;overflow:hidden;color:#fff}
+.accueil>img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:70% 50%}
+.accueil::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(31,51,44,.92) 0,rgba(31,51,44,.78) 38%,rgba(31,51,44,.15) 72%,transparent)}
+.accueil .wrap{position:relative;z-index:2;width:100%;padding-top:80px;padding-bottom:110px}
+.accueil .texte{max-width:560px}
+.accueil h1{color:#fff;font-size:clamp(42px,5.4vw,70px)}
+.accueil h1 em{color:#F1D7C5}
+.accueil .surtitre{color:var(--sauge-c)}
+.seance .surtitre::before,.zone .surtitre::before,.accueil .surtitre::before{box-shadow:inset 0 0 0 4px var(--foret),inset 0 0 0 8px currentColor}
+.chapeau{font-size:19px;color:#DCE6DF;max-width:500px;font-weight:300}
+.accueil .exemple{background:rgba(255,255,255,.16);color:#fff}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px;margin:30px 0 28px}
+.btn-galet{display:inline-flex;align-items:center;gap:12px;padding:17px 30px;background:var(--argile);color:#fff;text-decoration:none;font-weight:500;font-size:16.5px;border-radius:46% 54% 50% 50% / 60% 56% 44% 40%;box-shadow:0 12px 26px rgba(0,0,0,.2);transition:border-radius .6s,background .3s,transform .3s}
+.btn-galet:hover{border-radius:54% 46% 42% 58% / 44% 50% 50% 56%;background:var(--argile-f);transform:translateY(-2px)}
+.btn-vague{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:500;padding-bottom:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='6' viewBox='0 0 24 6'%3E%3Cpath d='M0 3c3 0 3-2 6-2s3 2 6 2 3-2 6-2 3 2 6 2' fill='none' stroke='%23F1D7C5' stroke-width='1.5'/%3E%3C/svg%3E") 0 100%/24px 6px repeat-x;transition:background-position 1s}
+.btn-vague:hover{background-position:48px 100%}
+.btn-vague.fonce{color:var(--foret);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='6' viewBox='0 0 24 6'%3E%3Cpath d='M0 3c3 0 3-2 6-2s3 2 6 2 3-2 6-2 3 2 6 2' fill='none' stroke='%23B0704F' stroke-width='1.5'/%3E%3C/svg%3E")}
+.accueil .avertissement{color:#C9D6CD}
+.accueil .avertissement::before{border-color:#C9D6CD;background:radial-gradient(circle,#C9D6CD 0 2px,transparent 3px)}
+.ronds{position:absolute;z-index:1;right:12%;bottom:12%;width:10px;height:10px;pointer-events:none}
+.ronds i{position:absolute;left:50%;top:50%;width:300px;height:110px;margin:-55px 0 0 -150px;border-radius:50%;border:1.5px solid rgba(255,255,255,.55);opacity:0;animation:rond 7.5s ease-out infinite}
+.ronds i:nth-child(2){animation-delay:2.5s}.ronds i:nth-child(3){animation-delay:5s}
+@keyframes rond{0%{transform:scale(.05);opacity:0}10%{opacity:.9}100%{transform:scale(1.4);opacity:0}}
+.ronds.petit{right:auto;left:8%;bottom:auto;top:20%}.ronds.petit i{width:160px;height:60px;margin:-30px 0 0 -80px;border-color:rgba(221,230,222,.25)}
+
+/* ---------- la bougie qui descend jusqu'aux galets (signature) ---------- */
+.balade{position:fixed;right:22px;top:120px;bottom:96px;width:56px;z-index:45;pointer-events:none}
+.balade::before{content:"";position:absolute;left:27px;top:20px;bottom:50px;width:2px;background:radial-gradient(circle,rgba(94,127,112,.45) 1.2px,transparent 1.6px) 0 0/2px 12px repeat-y}
+.balade .bougie{position:absolute;left:10px;top:0;width:36px;height:64px;filter:drop-shadow(0 6px 8px rgba(31,51,44,.2))}
+.bougie .flamme{transform-origin:18px 22px;animation:flamme 1.6s ease-in-out infinite}
+.bougie .halo{animation:halo 2.2s ease-in-out infinite}
+@keyframes flamme{0%,100%{transform:rotate(-4deg) scaleY(1)}25%{transform:rotate(3deg) scaleY(1.08)}50%{transform:rotate(-2deg) scaleY(.94)}75%{transform:rotate(5deg) scaleY(1.05)}}
+@keyframes halo{50%{opacity:.45;transform:scale(1.15)}}
+.halo{transform-origin:18px 14px}
+.balade .galets{position:absolute;left:0;bottom:-6px;width:56px;height:46px}
+@supports (animation-timeline: scroll()){
+ .balade .bougie{animation:balade linear both;animation-timeline:scroll(root)}
+ @media (max-width:960px){.balade .bougie{animation-name:balade-tel}.balade{animation:parait linear both;animation-timeline:scroll(root);animation-range:0 140px}}
+ @keyframes parait{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+ @keyframes balade-tel{0%{left:0}100%{left:calc(100% - 58px)}}
+ @keyframes balade{0%{top:0;transform:translateX(0)}30%{transform:translateX(-6px)}60%{transform:translateX(5px)}100%{top:calc(100% - 104px);transform:none}}
+ .monte{animation:monte linear both;animation-timeline:view();animation-range:entry 0% entry 85%}
+ @keyframes monte{from{opacity:0;transform:translateY(36px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+}
+
+/* ---------- les pratiques ---------- */
+.section{padding:104px 0}
+.tete-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:50px}
+.tete-section p{color:var(--doux);margin:0}
+.pratiques{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 34px}
+.pratique{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:center;padding:24px;border-radius:30px;background:#fff;border:1px solid var(--ligne);transition:transform .4s,box-shadow .4s}
+.pratique:nth-child(even){translate:0 40px}
+.pratique:hover{box-shadow:var(--ombre)}
+.pratique .forme{width:120px;height:120px;border-radius:50% 46% 54% 50% / 48% 56% 44% 52%;background:var(--sauge-c);display:grid;place-items:center;position:relative}
+.pratique .forme::after{content:"";position:absolute;inset:-8px;border-radius:inherit;border:1px dashed var(--sauge);animation:tourne 30s linear infinite}
+@keyframes tourne{to{transform:rotate(360deg)}}
+.pratique h3{margin-bottom:6px}
+.pratique p{margin:0;color:var(--doux);font-size:15.5px}
+.pratique .duree{display:inline-block;margin-top:10px;font-size:13.5px;color:var(--argile-f);border-bottom:1px dotted var(--argile)}
+.btn-cercle{display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--foret);font-weight:500}
+.btn-cercle i{position:relative;width:54px;height:54px;border-radius:50%;background:var(--foret);display:grid;place-items:center;transition:transform .4s}
+.btn-cercle i::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--foret);opacity:.35;transition:inset .4s,opacity .4s}
+.btn-cercle:hover i::before{inset:-12px;opacity:0}
+.btn-cercle:hover i{transform:scale(.92)}
+.mention{margin-top:70px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+
+/* ---------- une séance ---------- */
+.seance{background:var(--foret);color:#D5E0D8;position:relative;overflow:hidden}
+.seance::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;border:1px solid rgba(221,230,222,.15);box-shadow:0 0 0 50px rgba(221,230,222,.03),0 0 0 100px rgba(221,230,222,.02)}
+.seance .wrap{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:start}
+.seance h2{color:#fff}
+.seance .photo-s{border-radius:200px 200px 24px 24px;overflow:hidden;aspect-ratio:4/5;margin-top:30px}
+.seance .photo-s img{width:100%;height:100%;object-fit:cover}
+.fil{position:relative;margin-top:10px;padding-left:46px}
+.fil::before{content:"";position:absolute;left:14px;top:12px;bottom:12px;width:2px;background:linear-gradient(var(--sauge),rgba(169,188,175,.1))}
+.moment{position:relative;padding:4px 0 30px}
+.moment::before{content:"";position:absolute;left:-40px;top:6px;width:18px;height:18px;border-radius:50%;background:var(--foret);border:2px solid #F1D7C5;box-shadow:0 0 0 6px rgba(241,215,197,.12)}
+.moment h3{color:#fff;font-size:23px;margin-bottom:4px}
+.moment p{margin:0;color:#BFCDC4;font-size:16px}
+.btn-ligne{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:999px;border:1px solid #F1D7C5;color:#F1D7C5;text-decoration:none;font-weight:500;letter-spacing:.02em;transition:background .3s,color .3s,padding .3s}
+.btn-ligne:hover{background:#F1D7C5;color:var(--foret);padding:12px 30px}
+
+/* ---------- le lieu ---------- */
+.lieu-g{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.duo-photos{position:relative;height:520px}
+.duo-photos .a{position:absolute;left:0;top:0;width:68%;height:78%;border-radius:28px;overflow:hidden;box-shadow:var(--ombre)}
+.duo-photos .b{position:absolute;right:0;bottom:0;width:52%;height:58%;border-radius:50% 50% 28px 28px;overflow:hidden;border:8px solid var(--sable);box-shadow:var(--ombre)}
+.duo-photos img{width:100%;height:100%;object-fit:cover}
+.fumee{position:absolute;left:74%;top:6%;width:70px;height:150px}
+.fumee path{fill:none;stroke:var(--sauge);stroke-width:2;stroke-linecap:round;opacity:0;animation:fumee 6s ease-in-out infinite}
+.fumee path:nth-child(2){animation-delay:3s}
+@keyframes fumee{0%{opacity:0;transform:translateY(30px)}30%{opacity:.7}100%{opacity:0;transform:translateY(-30px)}}
+.pour-qui{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 28px}
+.pour-qui span{padding:8px 16px;border-radius:999px;background:#fff;border:1px solid var(--ligne);font-size:15px}
+
+/* ---------- durées ---------- */
+.durees{background:var(--lin)}
+.tableau{background:var(--sable);border-radius:30px;padding:16px 34px;border:1px solid var(--lin2)}
+.tableau .rangee{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--ligne);align-items:center}
+.tableau .rangee:last-child{border-bottom:0}
+.tableau .rangee.titre{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--doux);padding:12px 0}
+.tableau .rangee b{font:500 20px "Lora",serif;color:var(--foret)}
+.tableau .rangee span{color:var(--doux);font-style:italic}
+
+/* ---------- avis ---------- */
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.avis-carte{background:#fff;border:1px dashed var(--lin2);border-radius:30px;padding:30px;color:var(--doux);font-size:15.5px}
+.avis-carte .etoiles{color:var(--argile);letter-spacing:4px;margin-bottom:10px}
+.avis-carte .vide{height:10px;border-radius:6px;background:var(--lin);margin:8px 0}
+.avis-carte .vide.court{width:60%}
+
+/* ---------- contact ---------- */
+.contact-g{display:grid;grid-template-columns:1.05fr .95fr;gap:28px}
+.contact{background:#fff;border-radius:32px;padding:36px;border:1px solid var(--ligne)}
+.champ{border:1.5px solid var(--ligne);border-radius:18px;padding:13px 18px;margin-bottom:12px;color:#97A09B;font-size:15.5px;background:var(--sable)}
+.champ.grand{height:100px}
+.btn-plein{display:flex;justify-content:center;gap:10px;align-items:center;padding:15px;border-radius:18px;background:var(--foret);color:#fff;font-weight:500;text-decoration:none;transition:background .3s}
+.btn-plein:hover{background:var(--eucalyptus)}
+.zone{border-radius:32px;background:var(--foret);color:#D5E0D8;padding:36px;position:relative;overflow:hidden;min-height:400px}
+.zone h3{color:#fff;font-size:28px}
+.zone .cible{position:absolute;right:-60px;bottom:-60px;width:300px;height:300px}
+.zone .cible i{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(221,230,222,.25);animation:rond2 6s ease-out infinite}
+.zone .cible i:nth-child(2){animation-delay:2s}.zone .cible i:nth-child(3){animation-delay:4s}
+@keyframes rond2{from{transform:scale(.1);opacity:1}to{transform:scale(1);opacity:0}}
+.horaires{display:grid;grid-template-columns:1fr auto;gap:8px 18px;margin:16px 0 22px;font-size:15.5px;position:relative}
+.horaires span:nth-child(even){color:#F1D7C5;font-style:italic}
+
+/* ---------- pied ---------- */
+.pied{background:var(--foret-f);color:#BFCDC4;padding:56px 0 110px;font-size:15px}
+.pied .wrap{display:flex;flex-wrap:wrap;gap:28px 60px;justify-content:space-between}
+.pied b{color:#fff;font:500 22px "Lora",serif}
+
+/* ---------- téléphone ---------- */
+@media (max-width:960px){
+ .menu,.btn-appel span.txt{display:none}.burger{display:grid}
+ .accueil{min-height:0}.accueil::before{background:linear-gradient(180deg,rgba(31,51,44,.55),rgba(31,51,44,.9) 55%)}
+ .tete-section,.seance .wrap,.lieu-g,.contact-g{grid-template-columns:1fr}
+ .pratiques,.avis{grid-template-columns:1fr}.pratique:nth-child(even){translate:none}
+ .seance .photo-s{max-width:420px;aspect-ratio:1}
+ .duo-photos{height:420px}
+ .tete .wrap{height:66px;gap:10px}.galet-logo{width:42px;height:36px;font-size:18px;flex:0 0 42px}.logo{min-width:0}.logo b{font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}.logo small{display:none}.btn-appel{padding:10px 13px}.soleil{width:36px;height:36px}
+ .balade{left:10px;right:10px;top:72px;bottom:auto;width:auto;height:38px;background:rgba(245,240,232,.9);border-radius:20px;box-shadow:0 4px 14px rgba(31,51,44,.1)}
+ .balade::before{left:16px;right:50px;top:18px;bottom:auto;width:auto;height:2px;background:radial-gradient(circle,rgba(94,127,112,.5) 1.2px,transparent 1.6px) 0 0/12px 2px repeat-x}
+ .balade .bougie{left:0;top:2px;width:22px;height:36px}.balade .galets{left:auto;right:6px;bottom:auto;top:3px;width:38px;height:32px}
+}
+@media (max-width:560px){.bandeau{font-size:12px;padding:7px 12px}.wrap{padding:0 18px}.section{padding:72px 0}.pratique{grid-template-columns:1fr;text-align:left}.pratique .forme{width:90px;height:90px}.tableau{padding:10px 18px}.tableau .rangee{grid-template-columns:1fr 1fr}.tableau .rangee b{grid-column:span 2}.tableau .rangee.titre span:first-child{display:none}.contact,.zone{padding:28px 22px}.duo-photos{height:340px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="filigrane" aria-hidden="true"></div>
 <p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+<div class="filigrane" aria-hidden="true"><span>MAQUETTE D’EXEMPLE · LES MINIS MONSTRES</span></div>
 
-<header>
-  <div class="wrap head">
-    <a class="brand" href="#"><span class="logo">{{INITIALE}}</span><span>{{ENTREPRISE}}</span></a>
-    <nav class="menu" aria-label="Menu"><a href="#seances">Séances</a><a href="#esprit">L’esprit du lieu</a><a href="#deroulement">Déroulement</a><a href="#zone">Accès</a><a href="#contact">Rendez-vous</a></nav>
-    <div class="tools">
-      <a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Prendre rendez-vous</span></a>
-      <span class="rond" aria-label="Clair ou sombre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></span>
-      <span class="rond burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
-    </div>
-  </div>
+<!-- la signature : la bougie dont la flamme ondule descend doucement jusqu'à la pile de galets -->
+<div class="balade" aria-hidden="true">
+ <svg class="bougie" viewBox="0 0 36 64"><circle class="halo" cx="18" cy="14" r="12" fill="#F6D9A8" opacity=".3"/><path class="flamme" d="M18 3c4 5 6 8 6 12a6 6 0 0 1-12 0c0-4 2-7 6-12z" fill="#F1B661"/><path class="flamme" d="M18 9c2 3 3 5 3 7a3 3 0 0 1-6 0c0-2 1-4 3-7z" fill="#FFF3D6"/><path d="M18 21v5" stroke="#3B2A20" stroke-width="1.6" stroke-linecap="round"/><rect x="7" y="26" width="22" height="32" rx="5" fill="#F7F1E6" stroke="#5E7F70" stroke-width="1.6"/><path d="M11 31c3 1.5 6 1.5 9 0" stroke="#DCD0BE" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="18" cy="59" rx="15" ry="4" fill="#B0704F"/></svg>
+ <svg class="galets" viewBox="0 0 56 46"><ellipse cx="28" cy="38" rx="25" ry="7.5" fill="#5E7F70"/><ellipse cx="28" cy="25" rx="18" ry="6.5" fill="#A9BCAF"/><ellipse cx="28" cy="14" rx="11" ry="5" fill="#B0704F"/><path d="M20 36c4 1.5 10 1.5 14 0M22 23c3 1 7 1 10 0" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".5"/></svg>
+</div>
+
+<header class="tete">
+ <div class="wrap">
+  <a class="logo" href="#"><span class="galet-logo">{{INITIALE}}</span><span><b>{{ENTREPRISE}}</b><small>Bien-être · {{VILLE}}</small></span></a>
+  <nav class="menu"><a href="#pratiques">Les pratiques</a><a href="#seance">Une séance</a><a href="#lieu">Le lieu</a><a href="#contact">Me contacter</a></nav>
+  <a class="btn-appel" href="#contact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="txt">Votre numéro</span></a>
+  <span class="soleil" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+  <span class="burger" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C473D" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></span>
+ </div>
 </header>
 
-<section class="hero" style="padding:0">
-  <img src="{{PHOTO:accueil}}" alt="">
-  <div class="wrap">
-    <span class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F2C9A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Bien-être et détente à {{VILLE}}</span>
-    <h1>Un moment pour vous, au calme</h1>
-    <p class="lead">Massage, réflexologie, accompagnement en naturopathie ou séance de relaxation : une phrase d’accueil qui vous ressemble, écrite avec vous.</p>
-    <div class="actions"><a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Prendre rendez-vous</a><a class="btn ghost" href="#seances">Découvrir les séances</a></div>
-    <ul class="puces">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Vos pratiques ici</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Vos formations, s’il y en a</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Au cabinet à {{VILLE}}, ou chez vous</li>
-    </ul>
+<section class="accueil">
+ <img src="{{PHOTO:accueil}}" alt="Une table de massage avec une serviette roulée et une bougie, dans une pièce calme">
+ <div class="ronds" aria-hidden="true"><i></i><i></i><i></i></div>
+ <div class="ronds petit" aria-hidden="true"><i></i><i></i><i></i></div>
+ <div class="wrap">
+  <div class="texte">
+   <span class="surtitre">Bien-être à {{VILLE}}</span>
+   <h1>Ralentir, souffler, <em>prendre un temps pour soi</em></h1>
+   <p class="chapeau">Une phrase d’accueil qui vous ressemble : vos pratiques, votre façon de recevoir, l’atmosphère du lieu. Nous l’écrirons avec vous. <span class="exemple">exemple</span></p>
+   <div class="actions">
+    <a class="btn-galet" href="#contact">Réserver une séance <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn-vague" href="#pratiques">Découvrir les pratiques</a>
+   </div>
+   <p class="avertissement">Ces pratiques ne remplacent pas un avis médical.</p>
   </div>
+ </div>
 </section>
 
-<section id="seances">
-  <div class="wrap">
-    <p class="kicker">Séances <span class="exemple">exemples à adapter</span></p>
-    <h2>Ce que nous vous proposons</h2>
-    <p class="sous">Chaque carte devient une de vos séances, avec vos mots, sa durée et votre tarif. Rien n’est publié sans votre accord.</p>
-    <div class="grille">
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14c1.5-3 3.5-4.5 6-4.5s4 1 5 3"/><path d="M4 18h16"/><circle cx="7" cy="9" r="2"/><path d="M15 6.5c.8-.8 2.2-.8 3 0"/></svg></div><h3>Massage bien-être</h3><p>Dos, corps entier, aux pierres chaudes : vos massages, leur durée et ce qu’on y ressent.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20.5c-2.5 0-4-1.6-4-4 0-3 2-4.5 2.5-8C8 5 9.5 3.5 11.5 3.5c2.2 0 3.5 1.8 3.2 4.5-.4 3.2-2 5-2 8 0 2.6-1.4 4.5-3.7 4.5Z"/><circle cx="10.5" cy="12" r=".9"/><circle cx="9.5" cy="15.5" r=".9"/></svg></div><h3>Réflexologie</h3><p>Plantaire, palmaire ou faciale : comment se passe une séance chez vous.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V10"/><path d="M12 13c-4 0-6.5-2.5-6.5-6.5 4 0 6.5 2.5 6.5 6.5Z"/><path d="M12 11c0-3.5 2.2-5.8 6-5.8 0 3.8-2.3 5.8-6 5.8Z"/></svg></div><h3>Naturopathie</h3><p>Un accompagnement sur l’hygiène de vie : alimentation, sommeil, rythme, à votre façon.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2.5 0 2.5-3 5-3s2.5 6 5 6 2.5-6 5-6c1.3 0 2 .8 3 1.6"/><path d="M3 17c2.5 0 2.5-2 5-2"/><path d="M16 17c1.3 0 2-.5 3-1.2"/></svg></div><h3>Sophrologie et relaxation</h3><p>Respiration, détente, gestion du stress du quotidien : vos séances, seul ou en groupe.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.4 0-8-3.6-8-8 2.4 0 4.6 1 6.1 2.6"/><path d="M12 21c4.4 0 8-3.6 8-8-2.4 0-4.6 1-6.1 2.6"/><path d="M12 15.5c-1.8-1.5-2.6-3.5-2.6-5.5 0-2.4 1.1-4.6 2.6-6 1.5 1.4 2.6 3.6 2.6 6 0 2-.8 4-2.6 5.5Z"/></svg></div><h3>Hypnose, reiki, shiatsu…</h3><p>Les autres pratiques que vous proposez, présentées simplement.</p></div>
-      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="2"/><path d="M3.5 13h17M12 9v11.5"/><path d="M12 9c-1.5-3.5-5-4.5-5-2s3 2 5 2c2 0 5 .5 5-2s-3.5-1.5-5 2Z"/></svg></div><h3>Bons cadeaux</h3><p>Une séance à offrir : comment les commander et les utiliser.</p></div>
-    </div>
+<section class="section" id="pratiques">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Les pratiques</span><h2>Ce que nous vous proposons <span class="exemple">exemples à adapter</span></h2></div><p>Chaque pratique est présentée simplement : ce que c’est, comment ça se passe, combien de temps. Nous gardons seulement les vôtres.</p></div>
+  <div class="pratiques">
+   <article class="pratique monte"><div class="forme"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" stroke="#2C473D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 34c6-2 12-2 19 0s13 2 19 0"/><path d="M14 30c1-6 6-10 13-10s12 4 13 10"/><circle cx="27" cy="13" r="4"/></svg></div><div><h3>Massage bien-être</h3><p>Un moment de détente du corps, à l’huile ou habillé, selon votre pratique.</p><span class="duree">vos durées</span></div></article>
+   <article class="pratique monte"><div class="forme" style="background:#EFE3D6"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" stroke="#2C473D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 46c-6 0-9-5-8-11l2-12c1-7 4-11 9-11 4 0 6 3 6 7 0 6-4 9-4 16 0 6-2 11-5 11z"/><circle cx="34" cy="11" r="2.5"/><circle cx="39" cy="15" r="2.2"/><circle cx="41.5" cy="21" r="2"/><circle cx="42" cy="27" r="1.8"/></svg></div><div><h3>Réflexologie</h3><p>Un accompagnement par le toucher des pieds ou des mains, pour se relâcher.</p><span class="duree">vos durées</span></div></article>
+   <article class="pratique monte"><div class="forme" style="background:#E6ECE6"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" stroke="#2C473D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M27 46V22"/><path d="M27 30c-8 0-13-6-13-14 8 0 13 6 13 14zM27 24c0-8 5-14 13-14 0 8-5 14-13 14z"/></svg></div><div><h3>Naturopathie</h3><p>Des conseils d’hygiène de vie : alimentation, sommeil, rythme. Un accompagnement global.</p><span class="duree">vos durées</span></div></article>
+   <article class="pratique monte"><div class="forme" style="background:#F2E6DC"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" stroke="#2C473D" stroke-width="1.6" stroke-linecap="round"><path d="M10 28c4-6 8-6 12 0s8 6 12 0 8-6 12 0"/><path d="M10 38c4-6 8-6 12 0s8 6 12 0 8-6 12 0" opacity=".5"/><path d="M27 18V8M22 12l5-5 5 5"/></svg></div><div><h3>Relaxation, sophrologie</h3><p>Respiration, détente, présence à soi : vos méthodes, vos mots.</p><span class="duree">vos durées</span></div></article>
   </div>
+  <div class="mention monte"><p class="avertissement" style="margin:0">Ces pratiques ne remplacent pas un avis médical.</p><a class="btn-cercle" href="#seance"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></i>Comment se passe une séance</a></div>
+ </div>
 </section>
 
-<section id="esprit" class="alt">
-  <div class="wrap deux">
-    <div class="photo"><img src="{{PHOTO:detente}}" alt=""></div>
-    <div>
-      <p class="kicker">L’esprit du lieu <span class="exemple">à compléter avec vous</span></p>
-      <h2>Une parenthèse douce, à votre rythme</h2>
-      <ul class="liste">
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre parcours</b>Comment vous êtes venu à ces pratiques, et vos formations.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre cabinet</b>Le lieu, l’ambiance, ce que la personne trouve en arrivant.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Une écoute attentive</b>Le temps que vous prenez pour échanger avant chaque séance.</span></li>
-        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Vos petites attentions</b>Tisane, huiles choisies, musique douce : ce qui fait votre différence.</span></li>
-      </ul>
-    </div>
+<section class="section seance" id="seance">
+ <div class="wrap">
+  <div class="monte">
+   <span class="surtitre" style="color:var(--sauge-c)">Une séance</span>
+   <h2>À votre rythme, sans rien brusquer <span class="exemple">à compléter avec vous</span></h2>
+   <div class="photo-s"><img src="{{PHOTO:detente}}" alt="Des galets chauds posés sur le dos d’une personne allongée, pendant un massage"></div>
   </div>
+  <div class="fil monte">
+   <div class="moment"><h3>Vous prenez rendez-vous</h3><p>Par téléphone, ou en ligne si vous le proposez. Vous dites ce qui vous amène.</p></div>
+   <div class="moment"><h3>Un temps d’échange</h3><p>Quelques minutes pour faire connaissance, vos attentes, vos envies du jour.</p></div>
+   <div class="moment"><h3>La séance</h3><p>Dans une pièce calme, chauffée, avec une lumière douce. Vous vous laissez aller.</p></div>
+   <div class="moment"><h3>Le retour au calme</h3><p>Un verre d’eau, un moment pour revenir doucement, quelques conseils.</p></div>
+   <a class="btn-ligne" href="#contact">Réserver ce moment</a>
+  </div>
+ </div>
 </section>
 
-<section id="deroulement">
-  <div class="wrap">
-    <p class="kicker">Déroulement</p>
-    <h2>Comment se passe une séance</h2>
-    <p class="sous">Quatre étapes, à ajuster à votre façon de recevoir.</p>
-    <div class="etapes">
-      <div class="etape"><h3>Vous prenez rendez-vous</h3><p>Par téléphone ou avec le formulaire, au moment qui vous convient.</p></div>
-      <div class="etape"><h3>Un temps d’échange</h3><p>On parle de vos attentes et de ce que vous aimeriez ressentir.</p></div>
-      <div class="etape"><h3>La séance</h3><p>Dans un cadre calme, sans vous presser.</p></div>
-      <div class="etape"><h3>Et après</h3><p>Quelques conseils simples pour prolonger la détente chez vous.</p></div>
-    </div>
-    <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.5"/></svg>Ces pratiques ne remplacent pas un avis médical.</p>
+<section class="section" id="lieu">
+ <div class="wrap lieu-g">
+  <div class="duo-photos monte">
+   <div class="a"><img src="{{PHOTO:reflexo}}" alt="Des mains qui massent la plante d’un pied, sur une serviette"></div>
+   <div class="b"><img src="{{PHOTO:galets}}" alt="Des galets empilés et une bougie allumée, avec une fine fumée"></div>
+   <svg class="fumee" viewBox="0 0 70 150" aria-hidden="true"><path d="M35 140c-14-20 14-30 0-55s12-35 2-70"/><path d="M45 140c-14-20 14-30 0-55s12-35 2-70"/></svg>
   </div>
+  <div class="monte">
+   <span class="surtitre">Le lieu</span>
+   <h2>Un espace pensé pour la détente <span class="exemple">à compléter avec vous</span></h2>
+   <p>Présentez votre cabinet, votre parcours et vos formations, ce qui vous a menés vers ces pratiques. Si vous vous déplacez à domicile, nous le disons ici.</p>
+   <div class="pour-qui"><span>Pour les adultes</span><span>En duo, si vous le proposez</span><span>En entreprise</span><span>Bons cadeaux</span></div>
+   <a class="btn-vague fonce" href="#contact">Venir me voir à {{VILLE}}</a>
+  </div>
+ </div>
 </section>
 
-<section id="zone" class="alt">
-  <div class="wrap deux">
-    <div>
-      <p class="kicker">Accès</p>
-      <h2>À {{VILLE}} et autour</h2>
-      <p class="sous">Où se trouve votre cabinet, comment s’y garer, et les communes où vous vous déplacez : c’est aussi ce qui aide Google à vous montrer aux bonnes personnes.</p>
-      <div class="zone"><span>{{VILLE}}</span><span>Commune voisine</span><span>Commune voisine</span><span>Commune voisine</span><span>…</span></div>
-    </div>
-    <div class="photo"><img src="{{PHOTO:reflexo}}" alt=""></div>
+<section class="section durees">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Durées et tarifs</span><h2>Simple et clair <span class="exemple">à remplir</span></h2></div><p>Vos durées et vos tarifs, si vous souhaitez les afficher. Vous pouvez aussi écrire « sur demande ».</p></div>
+  <div class="tableau monte">
+   <div class="rangee titre"><span>Pratique</span><span>Durée</span><span>Tarif</span></div>
+   <div class="rangee"><b>Massage bien-être</b><span>votre durée</span><span>votre tarif</span></div>
+   <div class="rangee"><b>Réflexologie</b><span>votre durée</span><span>votre tarif</span></div>
+   <div class="rangee"><b>Bilan de naturopathie</b><span>votre durée</span><span>votre tarif</span></div>
+   <div class="rangee"><b>Bon cadeau</b><span>au choix</span><span>votre tarif</span></div>
   </div>
+ </div>
 </section>
 
-<section id="avis">
-  <div class="wrap">
-    <p class="kicker">Avis <span class="exemple">vos vrais avis Google ici</span></p>
-    <h2>Ce qu’en disent les personnes reçues</h2>
-    <p class="sous">Jamais de faux avis : cette partie reprend seulement ceux que vos clients ont laissés.</p>
-    <div class="avis">
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
-    </div>
+<section class="section">
+ <div class="wrap">
+  <div class="tete-section monte"><div><span class="surtitre">Ils en parlent</span><h2>Vos vrais avis Google ici</h2></div><p>Les avis des personnes reçues s’afficheront ici, tels qu’elles les ont écrits.</p></div>
+  <div class="avis">
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
+   <div class="avis-carte monte"><div class="etoiles" aria-hidden="true">★★★★★</div><div class="vide"></div><div class="vide"></div><div class="vide court"></div><p style="margin:12px 0 0">L’avis d’un de vos clients s’affichera ici.</p></div>
   </div>
+ </div>
 </section>
 
-<section id="contact" class="contact">
-  <div class="wrap deux">
-    <div>
-      <p class="kicker" style="color:#F2C9A8">Rendez-vous</p>
-      <h2>Envie de souffler un peu ?</h2>
-      <p class="sous">Appelez, ou laissez un message : il arrive directement dans votre boîte e-mail.</p>
-      <a class="gros-tel" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Votre numéro</a>
-      <p style="margin-top:22px;color:#D3E0D6"><b style="color:#fff">{{ENTREPRISE}}</b><br>{{VILLE}}<br>Vos jours et heures de rendez-vous</p>
-    </div>
-    <div class="form" aria-label="Formulaire de contact (exemple)">
-      <label>Votre nom</label><div class="champ"></div>
-      <label>Votre téléphone ou e-mail</label><div class="champ"></div>
-      <label>La séance qui vous intéresse</label><div class="champ grand"></div>
-      <span class="btn">Envoyer</span>
-    </div>
+<section class="section" id="contact" style="padding-top:10px">
+ <div class="wrap contact-g">
+  <div class="zone monte">
+   <div class="cible" aria-hidden="true"><i></i><i></i><i></i></div>
+   <span class="surtitre" style="color:var(--sauge-c)">Me trouver</span>
+   <h3>À {{VILLE}} et autour</h3>
+   <p>Votre adresse · {{VILLE}}<br>Votre numéro</p>
+   <div class="horaires"><span>Du lundi au vendredi</span><span>vos horaires</span><span>Le samedi</span><span>vos horaires</span></div>
+   <p style="position:relative;max-width:300px;color:#BFCDC4;font-size:15px">Sur rendez-vous, au cabinet ou à domicile si vous le proposez. <span class="exemple">exemple</span></p>
   </div>
+  <div class="contact monte">
+   <h3 style="font-size:28px">Envie de souffler un peu ?</h3>
+   <div class="champ">Votre prénom</div><div class="champ">Votre téléphone ou votre e-mail</div><div class="champ grand">Ce qui vous amène, la pratique qui vous intéresse</div>
+   <a class="btn-plein" href="#contact">Envoyer <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></a>
+  </div>
+ </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <div class="bas"><span><b>{{ENTREPRISE}}</b> · Bien-être et détente à {{VILLE}}</span><span>Mentions légales · Confidentialité</span><span>Maquette d’exemple : Les Minis Monstres</span></div>
-  </div>
+<footer class="pied">
+ <div class="wrap">
+  <div><b>{{ENTREPRISE}}</b><br>Bien-être à {{VILLE}}<br><span style="font-size:13.5px;opacity:.8">Ces pratiques ne remplacent pas un avis médical.</span></div>
+  <div>Votre adresse<br>Votre numéro</div>
+  <div>Mentions légales · Confidentialité<br><span style="opacity:.7">Site réalisé par Les Minis Monstres</span></div>
+ </div>
 </footer>
 </body>
 </html>
